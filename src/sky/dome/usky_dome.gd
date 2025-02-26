@@ -52,6 +52,7 @@ var default_dome_color:= Color(0.166, 0.245, 0.379):
 func _init() -> void:
 	_change_dome_mesh_quality(dome_mesh_quality)
 	_dome_material.shader = DEFAULT_SKY_SHADER
+	_dome_material.render_priority = -128
 	default_dome_color = default_dome_color
 
 func _notification(what: int) -> void:

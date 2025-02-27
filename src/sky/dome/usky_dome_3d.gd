@@ -5,7 +5,7 @@
 # - J. Cuéllar 2025 MIT License
 # - See: LICENSE File.
 @tool @icon("res://addons/universal-sky/assets/icons/Sky.svg")
-class_name USkyDome extends Node3D
+class_name USkyDome3D extends Node3D
 
 #region Drawer
 const DEFAULT_SKY_SHADER:= preload(

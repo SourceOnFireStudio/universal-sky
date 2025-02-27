@@ -64,8 +64,17 @@ var clamped_matrix: Basis:
 		-(basis * Vector3.RIGHT)
 	).transposed()
 
+var sun_moon_light_curve: Curve = Curve.new()
+
 func _on_init() -> void:
 	super()
+	#sun_moon_light_curve.clear_points()
+	sun_moon_light_curve.add_point(Vector2(0, 0), 0.0, 0.0, 0, 0)
+	sun_moon_light_curve.add_point(Vector2(0.617886, 0), 0.0, 0.0467088, 1, 0)
+	sun_moon_light_curve.add_point(Vector2(0.69899, 1), 0.0, 0.0, 0, 0)
+	sun_moon_light_curve.add_point(Vector2(1, 1), 0.0, 0.0, 0, 0)
+	sun_moon_light_curve.bake()
+	
 	body_size =  0.02
 	body_intensity = 1.0
 	lighting_color = Color(0.54, 0.7, 0.9)
@@ -86,10 +95,10 @@ func _get_light_energy() -> float:
 	var energy = super()
 	if enable_light_moon_phases:
 		energy *= phases_mul
-	
-	if is_instance_valid(sun):
+	if is_instance_valid(sun) && is_instance_valid(sun_moon_light_curve):
 		var fade: float = (1.0 - sun.direction.y) - 0.5
-		return energy * clamp(-sun.direction.y+0.10, 0.0, 1.0)
+		print(sun_moon_light_curve)
+		return energy * sun_moon_light_curve.sample_baked(fade)
 	
 	return energy
 

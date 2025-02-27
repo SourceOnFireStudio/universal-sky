@@ -16,7 +16,7 @@ enum MieValueType{ COLOR = 0, INTENSITY = 1, ANISOTROPY = 2 }
 const DIRECTION_CHANGED:= &"direction_changed"
 const VALUE_CHANGED:= &"value_changed"
 const MIE_VALUE_CHANGED:= &"mie_value_changed"
-signal direction_changed
+signal direction_changed()
 signal value_changed(type)
 signal mie_value_changed(type)
 #endregion

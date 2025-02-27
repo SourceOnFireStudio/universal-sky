@@ -1,6 +1,6 @@
 @tool @icon("res://addons/universal-sky/assets/icons/moon.svg")
 extends USkyCelestialBody3D
-class_name USkyMoon
+class_name USkyMoon3D
 
 #region Resources
 const _DEFAULT_MOON_MAP_TEXTURE:= preload(

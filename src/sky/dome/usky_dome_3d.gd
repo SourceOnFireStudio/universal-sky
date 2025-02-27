@@ -48,6 +48,52 @@ var default_dome_color:= Color(0.166, 0.245, 0.379):
 			_dome_material.get_rid(), &"background_color", default_dome_color
 		)
 
+@export_group("Resources")
+@export
+var material: USkyMaterialBase = null:
+	get: return material
+	set(value):
+		material = value
+		if not is_instance_valid(value):
+			_dome_material = null
+			_dome_drawer.set_material(null)
+		else:
+			if !material.material_is_valid():
+				push_warning(
+					"this {material} is abstract resource class, please add valid material"
+					.format({"material": material.get_class()})
+				)
+				material = null
+			else:
+				_dome_material = material.material
+				_set_sky_material_to_dome(material.material)
+				_update_celestials_data()
+
+#region Celestials
+@export
+var sun: USkySun3D = null:
+	get: return sun
+	set(value):
+		if is_instance_valid(value):
+			sun = value
+			_connect_sun_signals()
+		else:
+			_disconnect_sun_signals()
+			sun = value
+		_update_celestials_data()
+
+var moon: USkyMoon3D = null:
+	get: return moon
+	set(value):
+		if is_instance_valid(value):
+			moon = value
+			_connect_moon_signals()
+		else:
+			_disconnect_moon_signals()
+			moon = value
+		_update_celestials_data()
+#endregion
+
 #region Setup
 func _init() -> void:
 	_change_dome_mesh_quality(dome_mesh_quality)
@@ -82,4 +128,195 @@ func _change_dome_mesh_quality(p_quality: int) -> void:
 			2: 
 				_dome_mesh.radial_segments = 64
 				_dome_mesh.rings = 90
+
+func _set_sky_material_to_dome(p_material: ShaderMaterial) -> void:
+	_dome_drawer.set_material(p_material)
+
+func _check_material_ready() -> bool: 
+	if not is_instance_valid(material):
+		return false
+	if not material.material_is_valid():
+		return false
+	return true
+
+func _update_celestials_data() -> void:
+	_on_sun_direction_changed()
+	_on_moon_direction_changed()
+	
+	for i in range(0, 3):
+		_on_sun_value_changed(i)
+		_on_sun_mie_value_changed(i)
+		_on_moon_mie_value_changed(i)
+	
+	for i in range(0, 4):
+		_on_moon_value_changed(i)
+#endregion
+
+#region Celestials Signal Connection
+func _connect_sun_signals() -> void:
+	# Direction
+	if not sun.direction_changed.is_connected(_on_sun_direction_changed):
+		sun.direction_changed.connect(_on_sun_direction_changed)
+	
+	# Body
+	if not sun.value_changed.is_connected(_on_sun_value_changed):
+		sun.value_changed.connect(_on_sun_value_changed)
+	
+	# Mie
+	if not sun.mie_value_changed.is_connected(_on_sun_mie_value_changed):
+		sun.mie_value_changed.connect(_on_sun_mie_value_changed)
+
+func _disconnect_sun_signals() -> void:
+	# Direction
+	if sun.direction_changed.is_connected(_on_sun_direction_changed):
+		sun.direction_changed.disconnect(_on_sun_direction_changed)
+	
+	# Body
+	if sun.value_changed.is_connected(_on_sun_value_changed):
+		sun.value_changed.disconnect(_on_sun_value_changed)
+	
+	# Mie
+	if sun.mie_value_changed.is_connected(_on_sun_mie_value_changed):
+		sun.mie_value_changed.disconnect(_on_sun_mie_value_changed)
+
+func _connect_moon_signals() -> void:
+	# Direction
+	if not moon.direction_changed.is_connected(_on_moon_direction_changed):
+		moon.direction_changed.connect(_on_moon_direction_changed)
+	
+	# Body
+	if not moon.value_changed.is_connected(_on_moon_value_changed):
+		moon.value_changed.connect(_on_moon_value_changed)
+	
+	# Mie
+	if not moon.mie_value_changed.is_connected(_on_moon_mie_value_changed):
+		moon.mie_value_changed.connect(_on_moon_mie_value_changed)
+
+func _disconnect_moon_signals() -> void:
+	# Direction
+	if moon.direction_changed.is_connected(_on_moon_direction_changed):
+		moon.direction_changed.disconnect(_on_moon_direction_changed)
+	
+	# Body
+	if moon.value_changed.is_connected(_on_moon_value_changed):
+		moon.value_changed.disconnect(_on_moon_value_changed)
+	
+	# Mie
+	if moon.mie_value_changed.is_connected(_on_moon_mie_value_changed):
+		moon.mie_value_changed.disconnect(_on_moon_mie_value_changed)
+#endregion
+
+#region Sun Direction
+func _on_sun_direction_changed() -> void:
+	if not _check_material_ready():
+		return
+	_on_moon_direction_changed()
+	material.sun_direction = sun.direction
+	_update_moon_mie_intensity()
+#endregion
+
+#region Sun Values
+func _on_sun_value_changed(p_type: int) -> void:
+	if not _check_material_ready():
+		return
+	
+	match(p_type):
+		USkyCelestialBody3D.BodyValueType.COLOR:
+			_update_sun_color()
+		USkyCelestialBody3D.BodyValueType.INTENSITY:
+			_update_sun_intensity()
+		USkyCelestialBody3D.BodyValueType.SIZE:
+			_update_sun_size()
+
+func _update_sun_color() -> void:
+	material.sun_color = sun.body_color
+
+func _update_sun_intensity() -> void:
+	material.sun_intensity = sun.body_intensity
+
+func _update_sun_size() -> void:
+	material.sun_size = sun.body_size
+#endregion
+
+#region Sun Mie Values
+func _on_sun_mie_value_changed(p_type: int) -> void:
+	if not _check_material_ready():
+		return
+	
+	match(p_type):
+		USkyCelestialBody3D.MieValueType.COLOR:
+			_update_sun_mie_color()
+		USkyCelestialBody3D.MieValueType.INTENSITY:
+			_update_sun_mie_intensity()
+		USkyCelestialBody3D.MieValueType.ANISOTROPY:
+			_update_sun_mie_anisotropy()
+
+func _update_sun_mie_color() -> void:
+	material.sun_mie_color = sun.mie_color
+
+func _update_sun_mie_intensity() -> void:
+	material.sun_mie_intensity = sun.mie_intensity
+
+func _update_sun_mie_anisotropy() -> void:
+	material.sun_mie_anisotropy = sun.mie_anisotropy
+#endregion
+
+#region Moon Direction
+func _on_moon_direction_changed() -> void:
+		material.moon_direction = moon.direction
+		material.moon_phases_mul = moon.phases_mul
+		material.moon_matrix = moon.clamped_matrix
+		_update_moon_mie_intensity()
+#endregion
+
+#region Moon Values
+func _on_moon_value_changed(p_type: int) -> void:
+	if not _check_material_ready():
+		return
+	match(p_type):
+		USkyMoon3D.BodyValueType.COLOR:
+			_update_moon_color()
+		USkyMoon3D.BodyValueType.INTENSITY:
+			_update_moon_intensity()
+		USkyMoon3D.BodyValueType.SIZE:
+			_update_moon_size()
+		USkyMoon3D.BodyValueType.TEXTURE:
+			_update_moon_texture()
+
+func _update_moon_color() -> void:
+	material.moon_color = moon.body_color
+
+func _update_moon_intensity() -> void:
+	material.moon_instensity = moon.body_intensity
+
+func _update_moon_size() -> void:
+	material.moon_size = moon.body_size
+
+func _update_moon_texture() -> void:
+	material.moon_texture = moon.texture
+#endregion
+
+#region Mie Value
+func _on_moon_mie_value_changed(p_type: int) -> void:
+	if not _check_material_ready():
+		return
+	match(p_type):
+		USkyMoon3D.MieValueType.COLOR:
+			_update_moon_mie_color()
+		USkyMoon3D.MieValueType.INTENSITY:
+			_update_moon_mie_intensity()
+		USkyMoon3D.MieValueType.ANISOTROPY:
+			_update_moon_mie_anisotropy()
+
+func _update_moon_mie_color() -> void:
+	material.moon_mie_color = moon.mie_color
+
+func _update_moon_mie_intensity() -> void:
+	if moon.enable_mie_phases:
+		material.sun_mie_intensity = moon.mie_intensity * moon.phases_mul
+	else:
+		material.sun_mie_intensity = moon.mie_intensity
+
+func _update_moon_mie_anisotropy() -> void:
+	material.moon_mie_anisotropy = moon.mie_anisotropy
 #endregion

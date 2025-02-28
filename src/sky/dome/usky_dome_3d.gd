@@ -4,7 +4,7 @@
 # License:
 # - J. Cuéllar 2025 MIT License
 # - See: LICENSE File.
-@tool @icon("res://addons/universal-sky/assets/icons/Sky.svg")
+@tool
 class_name USkyDome3D extends Node3D
 
 #region Drawer
@@ -70,6 +70,7 @@ var material: USkyMaterialBase = null:
 				_update_celestials_data()
 
 #region Celestials
+@export_group("Celestials")
 @export
 var sun: USkySun3D = null:
 	get: return sun
@@ -82,6 +83,7 @@ var sun: USkySun3D = null:
 			sun = value
 		_update_celestials_data()
 
+@export
 var moon: USkyMoon3D = null:
 	get: return moon
 	set(value):

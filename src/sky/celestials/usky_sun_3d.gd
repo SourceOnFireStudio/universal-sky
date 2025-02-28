@@ -4,7 +4,7 @@
 # License:
 # - J. Cuéllar 2025 MIT License
 # - See: LICENSE File.
-@tool @icon("res://addons/universal-sky/assets/icons/sun.svg")
+@tool
 extends USkyCelestialBody3D
 class_name USkySun3D
 

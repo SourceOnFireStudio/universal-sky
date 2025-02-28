@@ -1,4 +1,4 @@
-@tool @icon("res://addons/universal-sky/assets/icons/moon.svg")
+@tool
 extends USkyCelestialBody3D
 class_name USkyMoon3D
 

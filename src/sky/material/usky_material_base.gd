@@ -39,7 +39,7 @@ func _on_init() -> void:
 	_material.render_priority = -128
 
 func material_is_valid() -> bool:
-	return true
+	return false
 
 #region Sun
 var sun_direction: Vector3:
@@ -204,12 +204,13 @@ var moon_mie_color: Color:
 	get: return moon_mie_color
 	set(value):
 		moon_mie_color = value
-		_update_moon_color(moon_mie_color)
+		_update_moon_mie_color(moon_mie_color)
 
 func _update_moon_mie_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), MOON_MIE_COLOR_PARAM, p_color
 	)
+	print(p_color)
 	emit_changed()
 
 var moon_mie_intensity: float:
@@ -222,6 +223,7 @@ func _update_moon_mie_intensity(p_intensity: float) -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), MOON_MIE_INTENSITY_PARAM, p_intensity
 	)
+	print(p_intensity)
 	emit_changed()
 
 var moon_mie_anisotropy: float:
@@ -234,6 +236,7 @@ func _update_moon_mie_anisotropy(p_anisotropy: float) -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), MOON_MIE_ANISOTROPY_PARAM, p_anisotropy
 	)
+	print(p_anisotropy)
 	emit_changed()
 
 var moon_phases_mul: float:

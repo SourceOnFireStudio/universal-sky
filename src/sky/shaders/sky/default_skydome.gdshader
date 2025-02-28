@@ -7,7 +7,7 @@ uniform vec4 background_color: source_color;
 
 void vertex() {
 	vec4 vertex;
-	compute_dome_position(POSITION, vertex, VERTEX, MODELVIEW_MATRIX, PROJECTION_MATRIX);
+	computeDomePosition(POSITION, vertex, VERTEX, MODELVIEW_MATRIX, PROJECTION_MATRIX);
 }
 
 void fragment() {

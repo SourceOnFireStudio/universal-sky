@@ -315,9 +315,9 @@ func _update_moon_mie_color() -> void:
 
 func _update_moon_mie_intensity() -> void:
 	if moon.enable_mie_phases:
-		material.sun_mie_intensity = moon.mie_intensity * moon.phases_mul
+		material.moon_mie_intensity = moon.mie_intensity * moon.phases_mul
 	else:
-		material.sun_mie_intensity = moon.mie_intensity
+		material.moon_mie_intensity = moon.mie_intensity
 
 func _update_moon_mie_anisotropy() -> void:
 	material.moon_mie_anisotropy = moon.mie_anisotropy

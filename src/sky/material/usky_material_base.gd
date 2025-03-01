@@ -195,9 +195,10 @@ var moon_texture: Texture2D:
 		_update_moon_texture(moon_texture)
 
 func _update_moon_texture(p_texture: Texture2D) -> void:
-	RenderingServer.material_set_param(
-		material.get_rid(),MOON_TEXTURE_PARAM, p_texture
-	)
+	#RenderingServer.material_set_param(
+		#material.get_rid(),MOON_TEXTURE_PARAM, p_texture
+	#)
+	material.set_shader_parameter(MOON_TEXTURE_PARAM, p_texture)
 	emit_changed()
 
 var moon_mie_color: Color:
@@ -236,7 +237,6 @@ func _update_moon_mie_anisotropy(p_anisotropy: float) -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), MOON_MIE_ANISOTROPY_PARAM, p_anisotropy
 	)
-	print(p_anisotropy)
 	emit_changed()
 
 var moon_phases_mul: float:

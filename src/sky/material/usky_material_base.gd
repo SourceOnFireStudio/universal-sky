@@ -41,6 +41,10 @@ func _on_init() -> void:
 
 # Avoid black sky when creating new material without celestial bodies.
 func _initialize_default_celestial_values():
+	set_default_sun_values()
+	set_default_moon_values()
+
+func set_default_sun_values() -> void:
 	_update_sun_direction(Vector3.ZERO)
 	_update_sun_size(0.5)
 	_update_sun_intensity(2.0)
@@ -48,6 +52,8 @@ func _initialize_default_celestial_values():
 	_update_sun_mie_color(Color.WHITE)
 	_update_sun_mie_intensity(1.0)
 	_update_sun_mie_anisotropy(0.8)
+
+func set_default_moon_values() -> void:
 	_update_moon_direction(Vector3.ZERO)
 	_update_moon_size(1.0)
 	_update_moon_intensity(0.5)

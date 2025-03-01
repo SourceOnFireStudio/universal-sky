@@ -81,6 +81,8 @@ var sun: USkySun3D = null:
 			_connect_sun_signals()
 		else:
 			_disconnect_sun_signals()
+			if is_instance_valid(material):
+				material.set_default_sun_values()
 			sun = value
 		_update_celestials_data()
 
@@ -93,6 +95,8 @@ var moon: USkyMoon3D = null:
 			_connect_moon_signals()
 		else:
 			_disconnect_moon_signals()
+			if is_instance_valid(material):
+				material.set_default_moon_values()
 			moon = value
 		_update_celestials_data()
 #endregion

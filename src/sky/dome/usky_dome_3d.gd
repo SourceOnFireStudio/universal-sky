@@ -58,7 +58,7 @@ var material: USkyMaterialBase = null:
 			_dome_material = null
 			_dome_drawer.set_material(null)
 		else:
-			if !material.material_is_valid():
+			if not material.material_is_valid():
 				push_warning(
 					"this {material} is abstract resource class, please add valid material"
 					.format({"material": material.get_class()})
@@ -142,14 +142,19 @@ func _check_material_ready() -> bool:
 	return true
 
 func _update_celestials_data() -> void:
+	_update_sun_data()
+	_update_moon_data()
+
+func _update_sun_data() -> void:
 	_on_sun_direction_changed()
-	_on_moon_direction_changed()
-	
 	for i in range(0, 3):
 		_on_sun_value_changed(i)
 		_on_sun_mie_value_changed(i)
+
+func _update_moon_data() -> void:
+	_on_moon_direction_changed()
+	for i in range(0, 3):
 		_on_moon_mie_value_changed(i)
-	
 	for i in range(0, 4):
 		_on_moon_value_changed(i)
 #endregion
@@ -210,16 +215,19 @@ func _disconnect_moon_signals() -> void:
 
 #region Sun Direction
 func _on_sun_direction_changed() -> void:
-	if not _check_material_ready():
+	if not _check_material_ready() || not is_instance_valid(sun):
 		return
-	_on_moon_direction_changed()
+	
+	if is_instance_valid(moon):
+		print("MOON")
+		_on_moon_direction_changed()
+		_update_moon_mie_intensity()
 	material.sun_direction = sun.direction
-	_update_moon_mie_intensity()
 #endregion
 
 #region Sun Values
 func _on_sun_value_changed(p_type: int) -> void:
-	if not _check_material_ready():
+	if not _check_material_ready() || not is_instance_valid(sun):
 		return
 	
 	match(p_type):
@@ -242,7 +250,7 @@ func _update_sun_size() -> void:
 
 #region Sun Mie Values
 func _on_sun_mie_value_changed(p_type: int) -> void:
-	if not _check_material_ready():
+	if not _check_material_ready() || not is_instance_valid(sun):
 		return
 	
 	match(p_type):
@@ -265,15 +273,18 @@ func _update_sun_mie_anisotropy() -> void:
 
 #region Moon Direction
 func _on_moon_direction_changed() -> void:
-		material.moon_direction = moon.direction
-		material.moon_phases_mul = moon.phases_mul
-		material.moon_matrix = moon.clamped_matrix
-		_update_moon_mie_intensity()
+	if not _check_material_ready() || not is_instance_valid(moon):
+		return
+	print("UPDATE_MOON_DIRECTION")
+	material.moon_direction = moon.direction
+	material.moon_phases_mul = moon.phases_mul
+	material.moon_matrix = moon.clamped_matrix
+	_update_moon_mie_intensity()
 #endregion
 
 #region Moon Values
 func _on_moon_value_changed(p_type: int) -> void:
-	if not _check_material_ready():
+	if not _check_material_ready() || not is_instance_valid(moon):
 		return
 	match(p_type):
 		USkyMoon3D.BodyValueType.COLOR:
@@ -300,7 +311,7 @@ func _update_moon_texture() -> void:
 
 #region Mie Value
 func _on_moon_mie_value_changed(p_type: int) -> void:
-	if not _check_material_ready():
+	if not _check_material_ready() || not is_instance_valid(moon):
 		return
 	match(p_type):
 		USkyMoon3D.MieValueType.COLOR:

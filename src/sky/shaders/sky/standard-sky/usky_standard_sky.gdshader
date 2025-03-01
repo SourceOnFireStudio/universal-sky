@@ -22,6 +22,6 @@ void fragment(){
 	);
 	vec3 scatter = atmosphericScattering(worldPos, horizonBlend);
 	col.rgb += scatter;
-	
+
 	ALBEDO = col.rgb;
 }

@@ -13,7 +13,7 @@ const DEFAULT_SKY_SHADER:= preload(
 )
 var _dome_drawer:= USkyDomeDrawer.new()
 var _dome_mesh:= SphereMesh.new()
-var _dome_material:= ShaderMaterial.new()
+var _dome_material: ShaderMaterial = null
 #endregion
 
 @export_group("Dome Settings")
@@ -56,7 +56,8 @@ var material: USkyMaterialBase = null:
 		material = value
 		if not is_instance_valid(value):
 			_dome_material = null
-			_dome_drawer.set_material(null)
+			_initialize_default_material()
+			_dome_drawer.set_material(_dome_material)
 		else:
 			if not material.material_is_valid():
 				push_warning(
@@ -99,9 +100,7 @@ var moon: USkyMoon3D = null:
 #region Setup
 func _init() -> void:
 	_change_dome_mesh_quality(dome_mesh_quality)
-	_dome_material.shader = DEFAULT_SKY_SHADER
-	_dome_material.render_priority = -128
-	default_dome_color = default_dome_color
+	_initialize_default_material()
 
 func _notification(what: int) -> void:
 	match what:
@@ -116,6 +115,12 @@ func _notification(what: int) -> void:
 func _initialize_dome_params() -> void:
 	dome_visible = dome_visible
 	dome_layers = dome_layers
+
+func _initialize_default_material() -> void:
+	_dome_material = ShaderMaterial.new()
+	_dome_material.shader = DEFAULT_SKY_SHADER
+	_dome_material.render_priority = -128
+	default_dome_color = default_dome_color
 
 func _change_dome_mesh_quality(p_quality: int) -> void:
 	if not is_instance_valid(_dome_mesh):

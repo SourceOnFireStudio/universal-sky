@@ -6,6 +6,14 @@ const SHADER:= preload(
 	"res://addons/universal-sky/src/sky/shaders/sky/standard-sky/usky_standard_sky.gdshader"
 )
 
+const _DEFAULT_BACKGROUND_TEXTURE:= preload(
+	"res://addons/universal-sky/assets/textures/milky-way/Milkyway.jpg"
+)
+
+const _DEFAULT_STARS_FIELD_TEXTURE:= preload(
+	"res://addons/universal-sky/assets/textures/milky-way/StarField.jpg"
+)
+
 #region Shader params
 const TONEMAP_LEVEL_PARAM:= &"tonemap_level"
 const EXPOSURE_PARAM:= &"exposure"
@@ -26,6 +34,15 @@ const MOON_PARTIAL_MIE_PHASE_PARAM:= &"atm_moon_partial_mie_phase"
 
 const DAY_TINT_PARAM:= &"atm_day_tint"
 const NIGHT_TINT_PARAM:= &"atm_night_tint"
+
+const DEEP_SPACE_MATRIX_PARAM:= &"deep_space_matrix"
+const DEEP_SPACE_BACKGROUND_COLOR_PARAM:= &"background_color"
+const DEEP_SPACE_BACKGROUND_TEXTURE_PARAM:= &"background_texture"
+const STARS_FIELD_COLOR_PARAM:= &"stars_field_color"
+const STARS_FIELD_INTENSITY_PARAM:= &"stars_field_intensity"
+const STARS_FIELD_TEXTURE_PARAM:= &"stars_field_texture"
+const STARS_SCINTILLATION_PARAM:= &"stars_scintillation"
+const STARS_SCINTILLATION_SPEED_PARAM:=&"stars_scintillation_speed"
 #endregion
 
 #region Atmospheric scattering const
@@ -193,6 +210,122 @@ var atm_ground_color:= Color(0.543, 0.543, 0.543): # Color(0.204, 0.345, 0.467):
 		emit_changed()
 #endregion
 
+#region General Settings
+@export_group("Deep Space")
+@export 
+var deep_space_euler:= Vector3(-0.752, -2.56, 0.0):
+	get: 
+		return deep_space_euler
+	set(value):
+		deep_space_euler = value
+		deep_space_quat = Basis.from_euler(
+			deep_space_euler
+		).get_rotation_quaternion()
+		
+		emit_changed()
+
+var deep_space_quat:= Quaternion.IDENTITY:
+	get: return deep_space_quat
+	set(value):
+		deep_space_quat = value
+		_deep_space_basis = Basis(value)
+		#__deep_space_euler = _deep_space_basis.get_euler()
+		RenderingServer.material_set_param(
+			_material.get_rid(), DEEP_SPACE_MATRIX_PARAM, _deep_space_basis
+		)
+		emit_changed()
+
+var _deep_space_basis:= Basis()
+
+@export_subgroup('Background')
+@export
+var background_color:= Color(0.238, 0.238, 0.238, 0.561):
+	get: return background_color
+	set(value):
+		background_color = value
+		RenderingServer.material_set_param(
+			_material.get_rid(), DEEP_SPACE_BACKGROUND_COLOR_PARAM, background_color
+		)
+		emit_changed()
+
+
+@export var use_custom_bg_texture: bool = false:
+	get: return use_custom_bg_texture
+	set(value):
+		use_custom_bg_texture = value
+		if value:
+			background_texture = background_texture
+		else:
+			background_texture = _DEFAULT_BACKGROUND_TEXTURE
+
+@export
+var background_texture: Texture = null:
+	get: return background_texture
+	set(value):
+		background_texture = value
+		_material.set_shader_parameter(DEEP_SPACE_BACKGROUND_TEXTURE_PARAM, background_texture)
+		emit_changed()
+
+@export_subgroup('StarsField')
+@export
+var stars_field_color:= Color.WHITE:
+	get: return stars_field_color
+	set(value):
+		stars_field_color = value
+		RenderingServer.material_set_param(
+			_material.get_rid(), STARS_FIELD_COLOR_PARAM, stars_field_color
+		)
+		emit_changed()
+
+@export
+var stars_field_intensity: float = 1.0:
+	get: return stars_field_intensity
+	set(value):
+		stars_field_intensity = value
+		RenderingServer.material_set_param(
+			_material.get_rid(), STARS_FIELD_INTENSITY_PARAM, stars_field_intensity
+		)
+		emit_changed()
+
+@export
+var use_custom_stars_field_texture: bool = false:
+	get: return use_custom_stars_field_texture
+	set(value):
+		use_custom_stars_field_texture = value
+		if value:
+			stars_field_texture = stars_field_texture
+		else:
+			stars_field_texture = _DEFAULT_STARS_FIELD_TEXTURE
+
+@export
+var stars_field_texture: Texture = null:
+	get: return stars_field_texture
+	set(value):
+		stars_field_texture = value
+		_material.set_shader_parameter(STARS_FIELD_TEXTURE_PARAM, stars_field_texture)
+		emit_changed()
+
+@export_range(0.0, 1.0)
+var stars_scintillation: float = 0.75:
+	get: return stars_scintillation
+	set(value):
+		stars_scintillation = value
+		RenderingServer.material_set_param(
+			_material.get_rid(), STARS_SCINTILLATION_PARAM, stars_scintillation
+		)
+		emit_changed()
+
+@export_range(0.0, 10.0)
+var stars_scintillation_speed: float = 1.0:
+	get: return stars_scintillation_speed
+	set(value):
+		stars_scintillation_speed = value
+		RenderingServer.material_set_param(
+			_material.get_rid(), STARS_SCINTILLATION_SPEED_PARAM, stars_scintillation_speed
+		)
+		emit_changed()
+#endregion
+
 #region Setup
 func material_is_valid() -> bool:
 	return true
@@ -221,6 +354,20 @@ func _on_init() -> void:
 	atm_night_tint = atm_night_tint
 	
 	atm_ground_color = atm_ground_color
+	
+	deep_space_euler = deep_space_euler
+	deep_space_quat = deep_space_quat
+	
+	background_color = background_color
+	use_custom_bg_texture = use_custom_bg_texture
+	background_texture = background_texture
+	
+	stars_field_color = stars_field_color
+	stars_field_intensity = stars_field_intensity
+	use_custom_stars_field_texture = use_custom_stars_field_texture
+	stars_field_texture = stars_field_texture
+	stars_scintillation = stars_scintillation
+	stars_scintillation_speed = stars_scintillation_speed
 
 func _connect_changed_atm_day_gradient() -> void:
 	if !atm_day_gradient.changed.is_connected(_set_atm_day_tint):

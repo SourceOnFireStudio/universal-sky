@@ -8,6 +8,7 @@ render_mode unshaded, cull_front, depth_draw_never, skip_vertex_transform;
 #include "res://addons/universal-sky/src/sky/shaders/library/usky_random.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_sun.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_moon.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_deep_space.gdshaderinc"
 
 varying vec3 v_world_pos;
 
@@ -41,7 +42,14 @@ void fragment(){
 	vec4 moon = computeMoon(worldPos);
 	nearSpace += (sun.rgb * moon.a) + moon.rgb;
 
-	col.rgb += (nearSpace) * horizonBlend;
+	vec3 deepSpace = vec3(0.0);
+	vec3 deepSpaceCoords = getDeepSpaceCoords(worldPos);
+	deepSpace += getBackground(equirectUV(deepSpaceCoords));
+	deepSpace += getStarsField(equirectUV(deepSpaceCoords));
+	deepSpace *= moon.a;
+	deepSpace.rgb *= saturate(1.0-(sun_direction.y+0.85));
+
+	col.rgb += (deepSpace + nearSpace) * horizonBlend;
 	col.rgb += scatter;
 
 	ALBEDO = colorCorrection(col.rgb, FRAGCOORD.xy);

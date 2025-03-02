@@ -166,6 +166,16 @@ func _update_moon_data() -> void:
 		_on_moon_mie_value_changed(i)
 	for i in range(0, 4):
 		_on_moon_value_changed(i)
+
+func _get_configuration_warnings() -> PackedStringArray:
+	if not is_instance_valid(sun):
+		return ["Sun unassigned"]
+	if not is_instance_valid(moon):
+		return ["Moon unassigned"]
+	if not is_instance_valid(material):
+		return ["Material unassigned"]
+	
+	return []
 #endregion
 
 #region Celestials Signal Connection

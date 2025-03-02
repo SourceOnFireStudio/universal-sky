@@ -44,7 +44,7 @@ const pn: float = 0.035
 
 #region General Settings
 @export_group("General Settings")
-@export
+@export_range(0.0, 1.0)
 var tonemap_level: float = 0.0:
 	get: return tonemap_level
 	set(value):

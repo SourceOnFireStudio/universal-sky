@@ -9,7 +9,7 @@ const SHADER:= preload(
 #region Shader params
 const TONEMAP_LEVEL_PARAM:= &"tonemap_level"
 const EXPOSURE_PARAM:= &"exposure"
-const HORIZON_LEVEL_PARAM:= &"horizon_level"
+const HORIZON_OFFSET_PARAM:= &"horizon_offset"
 
 const ATM_CONTRAST_PARAM:= &"atm_contrast"
 const ATM_SUN_E_PARAM:= &"atm_sunE"
@@ -65,12 +65,12 @@ var exposure: float = 1.0:
 		emit_changed()
 
 @export_range(-1.0, 1.0)
-var horizon_level: float = 0.0:
-	get: return horizon_level
+var horizon_offset: float = 0.0:
+	get: return horizon_offset
 	set(value):
-		horizon_level = value
+		horizon_offset = value
 		RenderingServer.material_set_param(
-			material.get_rid(), HORIZON_LEVEL_PARAM, horizon_level
+			material.get_rid(), HORIZON_OFFSET_PARAM, horizon_offset
 		)
 		emit_changed()
 #endregion
@@ -203,7 +203,7 @@ func _on_init() -> void:
 	
 	tonemap_level = tonemap_level
 	exposure = exposure
-	horizon_level = horizon_level
+	horizon_offset = horizon_offset
 	
 	atm_contrast = atm_contrast
 	atm_wavelenghts = atm_wavelenghts
@@ -231,8 +231,6 @@ func _disconnect_changed_atm_day_gradient() -> void:
 		atm_day_gradient.changed.disconnect(_set_atm_day_tint)
 
 #endregion
-
-
 
 func _update_sun_direction(p_direction: Vector3) -> void:
 	super(p_direction)

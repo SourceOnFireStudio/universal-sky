@@ -28,7 +28,7 @@ void fragment(){
 	vec3 horizonBlend = mix(
 		vec3(0.0), vec3(1.0),
 		smoothstep(-0.1, 1.0, dot(vec3(0.0, 1.0, 0.0),
-			worldPos + vec3(0.0, horizon_level, 0.0)) * 10.0)
+			worldPos + vec3(0.0, horizon_offset, 0.0)) * 10.0)
 	);
 	vec3 scatter = atmosphericScattering(worldPos, horizonBlend);
 	col.rgb += scatter;

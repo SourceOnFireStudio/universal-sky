@@ -44,7 +44,7 @@ void opticalDepth(float y, out vec3 sr, out vec3 sm){
 
 vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 	vec3 sr, sm;
-	opticalDepth(pos.y+horizon_level, sr, sm);
+	opticalDepth(pos.y+horizon_offset, sr, sm);
 
 	vec3 betaMie = atm_beta_mie;
 	vec3 betaRay = atm_beta_ray * atm_thickness;

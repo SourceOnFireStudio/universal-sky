@@ -4,7 +4,7 @@
 // General Settings
 uniform float exposure = 1.0;
 uniform float tonemap_level = 0.0;
-uniform float horizon_level = 0.0;
+uniform float horizon_offset = 0.0;
 
 // Sun.
 uniform vec3 sun_direction;

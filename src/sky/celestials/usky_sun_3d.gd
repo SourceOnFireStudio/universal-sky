@@ -12,4 +12,4 @@ func _on_init() -> void:
 	super()
 	body_color = Color(1, 0.7058, 0.4470)
 	body_intensity = 2.0
-	body_size = 0.005
+	body_size = 1.0

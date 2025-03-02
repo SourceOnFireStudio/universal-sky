@@ -77,6 +77,7 @@ func _on_init() -> void:
 	
 	body_size =  0.02
 	body_intensity = 1.0
+	body_color = Color.WHITE
 	lighting_color = Color(0.54, 0.7, 0.9)
 	lighting_energy = 0.3
 	mie_color = Color(0.165, 0.533, 1)

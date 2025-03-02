@@ -13,5 +13,6 @@ const float k3PI16       = 0.1193662f;
 const float kTAU         = 6.2831853f;
 const float kINV_TAU     = 0.1591549f;
 const float kE           = 2.7182818f;
+const float kPI180       = 0.017453293;
 
 #endif

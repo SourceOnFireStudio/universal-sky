@@ -1,9 +1,13 @@
 shader_type spatial;
 render_mode unshaded, cull_front, depth_draw_never, skip_vertex_transform;
+#define HIGH_QUALITY_SUN_DISK
+#define TONEMAP_ACES
 
 #include "res://addons/universal-sky/src/sky/shaders/library/usky_coords.gdshaderinc"
 #include "usky_standard_atmosphere.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/library/usky_random.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_sun.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_moon.gdshaderinc"
 
 varying vec3 v_world_pos;
 
@@ -12,9 +16,6 @@ void vertex(){
 	computeDomePosition(POSITION, customVertex, VERTEX, MODELVIEW_MATRIX, PROJECTION_MATRIX);
 	v_world_pos = (MODEL_MATRIX * customVertex).xyz;
 }
-
-#define COLOR_CORRECTION(col) col.rgb = tonemap(col.rgb, tod_exposure, tod_tonemap_level);  \
-	col.rgb += tod_apply_debanding ? interleavedGradientNoise(FRAGCOORD.xy): vec3(0.0)
 
 vec3 colorCorrection(vec3 col, vec2 fragcoord){
 	col.rgb = tonemap(col.rgb, exposure, tonemap_level);
@@ -30,7 +31,17 @@ void fragment(){
 		smoothstep(-0.1, 1.0, dot(vec3(0.0, 1.0, 0.0),
 			worldPos + vec3(0.0, horizon_offset, 0.0)) * 10.0)
 	);
+
+	// Atmosphere
 	vec3 scatter = atmosphericScattering(worldPos, horizonBlend);
+
+	// Near Space
+	vec3 nearSpace = vec3(0.0);
+	vec3 sun = sunDisk(worldPos, sun_direction, sun_size) * sun_color.rgb * sun_intensity;
+	vec4 moon = computeMoon(worldPos);
+	nearSpace += (sun.rgb * moon.a) + moon.rgb;
+
+	col.rgb += (nearSpace) * horizonBlend;
 	col.rgb += scatter;
 
 	ALBEDO = colorCorrection(col.rgb, FRAGCOORD.xy);

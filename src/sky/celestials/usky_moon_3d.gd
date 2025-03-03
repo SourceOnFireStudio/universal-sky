@@ -75,7 +75,7 @@ func _on_init() -> void:
 	sun_moon_light_curve.add_point(Vector2(1, 1), 0.0, 0.0, 0, 0)
 	sun_moon_light_curve.bake()
 	
-	body_size =  0.02
+	body_size =  1.0
 	body_intensity = 1.0
 	body_color = Color.WHITE
 	lighting_color = Color(0.54, 0.7, 0.9)

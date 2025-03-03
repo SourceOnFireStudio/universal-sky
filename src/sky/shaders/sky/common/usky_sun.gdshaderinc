@@ -7,9 +7,9 @@ float sunWithBloom(vec3 rayDir, vec3 sunDir, float size) {
     float minSunCosTheta = cos(sunSolidAngle);
 
     float cosTheta = dot(rayDir, sunDir);
-    if (cosTheta >= minSunCosTheta) 
+    if (cosTheta >= minSunCosTheta)
 		return 1.0;
-    
+
     float offset = minSunCosTheta - cosTheta;
     float gaussianBloom = exp(-offset*50000.0)*0.5;
     float invBloom = 1.0/(0.02 + offset*300.0)*0.01;

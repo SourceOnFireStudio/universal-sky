@@ -238,7 +238,6 @@ func _on_sun_direction_changed() -> void:
 		return
 	
 	if is_instance_valid(moon):
-		print("MOON")
 		_on_moon_direction_changed()
 		_update_moon_mie_intensity()
 	material.sun_direction = sun.direction
@@ -294,7 +293,6 @@ func _update_sun_mie_anisotropy() -> void:
 func _on_moon_direction_changed() -> void:
 	if not _check_material_ready() || not is_instance_valid(moon):
 		return
-	print("UPDATE_MOON_DIRECTION")
 	material.moon_direction = moon.direction
 	material.moon_phases_mul = moon.phases_mul
 	material.moon_matrix = moon.clamped_matrix

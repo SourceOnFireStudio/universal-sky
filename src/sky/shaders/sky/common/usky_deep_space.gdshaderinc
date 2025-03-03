@@ -29,8 +29,8 @@ vec3 getBackground(vec2 uv){
 
 vec3 getStarsField(vec2 uv){
 	float field = textureLod(stars_field_texture, uv, 0.0).r;
-	field = mix(field, field 
-		* saturate(sin(field * ((TIME*20.0) * stars_scintillation_speed))), 
+	field = mix(field, field
+		* saturate(sin(field * ((TIME*20.0) * stars_scintillation_speed))),
 		stars_scintillation
 	);
 	return saturate(field) * stars_field_intensity * stars_field_color.rgb;

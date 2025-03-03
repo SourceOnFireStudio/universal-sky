@@ -236,7 +236,6 @@ func _update_moon_mie_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), MOON_MIE_COLOR_PARAM, p_color
 	)
-	print(p_color)
 	emit_changed()
 
 var moon_mie_intensity: float:
@@ -249,7 +248,6 @@ func _update_moon_mie_intensity(p_intensity: float) -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), MOON_MIE_INTENSITY_PARAM, p_intensity
 	)
-	print(p_intensity)
 	emit_changed()
 
 var moon_mie_anisotropy: float:

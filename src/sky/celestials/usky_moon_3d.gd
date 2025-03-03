@@ -98,7 +98,6 @@ func _get_light_energy() -> float:
 		energy *= phases_mul
 	if is_instance_valid(sun) && is_instance_valid(sun_moon_light_curve):
 		var fade: float = (1.0 - sun.direction.y) - 0.5
-		print(sun_moon_light_curve)
 		return energy * sun_moon_light_curve.sample_baked(fade)
 	
 	return energy

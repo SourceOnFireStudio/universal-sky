@@ -39,6 +39,7 @@ void fragment(){
 	// Near Space
 	vec3 nearSpace = vec3(0.0);
 	vec3 sun = sunDisk(worldPos, sun_direction, sun_size) * sun_color.rgb * sun_intensity;
+	sun *= scatter;
 	vec4 moon = computeMoon(worldPos);
 	nearSpace += (sun.rgb * moon.a) + moon.rgb;
 

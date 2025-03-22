@@ -52,6 +52,8 @@ func draw(p_world: World3D, p_mesh: Mesh, p_material: Material) -> void:
 	RS.instance_geometry_set_cast_shadows_setting(instance, RS.SHADOW_CASTING_SETTING_OFF)
 
 func set_material(p_material: Material) -> void:
+	if not instance.is_valid():
+		return
 	RS.instance_geometry_set_material_override(instance, 
 		p_material.get_rid() if is_instance_valid(p_material) else RID())
 

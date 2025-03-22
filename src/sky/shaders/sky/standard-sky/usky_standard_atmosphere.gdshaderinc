@@ -62,7 +62,7 @@ vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 
 	vec3 BRT = betaRay * rayleighPhase;
 	vec3 BMT = betaMie * miePhasePartial(sunMu,
-		atm_sun_partial_mie_phase) * horizonBlend;
+		atm_sun_partial_mie_phase);
 
 	BMT *= atm_sun_mie_intensity * atm_sun_mie_color.rgb;
 	vec3 BRMT = (BRT+BMT) / (betaRay + betaMie);

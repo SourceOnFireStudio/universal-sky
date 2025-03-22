@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode unshaded, cull_front, depth_draw_never, skip_vertex_transform;
 #define HIGH_QUALITY_SUN_DISK
-#define TONEMAP_ACES
+//#define TONEMAP_ACES
 
 #include "res://addons/universal-sky/src/sky/shaders/library/usky_coords.gdshaderinc"
 #include "usky_standard_atmosphere.gdshaderinc"
@@ -19,8 +19,12 @@ void vertex(){
 }
 
 vec3 colorCorrection(vec3 col, vec2 fragcoord){
+	#ifdef ENABLE_TONEMAP
 	col.rgb = tonemap(col.rgb, exposure, tonemap_level);
+	#endif
+	#ifdef ENABLE_DEBANDING
 	col.rgb += interleavedGradientNoise(fragcoord.xy);
+	#endif
 	return col.rgb;
 }
 

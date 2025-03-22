@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode unshaded, cull_front, depth_draw_never, skip_vertex_transform;
 #define HIGH_QUALITY_SUN_DISK
 //#define TONEMAP_ACES
+#define ENABLE_TONEMAP
 
 #include "res://addons/universal-sky/src/sky/shaders/library/usky_coords.gdshaderinc"
 #include "usky_standard_atmosphere.gdshaderinc"

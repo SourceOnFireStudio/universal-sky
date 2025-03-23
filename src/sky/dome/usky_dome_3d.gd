@@ -48,6 +48,19 @@ var default_dome_color:= Color(0.166, 0.245, 0.379):
 			_dome_material.get_rid(), &"background_color", default_dome_color
 		)
 
+@export
+var follow_camera: bool = false:
+	get: return follow_camera
+	set(value):
+		follow_camera = value
+		notify_property_list_changed()
+
+@export
+var camera: Camera3D:
+	get: return camera
+	set(value):
+		camera = value
+
 @export_group("Resources")
 @export
 var material: USkyMaterialBase = null:
@@ -176,6 +189,16 @@ func _get_configuration_warnings() -> PackedStringArray:
 		return ["Material unassigned"]
 	
 	return []
+
+func _validate_property(property: Dictionary) -> void:
+	if not follow_camera && property.name == "camera":
+		property.usage &= ~PROPERTY_USAGE_EDITOR
+
+func _process(delta: float) -> void:
+	if not follow_camera and not is_instance_valid(camera):
+		return
+	position = camera.position
+
 #endregion
 
 #region Celestials Signal Connection

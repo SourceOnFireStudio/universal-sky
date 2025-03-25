@@ -52,32 +52,38 @@ func draw(p_world: World3D, p_mesh: Mesh, p_material: Material) -> void:
 	RS.instance_geometry_set_cast_shadows_setting(instance, RS.SHADOW_CASTING_SETTING_OFF)
 
 func set_material(p_material: Material) -> void:
-	if not instance.is_valid():
+	if not check_instance:
 		return
 	RS.instance_geometry_set_material_override(instance, 
 		p_material.get_rid() if is_instance_valid(p_material) else RID())
 
 func set_visible(p_value: bool) -> void:
+	if not check_instance:
+		return
 	RS.instance_set_visible(instance, p_value)
 
 func set_layers(p_layers: int) -> void:
-	if check_instance:
-		RS.instance_set_layer_mask(instance, p_layers)
+	if not check_instance:
+		return
+	RS.instance_set_layer_mask(instance, p_layers)
 #endregion
 
 #region Transform
 func set_origin(p_value: Vector3) -> void:
-	if check_instance:
-		_transform.origin = p_value
-		RS.instance_set_transform(instance, _transform)
+	if not check_instance:
+		return
+	_transform.origin = p_value
+	RS.instance_set_transform(instance, _transform)
 
 func set_origin_offset(p_value: Vector3) -> void:
-	if check_instance:
-		_transform.origin += p_value
-		RS.instance_set_transform(instance, _transform)
+	if not check_instance:
+		return
+	_transform.origin += p_value
+	RS.instance_set_transform(instance, _transform)
 
 func set_rotated(p_axis: Vector3, p_pi: float) -> void:
-	if check_instance:
-		_transform.basis = _transform.basis.rotated(p_axis, p_pi)
-		RS.instance_set_transform(instance, _transform)
+	if not check_instance:
+		return
+	_transform.basis = _transform.basis.rotated(p_axis, p_pi)
+	RS.instance_set_transform(instance, _transform)
 #endregion

@@ -1,5 +1,6 @@
-shader_type spatial;
-render_mode unshaded, cull_front, depth_draw_never, skip_vertex_transform;
+shader_type sky;
+render_mode use_debanding, use_quarter_res_pass;
+
 #define HIGH_QUALITY_SUN_DISK
 //#define TONEMAP_ACES
 #define ENABLE_TONEMAP
@@ -11,43 +12,32 @@ render_mode unshaded, cull_front, depth_draw_never, skip_vertex_transform;
 #include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_moon.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_deep_space.gdshaderinc"
 
-varying vec3 v_world_pos;
-
-void vertex(){
-	vec4 customVertex;
-	computeDomePosition(POSITION, customVertex, VERTEX, MODELVIEW_MATRIX, PROJECTION_MATRIX);
-	v_world_pos = (MODEL_MATRIX * customVertex).xyz;
-}
-
 vec3 colorCorrection(vec3 col, vec2 fragcoord){
 	#ifdef ENABLE_TONEMAP
 	col.rgb = tonemap(col.rgb, exposure, tonemap_level);
 	#endif
-	#ifdef ENABLE_DEBANDING
-	col.rgb += interleavedGradientNoise(fragcoord.xy);
-	#endif
-	return col.rgb;
+	return (col.rgb);
 }
 
-void fragment(){
-	vec4 col = vec4(0.0);
-	vec3 worldPos = normalize(v_world_pos);
-	vec3 horizonBlend = mix(
-		vec3(0.0), vec3(1.0),
-		smoothstep(-0.1, 1.0, dot(vec3(0.0, 1.0, 0.0),
-			worldPos + vec3(0.0, horizon_offset, 0.0)) * 10.0)
+void sky(){
+	vec4 finalColor = vec4(0.0);
+	vec3 worldPos = EYEDIR.xyz;
+
+	vec3 horizonBlend = mix(vec3(0.0), vec3(1.0), smoothstep(-0.1, 1.0, dot(vec3(0.0, 1.0, 0.0),
+		worldPos + vec3(0.0, horizon_offset, 0.0)) * 10.0)
 	);
 
 	// Atmosphere
 	vec3 scatter = atmosphericScattering(worldPos, horizonBlend);
 
-	// Near Space
+	// Near space
 	vec3 nearSpace = vec3(0.0);
 	vec3 sun = sunDisk(worldPos, sun_direction, sun_size) * sun_color.rgb * sun_intensity;
 	sun *= scatter;
 	vec4 moon = computeMoon(worldPos);
 	nearSpace += (sun.rgb * moon.a) + moon.rgb;
 
+	// Deep space
 	vec3 deepSpace = vec3(0.0);
 	vec3 deepSpaceCoords = getDeepSpaceCoords(worldPos);
 	deepSpace += getBackground(equirectUV(deepSpaceCoords));
@@ -55,8 +45,21 @@ void fragment(){
 	deepSpace *= moon.a;
 	deepSpace.rgb *= saturate(1.0-(sun_direction.y+0.85));
 
-	col.rgb += (deepSpace + nearSpace) * horizonBlend;
-	col.rgb += scatter;
+	// Apply deep and near space.
+	finalColor.rgb += (deepSpace + nearSpace) * horizonBlend;
+	finalColor.rgb += scatter;
 
-	ALBEDO = colorCorrection(col.rgb, FRAGCOORD.xy);
+	// Apply color correction.
+	finalColor.rgb = colorCorrection(finalColor.rgb, FRAGCOORD.xy);
+
+	if(AT_QUARTER_RES_PASS && AT_CUBEMAP_PASS){
+		COLOR = finalColor.rgb;
+		ALPHA = 1.0;
+	}
+	else if(AT_CUBEMAP_PASS){
+		COLOR = QUARTER_RES_COLOR.rgb;
+	}
+	else{
+		COLOR = finalColor.rgb;
+	}
 }

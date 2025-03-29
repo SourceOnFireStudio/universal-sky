@@ -1,6 +1,6 @@
 @tool
 extends Node
-class_name UniversalSky
+class_name USky3D
 
 @export_group("Resources")
 @export

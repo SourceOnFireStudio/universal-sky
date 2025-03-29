@@ -1,5 +1,5 @@
 # Universal Sky Plugin
-Dynamic skydome and tod plugin for godot 4.4
+Dynamic sky and tod plugin for godot 4.4
 ---------------------------------------------
 
 ## Status:

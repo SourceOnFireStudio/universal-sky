@@ -39,8 +39,8 @@ const NIGHT_TINT_PARAM:= &"atm_night_tint"
 const DEEP_SPACE_MATRIX_PARAM:= &"deep_space_matrix"
 const DEEP_SPACE_BACKGROUND_COLOR_PARAM:= &"background_color"
 const DEEP_SPACE_BACKGROUND_TEXTURE_PARAM:= &"background_texture"
-const DEEP_SPACE_BACKGROUND_INTENSITY:= &"background_intensity"
-const DEEP_SPACE_BACKGROUND_CONTRAST:= &"background_contrast"
+const DEEP_SPACE_BACKGROUND_INTENSITY_PARAM:= &"background_intensity"
+const DEEP_SPACE_BACKGROUND_CONTRAST_PARAM:= &"background_contrast"
 const STARS_FIELD_COLOR_PARAM:= &"stars_field_color"
 const STARS_FIELD_INTENSITY_PARAM:= &"stars_field_intensity"
 const STARS_FIELD_TEXTURE_PARAM:= &"stars_field_texture"
@@ -267,7 +267,7 @@ var background_intensity: float = 0.3:
 	set(value):
 		background_intensity = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), DEEP_SPACE_BACKGROUND_INTENSITY, background_intensity
+			_material.get_rid(), DEEP_SPACE_BACKGROUND_INTENSITY_PARAM, background_intensity
 		)
 		emit_changed()
 
@@ -277,7 +277,7 @@ var background_contrast: float = 0.561:
 	set(value):
 		background_contrast = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), DEEP_SPACE_BACKGROUND_CONTRAST, background_contrast
+			_material.get_rid(), DEEP_SPACE_BACKGROUND_CONTRAST_PARAM, background_contrast
 		)
 		emit_changed()
 

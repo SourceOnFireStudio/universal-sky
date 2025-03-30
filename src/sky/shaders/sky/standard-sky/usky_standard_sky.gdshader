@@ -1,5 +1,5 @@
 shader_type sky;
-render_mode use_debanding, use_quarter_res_pass;
+render_mode use_quarter_res_pass;
 
 #define HIGH_QUALITY_SUN_DISK
 //#define TONEMAP_ACES
@@ -12,10 +12,14 @@ render_mode use_debanding, use_quarter_res_pass;
 #include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_moon.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_deep_space.gdshaderinc"
 
+uniform float debanding_level;
+
 vec3 colorCorrection(vec3 col, vec2 fragcoord){
 	#ifdef ENABLE_TONEMAP
 	col.rgb = tonemap(col.rgb, exposure, tonemap_level);
 	#endif
+
+	col.rgb += mix(vec3(0.0), interleavedGradientNoise(fragcoord), debanding_level);
 	return (col.rgb);
 }
 

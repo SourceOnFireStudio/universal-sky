@@ -18,6 +18,7 @@ const _DEFAULT_STARS_FIELD_TEXTURE:= preload(
 const TONEMAP_LEVEL_PARAM:= &"tonemap_level"
 const EXPOSURE_PARAM:= &"exposure"
 const HORIZON_OFFSET_PARAM:= &"horizon_offset"
+const DEBANDING_LEVEL_PARAM:= &"debanding_level"
 
 const ATM_CONTRAST_PARAM:= &"atm_contrast"
 const ATM_SUN_E_PARAM:= &"atm_sunE"
@@ -70,6 +71,16 @@ var tonemap_level: float = 0.0:
 		tonemap_level = value
 		RenderingServer.material_set_param(
 			material.get_rid(), TONEMAP_LEVEL_PARAM, tonemap_level
+		)
+		emit_changed()
+
+@export_range(0.0, 1.0)
+var debanding_level: float = 1.0:
+	get: return debanding_level
+	set(value):
+		debanding_level = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DEBANDING_LEVEL_PARAM, debanding_level
 		)
 		emit_changed()
 
@@ -360,6 +371,7 @@ func _on_init() -> void:
 	material.shader = SHADER
 	
 	tonemap_level = tonemap_level
+	debanding_level = debanding_level
 	exposure = exposure
 	horizon_offset = horizon_offset
 	

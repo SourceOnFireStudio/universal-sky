@@ -6,6 +6,8 @@
 // Background.
 uniform sampler2D background_texture: source_color;
 uniform vec4 background_color: source_color;
+uniform float background_intensity;
+uniform float background_contrast;
 
 // Stars Field.
 uniform sampler2D stars_field_texture: source_color;
@@ -23,8 +25,8 @@ vec3 getDeepSpaceCoords(vec3 pos){
 vec3 getBackground(vec2 uv){
 	return contrastLevel(
 		textureLod(background_texture, uv, 0.0).rgb * background_color.rgb,
-			background_color.a
-	);
+			background_contrast
+	) * background_intensity;
 }
 
 vec3 getStarsField(vec2 uv){

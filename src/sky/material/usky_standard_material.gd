@@ -38,6 +38,8 @@ const NIGHT_TINT_PARAM:= &"atm_night_tint"
 const DEEP_SPACE_MATRIX_PARAM:= &"deep_space_matrix"
 const DEEP_SPACE_BACKGROUND_COLOR_PARAM:= &"background_color"
 const DEEP_SPACE_BACKGROUND_TEXTURE_PARAM:= &"background_texture"
+const DEEP_SPACE_BACKGROUND_INTENSITY:= &"background_intensity"
+const DEEP_SPACE_BACKGROUND_CONTRAST:= &"background_contrast"
 const STARS_FIELD_COLOR_PARAM:= &"stars_field_color"
 const STARS_FIELD_INTENSITY_PARAM:= &"stars_field_intensity"
 const STARS_FIELD_TEXTURE_PARAM:= &"stars_field_texture"
@@ -210,7 +212,7 @@ var atm_ground_color:= Color(0.543, 0.543, 0.543): # Color(0.204, 0.345, 0.467):
 		emit_changed()
 #endregion
 
-#region General Settings
+#region Deep Space
 @export_group("Deep Space")
 @export 
 var deep_space_euler:= Vector3(-0.752, -2.56, 0.0):
@@ -239,7 +241,7 @@ var _deep_space_basis:= Basis()
 
 @export_subgroup('Background')
 @export
-var background_color:= Color(0.238, 0.238, 0.238, 0.561):
+var background_color:= Color(1.0, 1.0, 1.0, 1.0):
 	get: return background_color
 	set(value):
 		background_color = value
@@ -248,6 +250,25 @@ var background_color:= Color(0.238, 0.238, 0.238, 0.561):
 		)
 		emit_changed()
 
+@export
+var background_intensity: float = 0.3:
+	get: return background_intensity
+	set(value):
+		background_intensity = value
+		RenderingServer.material_set_param(
+			_material.get_rid(), DEEP_SPACE_BACKGROUND_INTENSITY, background_intensity
+		)
+		emit_changed()
+
+@export_range(0.0, 1.0)
+var background_contrast: float = 0.561:
+	get: return background_contrast
+	set(value):
+		background_contrast = value
+		RenderingServer.material_set_param(
+			_material.get_rid(), DEEP_SPACE_BACKGROUND_CONTRAST, background_contrast
+		)
+		emit_changed()
 
 @export var use_custom_bg_texture: bool = false:
 	get: return use_custom_bg_texture
@@ -257,6 +278,8 @@ var background_color:= Color(0.238, 0.238, 0.238, 0.561):
 			background_texture = background_texture
 		else:
 			background_texture = _DEFAULT_BACKGROUND_TEXTURE
+		
+		notify_property_list_changed()
 
 @export
 var background_texture: Texture = null:
@@ -296,6 +319,8 @@ var use_custom_stars_field_texture: bool = false:
 			stars_field_texture = stars_field_texture
 		else:
 			stars_field_texture = _DEFAULT_STARS_FIELD_TEXTURE
+		
+		notify_property_list_changed()
 
 @export
 var stars_field_texture: Texture = null:
@@ -361,6 +386,8 @@ func _on_init() -> void:
 	background_color = background_color
 	use_custom_bg_texture = use_custom_bg_texture
 	background_texture = background_texture
+	background_intensity = background_intensity
+	background_contrast = background_contrast
 	
 	stars_field_color = stars_field_color
 	stars_field_intensity = stars_field_intensity
@@ -376,6 +403,13 @@ func _connect_changed_atm_day_gradient() -> void:
 func _disconnect_changed_atm_day_gradient() -> void:
 	if atm_day_gradient.changed.is_connected(_set_atm_day_tint):
 		atm_day_gradient.changed.disconnect(_set_atm_day_tint)
+
+
+func _validate_property(property: Dictionary) -> void:
+	if not use_custom_bg_texture && property.name == "background_texture":
+		property.usage &= ~PROPERTY_USAGE_EDITOR
+	if not use_custom_stars_field_texture && property.name == "stars_field_texture":
+		property.usage &= ~PROPERTY_USAGE_EDITOR
 
 #endregion
 

@@ -8,12 +8,7 @@ const _DEFAULT_MOON_MAP_TEXTURE:= preload(
 )
 #endregion
 
-@export
-var enable_mie_phases: bool = false:
-	get: return enable_mie_phases
-	set(value):
-		enable_mie_phases = value
-
+@export_group("Texture")
 @export
 var use_custom_texture: bool = false:
 	get: return use_custom_texture
@@ -34,13 +29,6 @@ var texture: Texture = null:
 
 @export_group("Light Source")
 @export
-var enable_light_moon_phases: bool = false:
-	get: return enable_light_moon_phases
-	set(value):
-		enable_light_moon_phases = value
-		_update_light_energy()
-
-@export
 var sun: USkyCelestialBody3D:
 	get: return sun
 	set(value):
@@ -50,6 +38,21 @@ var sun: USkyCelestialBody3D:
 		else:
 			_disconnect_sun_signals()
 			sun = value
+
+
+@export_group("Phases")
+@export
+var enable_mie_phases: bool = false:
+	get: return enable_mie_phases
+	set(value):
+		enable_mie_phases = value
+
+@export
+var enable_light_moon_phases: bool = false:
+	get: return enable_light_moon_phases
+	set(value):
+		enable_light_moon_phases = value
+		_update_light_energy()
 
 var phases_mul: float:
 	get: 

@@ -103,6 +103,8 @@ func _notification(what: int) -> void:
 		NOTIFICATION_ENTER_TREE:
 			material = material
 			enviro_container = enviro_container
+			sky_process_mode = sky_process_mode
+			sky_radiance_size = sky_radiance_size
 		NOTIFICATION_EXIT_TREE:
 			if is_instance_valid(_enviro):
 				_enviro.sky.sky_material = null

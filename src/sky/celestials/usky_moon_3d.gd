@@ -82,8 +82,8 @@ func _on_init() -> void:
 	body_color = Color.WHITE
 	lighting_color = Color(0.54, 0.7, 0.9)
 	lighting_energy = 0.3
-	mie_color = Color(0.165, 0.533, 1)
-	mie_intensity = 0.5
+	mie_color = Color(0.623, 0.786, 1.0)
+	mie_intensity = 1.0
 	
 	# Initialize moon params.
 	use_custom_texture = use_custom_texture

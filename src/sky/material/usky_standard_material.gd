@@ -185,7 +185,7 @@ var atm_day_gradient: Gradient:
 
 @export_subgroup("Night", "atm_")
 @export
-var atm_night_intensity: float = 1.0:
+var atm_night_intensity: float = 0.345:
 	get: return atm_night_intensity
 	set(value):
 		atm_night_intensity = value
@@ -202,7 +202,7 @@ var atm_enable_night_scattering: bool = false:
 		emit_changed()
 
 @export
-var atm_night_tint:= Color(0.254902, 0.337255, 0.447059):
+var atm_night_tint:= Color(0.57, 0.754, 1.0):
 	get: return atm_night_tint
 	set(value):
 		atm_night_tint = value

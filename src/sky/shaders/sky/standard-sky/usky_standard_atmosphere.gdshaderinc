@@ -66,9 +66,11 @@ vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 
 	// Night
 	float moonMu = dot(moon_direction, pos);
-	vec3 nLin = (1.0 - extinction) * atm_night_tint.rgb;
+	vec3 nLin = (1.0 - extinction) ;
 	nLin += miePhaseInv(moonMu, atm_moon_mie_anisotropy)
-		* atm_moon_mie_color.rgb * (atm_moon_mie_intensity * 0.001) * horizonBlend;
+		* atm_moon_mie_color.rgb * (atm_moon_mie_intensity * 0.005) * horizonBlend;
+
+	nLin *= atm_night_tint.rgb;
 
 	return Lin + nLin;
 }

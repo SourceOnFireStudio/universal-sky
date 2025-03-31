@@ -39,7 +39,6 @@ var sun: USkyCelestialBody3D:
 			_disconnect_sun_signals()
 			sun = value
 
-
 @export_group("Phases")
 @export
 var enable_mie_phases: bool = false:

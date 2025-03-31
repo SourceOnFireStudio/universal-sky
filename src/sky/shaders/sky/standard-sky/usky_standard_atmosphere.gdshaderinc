@@ -21,18 +21,12 @@ uniform vec3 atm_beta_ray;
 
 // Mie.
 uniform vec3 atm_beta_mie;
-uniform vec3 atm_sun_partial_mie_phase;
-uniform vec3 atm_moon_partial_mie_phase;
 uniform vec4 atm_ground_color: source_color = vec4(0.255, 0.337, 0.447, 1.0);
 
 uniform float sun_uMuS;
 
 const float kRayleighZenithLength = 8.4e3;
 const float kMieZenithLength = 1.25e3;
-
-float miePhasePartial(float mu, vec3 partial){
-	return kPI4 * partial.x * (pow(partial.y - partial.z * mu, -1.5));
-}
 
 // Simplified and with added ground color.
 void opticalDepth(float y, out vec3 sr, out vec3 sm){
@@ -61,8 +55,7 @@ vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 	float rayleighPhase = rayleighPhase(sunMu);
 
 	vec3 BRT = betaRay * rayleighPhase;
-	vec3 BMT = betaMie * miePhasePartial(sunMu,
-		atm_sun_partial_mie_phase);
+	vec3 BMT = betaMie *  miePhaseInv(sunMu, atm_sun_mie_anisotropy);
 
 	BMT *= atm_sun_mie_intensity * atm_sun_mie_color.rgb;
 	vec3 BRMT = (BRT+BMT) / (betaRay + betaMie);
@@ -74,9 +67,10 @@ vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 	// Night
 	float moonMu = dot(moon_direction, pos);
 	vec3 nLin = (1.0 - extinction) * atm_night_tint.rgb;
-	nLin += miePhasePartial(moonMu, atm_moon_partial_mie_phase)
+	nLin += miePhaseInv(moonMu, atm_moon_mie_anisotropy)
 		* atm_moon_mie_color.rgb * (atm_moon_mie_intensity * 0.001) * horizonBlend;
 
 	return Lin + nLin;
 }
+
 #endif

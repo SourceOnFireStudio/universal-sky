@@ -18,7 +18,6 @@ vec3 colorCorrection(vec3 col, vec2 fragcoord){
 	#ifdef ENABLE_TONEMAP
 	col.rgb = tonemap(col.rgb, exposure, tonemap_level);
 	#endif
-
 	col.rgb += mix(vec3(0.0), interleavedGradientNoise(fragcoord), debanding_level);
 	return (col.rgb);
 }

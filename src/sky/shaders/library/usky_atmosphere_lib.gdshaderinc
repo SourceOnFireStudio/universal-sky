@@ -20,8 +20,8 @@ float betaMie(float mie, float turbidity){
 // See: https://www.shadertoy.com/view/msXXDS
 float miePhaseInv(float mu, float g){
 	float g2 = g*g;
-	float d = (1.0 + g2 + 2.0 * g * mu);
-	return kINV_PI4 * (1.0 - g2) /  d * sqrt(d);
+	float d = 1.0 + g2 + 2.0 * g * -mu;
+	return 5.0 * (1.0 - g2) /  (d * sqrt(d));
 }
 
 #endif

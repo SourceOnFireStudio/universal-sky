@@ -30,8 +30,6 @@ const ATM_BETA_MIE_PARAM:= &"atm_beta_mie"
 const ATM_GROUND_COLOR_PARAM:= &"atm_ground_color"
 
 const SUN_UMUS_PARAM:= &"sun_uMuS"
-const SUN_PARTIAL_MIE_PHASE_PARAM:= &"atm_sun_partial_mie_phase"
-const MOON_PARTIAL_MIE_PHASE_PARAM:= &"atm_moon_partial_mie_phase"
 
 const DAY_TINT_PARAM:= &"atm_day_tint"
 const NIGHT_TINT_PARAM:= &"atm_night_tint"
@@ -467,33 +465,9 @@ func compute_beta_mie(mie: float, turbidity: float) -> Vector3:
 	var k: float = 434e-6
 	return Vector3.ONE * mie * turbidity * k
 
-func get_partial_mie_phase(g: float) -> Vector3:
-	var g2 = g * g
-	var ret: Vector3
-	ret.x = ((1.0 - g2) / (2.0 + g2))
-	ret.y = 1.0 + g2
-	ret.z = 2.0 * g
-	return ret
-
 func _set_sun_uMuS() -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), SUN_UMUS_PARAM, get_celestial_uMus(sun_direction)
-	)
-	emit_changed()
-
-func _update_sun_mie_anisotropy(p_anisotropy: float) -> void:
-	p_anisotropy = clamp(p_anisotropy, 0.0, 0.999)
-	var partial:= get_partial_mie_phase(p_anisotropy)
-	RenderingServer.material_set_param(
-		material.get_rid(), SUN_PARTIAL_MIE_PHASE_PARAM, partial
-	)
-	emit_changed()
-
-func _update_moon_mie_anisotropy(p_anisotropy: float) -> void:
-	p_anisotropy = clamp(p_anisotropy, 0.0, 0.999)
-	var partial:= get_partial_mie_phase(p_anisotropy)
-	RenderingServer.material_set_param(
-		material.get_rid(), MOON_PARTIAL_MIE_PHASE_PARAM, partial
 	)
 	emit_changed()
 

@@ -21,7 +21,7 @@ const HORIZON_OFFSET_PARAM:= &"horizon_offset"
 const DEBANDING_LEVEL_PARAM:= &"debanding_level"
 
 const ATM_CONTRAST_PARAM:= &"atm_contrast"
-const ATM_SUN_E_PARAM:= &"atm_sunE"
+const ATM_DAY_INTENSITY_PARAM:= &"atm_day_intensity"
 const ATM_RAYLEIGH_LEVEL_PARAM:= &"atm_rayleigh_level"
 const ATM_THICKNESS_PARAM:= &"atm_thickness"
 
@@ -162,12 +162,12 @@ var atm_turbidity: float = 0.001:
 
 @export_subgroup("Day", "atm_")
 @export
-var atm_sun_intensity: float = 15.0:
-	get: return atm_sun_intensity
+var atm_day_intensity: float = 15.0:
+	get: return atm_day_intensity
 	set(value):
-		atm_sun_intensity = value
+		atm_day_intensity = value
 		RenderingServer.material_set_param(
-			material.get_rid(), ATM_SUN_E_PARAM, atm_sun_intensity
+			material.get_rid(), ATM_DAY_INTENSITY_PARAM, atm_day_intensity
 		)
 		emit_changed()
 
@@ -381,7 +381,7 @@ func _on_init() -> void:
 	atm_mie = atm_mie
 	atm_turbidity = atm_turbidity
 	
-	atm_sun_intensity = atm_sun_intensity
+	atm_day_intensity = atm_day_intensity
 	atm_day_gradient = atm_day_gradient
 	
 	atm_night_intensity = atm_night_intensity

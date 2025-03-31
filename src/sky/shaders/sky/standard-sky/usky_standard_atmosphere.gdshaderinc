@@ -11,7 +11,7 @@
 // This atmosphere has some hacks.
 
 // Rayleigh.
-uniform float atm_sunE = 15.0;
+uniform float atm_day_intensity = 15.0;
 uniform float atm_contrast = 0.1;
 uniform float atm_thickness = 1.0;
 uniform float atm_rayleigh_level = 1.0;
@@ -61,7 +61,7 @@ vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 	vec3 BRMT = (BRT+BMT) / (betaRay + betaMie);
 	BRMT = mix(BRMT, BRMT * (1.0 - extinction), atm_contrast);
 
-	vec3 Lin = atm_sunE * (BRMT * finalExtc) * saturate(sun_uMuS -0.2);
+	vec3 Lin = atm_day_intensity * (BRMT * finalExtc) * saturate(sun_uMuS -0.2);
 	Lin *= atm_day_tint.rgb;
 
 	// Night

@@ -260,7 +260,7 @@ var background_color:= Color(1.0, 1.0, 1.0, 1.0):
 		emit_changed()
 
 @export
-var background_intensity: float = 0.3:
+var background_intensity: float = 0.1:
 	get: return background_intensity
 	set(value):
 		background_intensity = value

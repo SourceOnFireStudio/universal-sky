@@ -144,12 +144,14 @@ func _update_celestials_data() -> void:
 
 func _update_sun_data() -> void:
 	_on_sun_direction_changed()
+	_on_sun_intensity_multiplier_changed()
 	for i in range(0, 3):
 		_on_sun_value_changed(i)
 		_on_sun_mie_value_changed(i)
 
 func _update_moon_data() -> void:
 	_on_moon_direction_changed()
+	_on_moon_intensity_multiplier_changed()
 	for i in range(0, 3):
 		_on_moon_mie_value_changed(i)
 	for i in range(0, 4):

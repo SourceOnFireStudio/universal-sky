@@ -57,7 +57,6 @@ void sky(){
 
 	if(AT_QUARTER_RES_PASS && AT_CUBEMAP_PASS){
 		COLOR = finalColor.rgb;
-		ALPHA = 1.0;
 	}
 	else if(AT_CUBEMAP_PASS){
 		COLOR = QUARTER_RES_COLOR.rgb;

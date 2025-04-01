@@ -21,14 +21,6 @@ signal value_changed(type)
 signal mie_value_changed(type)
 #endregion
 
-@export_group("Direction")
-@export
-var use_global_direction: bool = false:
-	get: return use_global_direction
-	set(value):
-		use_global_direction = value
-		emit_signal(DIRECTION_CHANGED)
-
 @export_group("Body")
 @export
 var body_color:= Color.BISQUE:
@@ -111,7 +103,7 @@ var lighting_energy_curve: Curve = null:
 #endregion
 
 var direction: Vector3:
-	get: return -((global_basis if use_global_direction else basis) * Vector3.FORWARD)
+	get: return -(basis * Vector3.FORWARD)
 
 func _init() -> void:
 	_on_init()

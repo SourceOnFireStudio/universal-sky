@@ -242,7 +242,7 @@ var deep_space_quat:= Quaternion.IDENTITY:
 		_deep_space_basis = Basis(value)
 		#__deep_space_euler = _deep_space_basis.get_euler()
 		RenderingServer.material_set_param(
-			_material.get_rid(), DEEP_SPACE_MATRIX_PARAM, _deep_space_basis
+			material.get_rid(), DEEP_SPACE_MATRIX_PARAM, _deep_space_basis
 		)
 		emit_changed()
 
@@ -255,7 +255,7 @@ var background_color:= Color(1.0, 1.0, 1.0, 1.0):
 	set(value):
 		background_color = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), DEEP_SPACE_BACKGROUND_COLOR_PARAM, background_color
+			material.get_rid(), DEEP_SPACE_BACKGROUND_COLOR_PARAM, background_color
 		)
 		emit_changed()
 
@@ -265,7 +265,7 @@ var background_intensity: float = 0.1:
 	set(value):
 		background_intensity = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), DEEP_SPACE_BACKGROUND_INTENSITY_PARAM, background_intensity
+			material.get_rid(), DEEP_SPACE_BACKGROUND_INTENSITY_PARAM, background_intensity
 		)
 		emit_changed()
 
@@ -275,7 +275,7 @@ var background_contrast: float = 0.561:
 	set(value):
 		background_contrast = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), DEEP_SPACE_BACKGROUND_CONTRAST_PARAM, background_contrast
+			material.get_rid(), DEEP_SPACE_BACKGROUND_CONTRAST_PARAM, background_contrast
 		)
 		emit_changed()
 
@@ -295,7 +295,7 @@ var background_texture: Texture = null:
 	get: return background_texture
 	set(value):
 		background_texture = value
-		_material.set_shader_parameter(DEEP_SPACE_BACKGROUND_TEXTURE_PARAM, background_texture)
+		material.set_shader_parameter(DEEP_SPACE_BACKGROUND_TEXTURE_PARAM, background_texture)
 		emit_changed()
 
 @export_subgroup('StarsField')
@@ -305,7 +305,7 @@ var stars_field_color:= Color.WHITE:
 	set(value):
 		stars_field_color = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), STARS_FIELD_COLOR_PARAM, stars_field_color
+			material.get_rid(), STARS_FIELD_COLOR_PARAM, stars_field_color
 		)
 		emit_changed()
 
@@ -315,7 +315,7 @@ var stars_field_intensity: float = 1.0:
 	set(value):
 		stars_field_intensity = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), STARS_FIELD_INTENSITY_PARAM, stars_field_intensity
+			material.get_rid(), STARS_FIELD_INTENSITY_PARAM, stars_field_intensity
 		)
 		emit_changed()
 
@@ -336,7 +336,7 @@ var stars_field_texture: Texture = null:
 	get: return stars_field_texture
 	set(value):
 		stars_field_texture = value
-		_material.set_shader_parameter(STARS_FIELD_TEXTURE_PARAM, stars_field_texture)
+		material.set_shader_parameter(STARS_FIELD_TEXTURE_PARAM, stars_field_texture)
 		emit_changed()
 
 @export_range(0.0, 1.0)
@@ -345,7 +345,7 @@ var stars_scintillation: float = 0.75:
 	set(value):
 		stars_scintillation = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), STARS_SCINTILLATION_PARAM, stars_scintillation
+			material.get_rid(), STARS_SCINTILLATION_PARAM, stars_scintillation
 		)
 		emit_changed()
 
@@ -355,7 +355,7 @@ var stars_scintillation_speed: float = 1.0:
 	set(value):
 		stars_scintillation_speed = value
 		RenderingServer.material_set_param(
-			_material.get_rid(), STARS_SCINTILLATION_SPEED_PARAM, stars_scintillation_speed
+			material.get_rid(), STARS_SCINTILLATION_SPEED_PARAM, stars_scintillation_speed
 		)
 		emit_changed()
 #endregion

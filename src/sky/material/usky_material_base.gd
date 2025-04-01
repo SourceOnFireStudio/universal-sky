@@ -36,7 +36,8 @@ func _init() -> void:
 	_on_init()
 
 func _on_init() -> void:
-	_material.render_priority = -128
+	#sky_material = ShaderMaterial.new()
+	#_material.render_priority = -128
 	_initialize_default_celestial_values()
 
 # Avoid black sky when creating new material without celestial bodies.
@@ -45,6 +46,7 @@ func _initialize_default_celestial_values():
 	set_default_moon_values()
 
 func set_default_sun_values() -> void:
+	sun_intensity_multiplier = 1.0
 	_update_sun_direction(Vector3.ZERO)
 	_update_sun_size(0.5)
 	_update_sun_intensity(2.0)
@@ -52,9 +54,9 @@ func set_default_sun_values() -> void:
 	_update_sun_mie_color(Color.WHITE)
 	_update_sun_mie_intensity(1.0)
 	_update_sun_mie_anisotropy(0.8)
-	_update_sun_intensity_multiplier(1.0)
 
 func set_default_moon_values() -> void:
+	moon_intensity_multiplier = 1.0
 	_update_moon_direction(Vector3.ZERO)
 	_update_moon_size(1.0)
 	_update_moon_intensity(0.5)
@@ -63,7 +65,6 @@ func set_default_moon_values() -> void:
 	_update_moon_mie_color(Color.WHITE)
 	_update_moon_mie_intensity(1.0)
 	_update_moon_mie_anisotropy(0.8)
-	_update_moon_intensity_multiplier(1.0)
 
 func material_is_valid() -> bool:
 	return false

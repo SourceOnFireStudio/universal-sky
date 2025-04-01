@@ -19,7 +19,15 @@ const MIE_VALUE_CHANGED:= &"mie_value_changed"
 signal direction_changed()
 signal value_changed(type)
 signal mie_value_changed(type)
+signal intensity_multiplier_changed
 #endregion
+
+@export
+var intensity_multiplier: float = 1.0:
+	get: return intensity_multiplier
+	set(value):
+		intensity_multiplier = value
+		_on_intensity_multiplier()
 
 @export_group("Body")
 @export
@@ -121,12 +129,17 @@ func _on_init() -> void:
 	lighting_gradient = lighting_gradient
 	lighting_energy = lighting_energy
 	lighting_energy_curve = lighting_energy_curve
+	intensity_multiplier = intensity_multiplier
 
 func _on_enter_tree() -> void:
 	pass
 
 func _on_exit_tree() -> void:
 	pass
+
+func _on_intensity_multiplier() -> void:
+	emit_signal("intensity_multiplier_changed")
+	_update_light_energy()
 
 func _update_params() -> void:
 	_update_light_color()
@@ -142,7 +155,7 @@ func _update_light_color() -> void:
 		light_color = lighting_color
 
 func _update_light_energy() -> void:
-	light_energy = _get_light_energy()
+	light_energy = _get_light_energy() * intensity_multiplier
 
 func _get_light_energy() -> float:
 	if lighting_energy_curve != null:

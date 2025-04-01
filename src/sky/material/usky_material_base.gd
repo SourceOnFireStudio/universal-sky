@@ -52,6 +52,7 @@ func set_default_sun_values() -> void:
 	_update_sun_mie_color(Color.WHITE)
 	_update_sun_mie_intensity(1.0)
 	_update_sun_mie_anisotropy(0.8)
+	_update_sun_intensity_multiplier(1.0)
 
 func set_default_moon_values() -> void:
 	_update_moon_direction(Vector3.ZERO)
@@ -62,11 +63,24 @@ func set_default_moon_values() -> void:
 	_update_moon_mie_color(Color.WHITE)
 	_update_moon_mie_intensity(1.0)
 	_update_moon_mie_anisotropy(0.8)
+	_update_moon_intensity_multiplier(1.0)
 
 func material_is_valid() -> bool:
 	return false
 
 #region Sun
+
+var sun_intensity_multiplier: float:
+	get: return sun_intensity_multiplier
+	set(value):
+		sun_intensity_multiplier = value
+		_update_sun_intensity_multiplier(sun_intensity_multiplier)
+
+func _update_sun_intensity_multiplier(p_multiplier: float) -> void:
+	_update_sun_intensity(sun_intensity)
+	_update_sun_mie_intensity(sun_mie_intensity)
+	emit_changed()
+
 var sun_direction: Vector3:
 	get: return sun_direction
 	set(value):
@@ -99,7 +113,7 @@ var sun_intensity: float:
 
 func _update_sun_intensity(p_intensity: float) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_INTENSITY_PARAM, p_intensity
+		material.get_rid(), SUN_INTENSITY_PARAM, p_intensity * sun_intensity_multiplier
 	)
 	emit_changed()
 
@@ -135,7 +149,7 @@ var sun_mie_intensity: float:
 
 func _update_sun_mie_intensity(p_intensity: float) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_MIE_INTENSITY_PARAM, p_intensity
+		material.get_rid(), SUN_MIE_INTENSITY_PARAM, p_intensity * sun_intensity_multiplier
 	)
 	emit_changed()
 
@@ -153,6 +167,17 @@ func _update_sun_mie_anisotropy(p_anisotropy: float) -> void:
 #endregion
 
 #region Moon
+var moon_intensity_multiplier: float:
+	get: return moon_intensity_multiplier
+	set(value):
+		moon_intensity_multiplier = value
+		_update_moon_intensity_multiplier(moon_intensity_multiplier)
+
+func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
+	_update_moon_intensity(moon_instensity)
+	_update_moon_mie_intensity(moon_mie_intensity)
+	emit_changed()
+
 var moon_direction: Vector3:
 	get: return moon_direction
 	set(value):
@@ -197,7 +222,7 @@ var moon_instensity: float:
 
 func _update_moon_intensity(p_intensity: float) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), MOON_INTENSITY_PARAM, p_intensity
+		material.get_rid(), MOON_INTENSITY_PARAM, p_intensity * moon_intensity_multiplier
 	)
 	emit_changed()
 
@@ -246,7 +271,7 @@ var moon_mie_intensity: float:
 
 func _update_moon_mie_intensity(p_intensity: float) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), MOON_MIE_INTENSITY_PARAM, p_intensity
+		material.get_rid(), MOON_MIE_INTENSITY_PARAM, p_intensity * moon_intensity_multiplier
 	)
 	emit_changed()
 

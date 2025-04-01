@@ -168,6 +168,11 @@ func _on_sun_direction_changed() -> void:
 #endregion
 
 #region Sun Values
+func _on_sun_intensity_multiplier_changed() -> void:
+	if not _check_material_ready() || not is_instance_valid(sun):
+		return
+	material.sun_intensity_multiplier = sun.intensity_multiplier
+
 func _on_sun_value_changed(p_type: int) -> void:
 	if not _check_material_ready() || not is_instance_valid(sun):
 		return
@@ -224,6 +229,11 @@ func _on_moon_direction_changed() -> void:
 #endregion
 
 #region Moon Values
+func _on_moon_intensity_multiplier_changed() -> void:
+	if not _check_material_ready() || not is_instance_valid(moon):
+		return
+	material.moon_intensity_multiplier = moon.intensity_multiplier
+
 func _on_moon_value_changed(p_type: int) -> void:
 	if not _check_material_ready() || not is_instance_valid(moon):
 		return
@@ -292,6 +302,10 @@ func _disconnect_enviro_changed() -> void:
 	pass
 
 func _connect_sun_signals() -> void:
+	# Multiplier
+	if not sun.intensity_multiplier_changed.is_connected(_on_sun_intensity_multiplier_changed):
+		sun.intensity_multiplier_changed.connect(_on_sun_intensity_multiplier_changed)
+	
 	# Direction
 	if not sun.direction_changed.is_connected(_on_sun_direction_changed):
 		sun.direction_changed.connect(_on_sun_direction_changed)
@@ -305,6 +319,10 @@ func _connect_sun_signals() -> void:
 		sun.mie_value_changed.connect(_on_sun_mie_value_changed)
 
 func _disconnect_sun_signals() -> void:
+	# Multiplier
+	if sun.intensity_multiplier_changed.is_connected(_on_sun_intensity_multiplier_changed):
+		sun.intensity_multiplier_changed.disconnect(_on_sun_intensity_multiplier_changed)
+	
 	# Direction
 	if sun.direction_changed.is_connected(_on_sun_direction_changed):
 		sun.direction_changed.disconnect(_on_sun_direction_changed)
@@ -319,6 +337,10 @@ func _disconnect_sun_signals() -> void:
 
 
 func _connect_moon_signals() -> void:
+	# Multiplier
+	if not moon.intensity_multiplier_changed.is_connected(_on_moon_intensity_multiplier_changed):
+		moon.intensity_multiplier_changed.connect(_on_moon_intensity_multiplier_changed)
+	
 	# Direction
 	if not moon.direction_changed.is_connected(_on_moon_direction_changed):
 		moon.direction_changed.connect(_on_moon_direction_changed)
@@ -332,6 +354,10 @@ func _connect_moon_signals() -> void:
 		moon.mie_value_changed.connect(_on_moon_mie_value_changed)
 
 func _disconnect_moon_signals() -> void:
+	# Multiplier
+	if moon.intensity_multiplier_changed.is_connected(_on_moon_intensity_multiplier_changed):
+		moon.intensity_multiplier_changed.disconnect(_on_moon_intensity_multiplier_changed)
+		
 	# Direction
 	if moon.direction_changed.is_connected(_on_moon_direction_changed):
 		moon.direction_changed.disconnect(_on_moon_direction_changed)

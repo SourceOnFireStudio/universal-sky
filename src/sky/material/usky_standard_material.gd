@@ -167,7 +167,7 @@ var atm_day_intensity: float = 15.0:
 	set(value):
 		atm_day_intensity = value
 		RenderingServer.material_set_param(
-			material.get_rid(), ATM_DAY_INTENSITY_PARAM, atm_day_intensity
+			material.get_rid(), ATM_DAY_INTENSITY_PARAM, atm_day_intensity * sun_intensity_multiplier
 		)
 		emit_changed()
 
@@ -434,6 +434,14 @@ func _update_moon_direction(p_direction: Vector3) -> void:
 	_set_sun_uMuS()
 	_set_atm_night_tint()
 
+func _update_sun_intensity_multiplier(p_multiplier: float) -> void:
+	super(p_multiplier)
+	atm_day_intensity = atm_day_intensity
+
+func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
+	super(p_multiplier)
+	atm_night_intensity = atm_night_intensity
+
 #region Atmospheric Scattering
 func get_celestial_uMus(dir: Vector3) -> float:
 	return 0.015 + (atan(max(dir.y, - 0.1975) * tan(1.386))
@@ -501,7 +509,7 @@ func get_atm_night_intensity() -> float:
 	else:
 		ret = get_celestial_uMus(moon_direction)
 	
-	return ret * atm_night_intensity * get_atm_moon_phases_mul()
+	return ret * atm_night_intensity * get_atm_moon_phases_mul() * moon_intensity_multiplier
 
 func get_atm_moon_phases_mul() -> float:
 	if atm_enable_night_scattering:

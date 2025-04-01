@@ -132,7 +132,7 @@ func _on_init() -> void:
 	intensity_multiplier = intensity_multiplier
 
 func _on_enter_tree() -> void:
-	pass
+	intensity_multiplier = intensity_multiplier
 
 func _on_exit_tree() -> void:
 	pass

@@ -70,7 +70,6 @@ var sun_moon_light_curve: Curve = Curve.new()
 
 func _on_init() -> void:
 	super()
-	#sun_moon_light_curve.clear_points()
 	sun_moon_light_curve.add_point(Vector2(0, 0), 0.0, 0.0, 0, 0)
 	sun_moon_light_curve.add_point(Vector2(0.617886, 0), 0.0, 0.0467088, 1, 0)
 	sun_moon_light_curve.add_point(Vector2(0.69899, 1), 0.0, 0.0, 0, 0)

@@ -97,7 +97,6 @@ var moon: USkyMoon3D = null:
 #endregions
 
 #region Setup
-
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_ENTER_TREE:
@@ -133,7 +132,6 @@ func _set_sky_material_to_enviro() -> void:
 		_on_enviro_changed()
 	else:
 		_enviro.sky.sky_material = null
-
 
 func _on_enviro_changed() -> void:
 	pass
@@ -253,7 +251,7 @@ func _update_moon_color() -> void:
 	material.moon_color = moon.body_color
 
 func _update_moon_intensity() -> void:
-	material.moon_instensity = moon.body_intensity
+	material.moon_intensity = moon.body_intensity
 
 func _update_moon_size() -> void:
 	material.moon_size = moon.body_size
@@ -372,7 +370,6 @@ func _disconnect_moon_signals() -> void:
 	if moon.mie_value_changed.is_connected(_on_moon_mie_value_changed):
 		moon.mie_value_changed.disconnect(_on_moon_mie_value_changed)
 #endregion
-
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if not is_instance_valid(sun):

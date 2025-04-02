@@ -414,13 +414,11 @@ func _disconnect_changed_atm_day_gradient() -> void:
 	if atm_day_gradient.changed.is_connected(_set_atm_day_tint):
 		atm_day_gradient.changed.disconnect(_set_atm_day_tint)
 
-
 func _validate_property(property: Dictionary) -> void:
 	if not use_custom_bg_texture && property.name == "background_texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
 	if not use_custom_stars_field_texture && property.name == "stars_field_texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
-
 #endregion
 
 func _update_sun_direction(p_direction: Vector3) -> void:

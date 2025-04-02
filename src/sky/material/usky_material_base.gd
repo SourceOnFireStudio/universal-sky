@@ -70,7 +70,6 @@ func material_is_valid() -> bool:
 	return false
 
 #region Sun
-
 var sun_intensity_multiplier: float:
 	get: return sun_intensity_multiplier
 	set(value):
@@ -175,7 +174,7 @@ var moon_intensity_multiplier: float:
 		_update_moon_intensity_multiplier(moon_intensity_multiplier)
 
 func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
-	_update_moon_intensity(moon_instensity)
+	_update_moon_intensity(moon_intensity)
 	_update_moon_mie_intensity(moon_mie_intensity)
 	emit_changed()
 
@@ -215,11 +214,11 @@ func _update_moon_color(p_color: Color) -> void:
 	)
 	emit_changed()
 
-var moon_instensity: float:
-	get: return moon_instensity
+var moon_intensity: float:
+	get: return moon_intensity
 	set(value):
-		moon_instensity = value
-		_update_moon_intensity(moon_instensity)
+		moon_intensity = value
+		_update_moon_intensity(moon_intensity)
 
 func _update_moon_intensity(p_intensity: float) -> void:
 	RenderingServer.material_set_param(
@@ -246,9 +245,6 @@ var moon_texture: Texture2D:
 		_update_moon_texture(moon_texture)
 
 func _update_moon_texture(p_texture: Texture2D) -> void:
-	#RenderingServer.material_set_param(
-		#material.get_rid(),MOON_TEXTURE_PARAM, p_texture
-	#)
 	material.set_shader_parameter(MOON_TEXTURE_PARAM, p_texture)
 	emit_changed()
 

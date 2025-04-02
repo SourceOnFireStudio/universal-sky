@@ -165,6 +165,10 @@ func _on_sun_direction_changed() -> void:
 		_on_moon_direction_changed()
 		_update_moon_mie_intensity()
 	material.sun_direction = sun.direction
+	_update_sun_eclipse()
+
+func _update_sun_eclipse() -> void:
+	material.sun_eclipse_intensity = sun.eclipse_multiplier
 #endregion
 
 #region Sun Values
@@ -226,6 +230,8 @@ func _on_moon_direction_changed() -> void:
 	material.moon_phases_mul = moon.phases_mul
 	material.moon_matrix = moon.clamped_matrix
 	_update_moon_mie_intensity()
+	if is_instance_valid(sun):
+		_update_sun_eclipse()
 #endregion
 
 #region Moon Values

@@ -40,6 +40,9 @@ void sky(){
 	vec4 moon = computeMoon(worldPos);
 	nearSpace += (sun.rgb * moon.a) + moon.rgb;
 
+	// Sun eclipse
+	scatter *= sun_eclipse_intensity;
+
 	// Deep space
 	vec3 deepSpace = vec3(0.0);
 	vec3 deepSpaceCoords = getDeepSpaceCoords(worldPos);

@@ -113,6 +113,10 @@ var lighting_energy_curve: Curve = null:
 var direction: Vector3:
 	get: return -(basis * Vector3.FORWARD)
 
+var _eclipse_multiplier: float = 1.0
+var eclipse_multiplier: float:
+	get: return _eclipse_multiplier
+
 func _init() -> void:
 	_on_init()
 
@@ -155,7 +159,7 @@ func _update_light_color() -> void:
 		light_color = lighting_color
 
 func _update_light_energy() -> void:
-	light_energy = _get_light_energy() * intensity_multiplier
+	light_energy = _get_light_energy() * intensity_multiplier * eclipse_multiplier
 
 func _get_light_energy() -> float:
 	if lighting_energy_curve != null:

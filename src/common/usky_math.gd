@@ -37,3 +37,9 @@ static func to_orbit(p_theta: float, p_pi: float, p_radius: float = 1.0) -> Vect
 	var cosPI:    float = cos(p_pi)
 	return Vector3((sinTheta * sinPI) * p_radius,
 		cosTheta  * p_radius, (sinTheta * cosPI) * p_radius)
+
+static func angular_intensity_sig(a: Vector3, b: Vector3, threshold: float = 0.03, slope: float = 100.0) -> float:
+	var separation: float = acos(a.dot(b))
+	# sigmoide curve
+	var factor: float = 1.0 / (1.0 + exp(-slope * (separation - threshold)))
+	return lerp(0.0, 1.0, factor)

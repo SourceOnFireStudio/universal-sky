@@ -164,6 +164,18 @@ func _update_sun_mie_anisotropy(p_anisotropy: float) -> void:
 		material.get_rid(), SUN_MIE_ANISOTROPY_PARAM, p_anisotropy
 	)
 	emit_changed()
+
+var sun_eclipse_intensity: float:
+	get: return sun_eclipse_intensity
+	set(value):
+		sun_eclipse_intensity = value
+		_update_sun_eclipse_intensity(sun_eclipse_intensity)
+
+func _update_sun_eclipse_intensity(p_intensity: float) -> void:
+	RenderingServer.material_set_param(
+		material.get_rid(), &"sun_eclipse_intensity", p_intensity
+	)
+	emit_changed()
 #endregion
 
 #region Moon

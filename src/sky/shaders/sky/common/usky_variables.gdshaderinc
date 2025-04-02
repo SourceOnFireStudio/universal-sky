@@ -11,6 +11,7 @@ uniform vec3 sun_direction;
 uniform vec4 sun_color: source_color;
 uniform float sun_intensity;
 uniform float sun_size;
+uniform float sun_eclipse_intensity;
 
 // Moon.
 uniform vec3 moon_direction;

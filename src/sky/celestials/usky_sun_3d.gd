@@ -19,6 +19,28 @@ var moon: USkyMoon3D:
 			_disconnect_moon_signals()
 			moon = value
 
+@export_group("Eclipse")
+@export
+var eclipse_threshold: float = -0.01:
+	get: return eclipse_threshold
+	set(value):
+		eclipse_threshold = value
+		_update_eclipse()
+
+@export
+var eclipse_slope: float = 200:
+	get: return eclipse_slope
+	set(value):
+		eclipse_slope = value
+		_update_eclipse()
+
+@export
+var min_eclipse_attenuation: float = 0.01:
+	get: return min_eclipse_attenuation
+	set(value):
+		min_eclipse_attenuation = value
+		_update_eclipse()
+
 func _on_init() -> void:
 	super()
 	body_color = Color(1, 0.7058, 0.4470)
@@ -50,11 +72,11 @@ func _update_eclipse() -> void:
 	const celestialSizeBase = 0.017453293
 	var sunSize = body_size * celestialSizeBase
 	var moonSize = moon.body_size * celestialSizeBase
-	var threshold = 0.01 - (-sunSize - moonSize)
+	var threshold = eclipse_threshold - (-sunSize - moonSize)
 	var factor = USkyMath.angular_intensity_sig(
-		direction, moon.direction, threshold, 200.0
+		direction, moon.direction, threshold, eclipse_slope
 	)
-	factor = clamp(factor, 0.1, 1.0) \
+	factor = clamp(factor, min_eclipse_attenuation, 1.0) \
 		if sunSize <= moonSize + celestialSizeBase else clamp(factor, 0.9, 1.0)
 	
 	_eclipse_multiplier = factor

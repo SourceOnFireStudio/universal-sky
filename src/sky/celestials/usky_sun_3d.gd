@@ -25,21 +25,21 @@ var eclipse_threshold: float = -0.01:
 	get: return eclipse_threshold
 	set(value):
 		eclipse_threshold = value
-		_update_eclipse()
+		_update_params()
 
 @export
 var eclipse_slope: float = 200:
 	get: return eclipse_slope
 	set(value):
 		eclipse_slope = value
-		_update_eclipse()
+		_update_params()
 
 @export
 var min_eclipse_attenuation: float = 0.01:
 	get: return min_eclipse_attenuation
 	set(value):
 		min_eclipse_attenuation = value
-		_update_eclipse()
+		_update_params()
 
 func _on_init() -> void:
 	super()

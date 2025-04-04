@@ -35,10 +35,10 @@ var eclipse_slope: float = 200:
 		_update_params()
 
 @export
-var min_eclipse_attenuation: float = 0.01:
-	get: return min_eclipse_attenuation
+var min_eclipse_intensity: float = 0.01:
+	get: return min_eclipse_intensity
 	set(value):
-		min_eclipse_attenuation = value
+		min_eclipse_intensity = value
 		_update_params()
 
 func _on_init() -> void:
@@ -76,7 +76,7 @@ func _update_eclipse() -> void:
 	var factor = USkyMath.angular_intensity_sig(
 		direction, moon.direction, threshold, eclipse_slope
 	)
-	factor = clamp(factor, min_eclipse_attenuation, 1.0) \
+	factor = clamp(factor, min_eclipse_intensity, 1.0) \
 		if sunSize <= moonSize + celestialSizeBase else clamp(factor, 0.9, 1.0)
 	
 	_eclipse_multiplier = factor

@@ -29,7 +29,7 @@ var texture: Texture = null:
 
 @export_group("Light Source")
 @export
-var sun: USkyCelestialBody3D:
+var sun: USkySun3D:
 	get: return sun
 	set(value):
 		if is_instance_valid(value):

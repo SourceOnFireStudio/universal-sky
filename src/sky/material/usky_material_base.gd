@@ -28,6 +28,13 @@ const MOON_MIE_INTENSITY_PARAM:= &"atm_moon_mie_intensity"
 const MOON_MIE_ANISOTROPY_PARAM:= &"atm_moon_mie_anisotropy"
 #endregion
 
+@export
+var compatibility: bool:
+	get: return compatibility
+	set(value):
+		compatibility = value
+		_compatibility_changed()
+
 var _material:= ShaderMaterial.new()
 var material: ShaderMaterial:
 	get: return _material
@@ -39,6 +46,7 @@ func _on_init() -> void:
 	#sky_material = ShaderMaterial.new()
 	#_material.render_priority = -128
 	_initialize_default_celestial_values()
+	compatibility = compatibility
 
 # Avoid black sky when creating new material without celestial bodies.
 func _initialize_default_celestial_values():
@@ -68,6 +76,12 @@ func set_default_moon_values() -> void:
 
 func material_is_valid() -> bool:
 	return false
+
+func _compatibility_changed() -> void:
+	_update_sun_color(sun_color)
+	_update_sun_mie_color(sun_mie_color)
+	_update_moon_color(moon_color)
+	_update_moon_mie_color(moon_mie_color)
 
 #region Sun
 var sun_intensity_multiplier: float:
@@ -101,7 +115,7 @@ var sun_color: Color:
 
 func _update_sun_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_COLOR_PARAM, p_color
+		material.get_rid(), SUN_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
 	)
 	emit_changed()
 
@@ -137,7 +151,7 @@ var sun_mie_color: Color:
 
 func _update_sun_mie_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_MIE_COLOR_PARAM, p_color
+		material.get_rid(), SUN_MIE_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
 	)
 	emit_changed()
 
@@ -222,7 +236,7 @@ var moon_color: Color:
 
 func _update_moon_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), MOON_COLOR_PARAM, p_color
+		material.get_rid(), MOON_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
 	)
 	emit_changed()
 
@@ -268,7 +282,7 @@ var moon_mie_color: Color:
 
 func _update_moon_mie_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), MOON_MIE_COLOR_PARAM, p_color
+		material.get_rid(), MOON_MIE_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
 	)
 	emit_changed()
 

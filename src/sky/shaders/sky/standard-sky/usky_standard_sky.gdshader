@@ -15,6 +15,9 @@ render_mode use_quarter_res_pass;
 uniform float debanding_level;
 
 vec3 colorCorrection(vec3 col, vec2 fragcoord){
+	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
+	col.rgb = sqrt(col.rgb);
+	#endif
 	#ifdef ENABLE_TONEMAP
 	col.rgb = tonemap(col.rgb, exposure, tonemap_level);
 	#endif
@@ -47,7 +50,7 @@ void sky(){
 	vec3 deepSpace = vec3(0.0);
 	vec3 deepSpaceCoords = getDeepSpaceCoords(worldPos);
 	deepSpace += getBackground(equirectUV(deepSpaceCoords));
-	deepSpace += getStarsField(equirectUV(deepSpaceCoords));
+	deepSpace += getStarsField(equirectUV(deepSpaceCoords), TIME);
 	deepSpace *= moon.a;
 	deepSpace.rgb *= saturate(1.0-(sun_direction.y+0.85));
 
@@ -58,6 +61,9 @@ void sky(){
 	// Apply color correction.
 	finalColor.rgb = colorCorrection(finalColor.rgb, FRAGCOORD.xy);
 
+	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
+	COLOR = finalColor.rgb;
+	#else
 	if(AT_QUARTER_RES_PASS && AT_CUBEMAP_PASS){
 		COLOR = finalColor.rgb;
 	}
@@ -67,4 +73,5 @@ void sky(){
 	else{
 		COLOR = finalColor.rgb;
 	}
+	#endif
 }

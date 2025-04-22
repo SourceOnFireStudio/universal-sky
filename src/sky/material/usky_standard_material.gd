@@ -215,12 +215,13 @@ var atm_ground_color:= Color(0.543, 0.543, 0.543): # Color(0.204, 0.345, 0.467):
 	get: return atm_ground_color
 	set(value):
 		atm_ground_color = value
+		var c = atm_ground_color * 5.0
 		RenderingServer.material_set_param(
-			material.get_rid(), ATM_GROUND_COLOR_PARAM, atm_ground_color * 5.0
+			material.get_rid(), ATM_GROUND_COLOR_PARAM, 
+				c.srgb_to_linear() if compatibility else c
 		)
 		emit_changed()
 #endregion
-
 #region Deep Space
 @export_group("Deep Space")
 @export 
@@ -255,7 +256,8 @@ var background_color:= Color(1.0, 1.0, 1.0, 1.0):
 	set(value):
 		background_color = value
 		RenderingServer.material_set_param(
-			material.get_rid(), DEEP_SPACE_BACKGROUND_COLOR_PARAM, background_color
+			material.get_rid(), DEEP_SPACE_BACKGROUND_COLOR_PARAM, 
+				background_color.srgb_to_linear() if compatibility else background_color
 		)
 		emit_changed()
 
@@ -305,7 +307,8 @@ var stars_field_color:= Color.WHITE:
 	set(value):
 		stars_field_color = value
 		RenderingServer.material_set_param(
-			material.get_rid(), STARS_FIELD_COLOR_PARAM, stars_field_color
+			material.get_rid(), STARS_FIELD_COLOR_PARAM, 
+				stars_field_color.srgb_to_linear() if compatibility else stars_field_color
 		)
 		emit_changed()
 
@@ -419,6 +422,15 @@ func _validate_property(property: Dictionary) -> void:
 		property.usage &= ~PROPERTY_USAGE_EDITOR
 	if not use_custom_stars_field_texture && property.name == "stars_field_texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
+
+func _compatibility_changed() -> void:
+	super()
+	_set_atm_day_tint()
+	_set_atm_night_tint()
+	atm_ground_color = atm_ground_color
+	background_color = background_color
+	stars_field_color = stars_field_color
+
 #endregion
 
 func _update_sun_direction(p_direction: Vector3) -> void:
@@ -493,10 +505,11 @@ func _set_beta_mie() -> void:
 	emit_changed()
 
 func _set_atm_day_tint() -> void:
+	var c: Color = atm_day_gradient.sample(USkyUtil.interpolate_by_above(sun_direction.y))\
+		if is_instance_valid(atm_day_gradient) else Color.WHITE
 	RenderingServer.material_set_param(
 		material.get_rid(), DAY_TINT_PARAM,
-		atm_day_gradient.sample(USkyUtil.interpolate_by_above(sun_direction.y))
-		if is_instance_valid(atm_day_gradient) else Color.WHITE
+		c.srgb_to_linear() if compatibility else c
 	)
 	emit_changed()
 
@@ -517,7 +530,7 @@ func get_atm_moon_phases_mul() -> float:
 func _set_atm_night_tint() -> void:
 	var tint:= atm_night_tint * get_atm_night_intensity()
 	RenderingServer.material_set_param(
-		material.get_rid(), NIGHT_TINT_PARAM, tint
+		material.get_rid(), NIGHT_TINT_PARAM, tint.srgb_to_linear() if compatibility else tint
 	)
 	_update_moon_mie_intensity(moon_mie_intensity)
 	emit_changed()

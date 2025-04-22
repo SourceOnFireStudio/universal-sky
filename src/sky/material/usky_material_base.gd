@@ -23,6 +23,7 @@ const MOON_COLOR_PARAM:= &"moon_color"
 const MOON_INTENSITY_PARAM:= &"moon_intensity"
 const MOON_SIZE_PARAM:= &"moon_size"
 const MOON_TEXTURE_PARAM:=&"moon_texture"
+const MOON_TEXTURE_YAW_OFFSET_PARAM:= &"moon_texture_yaw_offset"
 const MOON_MIE_COLOR_PARAM:= &"atm_moon_mie_color"
 const MOON_MIE_INTENSITY_PARAM:= &"atm_moon_mie_intensity"
 const MOON_MIE_ANISOTROPY_PARAM:= &"atm_moon_mie_anisotropy"
@@ -38,6 +39,10 @@ var compatibility: bool:
 var _material:= ShaderMaterial.new()
 var material: ShaderMaterial:
 	get: return _material
+
+
+
+
 
 func _init() -> void:
 	_on_init()
@@ -70,6 +75,7 @@ func set_default_moon_values() -> void:
 	_update_moon_intensity(0.5)
 	_update_moon_color(Color.WHITE)
 	_update_moon_texture(null)
+	_update_moon_texture_yaw_offset(-0.3)
 	_update_moon_mie_color(Color.WHITE)
 	_update_moon_mie_intensity(1.0)
 	_update_moon_mie_anisotropy(0.8)
@@ -225,6 +231,18 @@ var moon_matrix: Basis:
 func _update_moon_matrix(p_matrix: Basis) -> void:
 	RenderingServer.material_set_param(
 		material.get_rid(), MOON_MATRIX_PARAM, p_matrix
+	)
+	emit_changed()
+
+var moon_texture_yaw_offset: float = -0.3:
+	get: return moon_texture_yaw_offset
+	set(value):
+		moon_texture_yaw_offset = value
+		_update_moon_texture_yaw_offset(moon_texture_yaw_offset)
+
+func _update_moon_texture_yaw_offset(p_offset: float) -> void:
+	RenderingServer.material_set_param(
+		material.get_rid(), MOON_TEXTURE_YAW_OFFSET_PARAM, p_offset
 	)
 	emit_changed()
 

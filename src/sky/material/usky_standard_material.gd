@@ -222,7 +222,7 @@ var atm_ground_color:= Color(0.543, 0.543, 0.543): # Color(0.204, 0.345, 0.467):
 		)
 		emit_changed()
 #endregion
-#region Deep Space
+#region Deep
 @export_group("Deep Space")
 @export 
 var deep_space_euler:= Vector3(-0.752, -2.56, 0.0):

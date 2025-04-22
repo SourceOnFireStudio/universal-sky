@@ -19,6 +19,7 @@ uniform vec4 moon_color: source_color;
 uniform float moon_intensity;
 uniform float moon_size;
 uniform sampler2D moon_texture;
+uniform float moon_texture_yaw_offset;
 uniform mat3 moon_matrix;
 
 // Atmosphere

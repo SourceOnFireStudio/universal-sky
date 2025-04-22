@@ -8,6 +8,8 @@ const _DEFAULT_MOON_MAP_TEXTURE:= preload(
 )
 #endregion
 
+signal yaw_offset_changed
+
 @export
 var sun: USkySun3D:
 	get: return sun
@@ -31,12 +33,21 @@ var use_custom_texture: bool = false:
 			texture = _DEFAULT_MOON_MAP_TEXTURE
 		notify_property_list_changed()
 
+
+
 @export
 var texture: Texture = null:
 	get: return texture
 	set(value):
 		texture = value
 		emit_signal(VALUE_CHANGED, BodyValueType.TEXTURE)
+
+@export
+var yaw_offset: float = -0.3:
+	get: return yaw_offset
+	set(value):
+		yaw_offset = value
+		emit_signal("yaw_offset_changed")
 
 @export_group("Phases")
 @export

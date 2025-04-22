@@ -150,6 +150,7 @@ func _update_sun_data() -> void:
 func _update_moon_data() -> void:
 	_on_moon_direction_changed()
 	_on_moon_intensity_multiplier_changed()
+	_on_moon_yaw_offset_changed()
 	for i in range(0, 3):
 		_on_moon_mie_value_changed(i)
 	for i in range(0, 4):
@@ -264,6 +265,12 @@ func _update_moon_size() -> void:
 
 func _update_moon_texture() -> void:
 	material.moon_texture = moon.texture
+
+func _on_moon_yaw_offset_changed() -> void:
+	if not _check_material_ready() || not is_instance_valid(moon):
+		return
+	material.moon_texture_yaw_offset = moon.yaw_offset
+
 #endregion
 
 #region Mie Value
@@ -355,6 +362,9 @@ func _connect_moon_signals() -> void:
 	if not moon.value_changed.is_connected(_on_moon_value_changed):
 		moon.value_changed.connect(_on_moon_value_changed)
 	
+	if not moon.yaw_offset_changed.is_connected(_on_moon_yaw_offset_changed):
+		moon.yaw_offset_changed.connect(_on_moon_yaw_offset_changed)
+	
 	# Mie
 	if not moon.mie_value_changed.is_connected(_on_moon_mie_value_changed):
 		moon.mie_value_changed.connect(_on_moon_mie_value_changed)
@@ -371,6 +381,9 @@ func _disconnect_moon_signals() -> void:
 	# Body
 	if moon.value_changed.is_connected(_on_moon_value_changed):
 		moon.value_changed.disconnect(_on_moon_value_changed)
+	
+	if moon.yaw_offset_changed.is_connected(_on_moon_yaw_offset_changed):
+		moon.yaw_offset_changed.disconnect(_on_moon_yaw_offset_changed)
 	
 	# Mie
 	if moon.mie_value_changed.is_connected(_on_moon_mie_value_changed):

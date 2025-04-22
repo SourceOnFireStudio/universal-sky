@@ -44,7 +44,7 @@ vec4 computeMoon(vec3 pos){
 
 	vec3 texCoords = (moon_matrix * normal).xyz;
 	texCoords.xy = equirectUV(texCoords);
-	texCoords.x += -0.3;
+	texCoords.x += moon_texture_yaw_offset;
 
 	vec4 color = texture(moon_texture, texCoords.xy);
 	color.rgb *= moon_color.rgb * moon_intensity;

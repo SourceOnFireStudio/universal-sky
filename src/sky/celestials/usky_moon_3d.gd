@@ -8,6 +8,17 @@ const _DEFAULT_MOON_MAP_TEXTURE:= preload(
 )
 #endregion
 
+@export
+var sun: USkySun3D:
+	get: return sun
+	set(value):
+		if is_instance_valid(value):
+			sun = value
+			_connect_sun_signals()
+		else:
+			_disconnect_sun_signals()
+			sun = value
+
 @export_group("Texture")
 @export
 var use_custom_texture: bool = false:
@@ -26,18 +37,6 @@ var texture: Texture = null:
 	set(value):
 		texture = value
 		emit_signal(VALUE_CHANGED, BodyValueType.TEXTURE)
-
-@export_group("Light Source")
-@export
-var sun: USkySun3D:
-	get: return sun
-	set(value):
-		if is_instance_valid(value):
-			sun = value
-			_connect_sun_signals()
-		else:
-			_disconnect_sun_signals()
-			sun = value
 
 @export_group("Phases")
 @export

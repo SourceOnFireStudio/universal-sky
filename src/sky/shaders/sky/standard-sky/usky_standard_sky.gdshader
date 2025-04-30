@@ -1,5 +1,5 @@
 shader_type sky;
-render_mode use_quarter_res_pass;
+render_mode use_quarter_res_pass, use_half_res_pass;
 
 #define HIGH_QUALITY_SUN_DISK
 //#define TONEMAP_ACES
@@ -56,22 +56,26 @@ void sky(){
 
 	// Apply deep and near space.
 	finalColor.rgb += (deepSpace + nearSpace) * horizonBlend;
-	finalColor.rgb += scatter;
-
-	// Apply color correction.
-	finalColor.rgb = colorCorrection(finalColor.rgb, FRAGCOORD.xy);
 
 	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
 	COLOR = finalColor.rgb;
+	COLOR += scatter;
+	COLOR = colorCorrection(COLOR, FRAGCOORD.xy);
 	#else
 	if(AT_QUARTER_RES_PASS && AT_CUBEMAP_PASS){
+		finalColor.rgb += scatter;
+		finalColor.rgb = colorCorrection(finalColor.rgb, FRAGCOORD.xy);
 		COLOR = finalColor.rgb;
+	}
+	else if(AT_HALF_RES_PASS && !AT_CUBEMAP_PASS){
+		COLOR = scatter.rgb;
 	}
 	else if(AT_CUBEMAP_PASS){
 		COLOR = QUARTER_RES_COLOR.rgb;
 	}
 	else{
-		COLOR = finalColor.rgb;
+		COLOR = finalColor.rgb + HALF_RES_COLOR.rgb;
+		COLOR = colorCorrection(COLOR, FRAGCOORD.xy);
 	}
 	#endif
 }

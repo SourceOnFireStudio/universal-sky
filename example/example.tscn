@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bw15xc6jb81e6"]
+[gd_scene load_steps=25 format=3 uid="uid://bw15xc6jb81e6"]
 
 [ext_resource type="Script" uid="uid://cyj8uwon5dmh1" path="res://addons/universal-sky/src/sky/sky_handler.gd" id="1_5pvsd"]
 [ext_resource type="Texture2D" uid="uid://cvqafkrcfb246" path="res://addons/universal-sky/assets/textures/milky-way/Milkyway.jpg" id="2_gv6sx"]
@@ -17,6 +17,7 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.79296875, 0.43984985, 0.4398
 script = ExtResource("3_2t0jo")
 atm_day_gradient = SubResource("Gradient_5pvsd")
 atm_ground_color = Color(0.72265625, 0.72265625, 0.72265625, 1)
+deep_space_euler = Vector3(0.735, 0, 0)
 background_texture = ExtResource("2_gv6sx")
 stars_field_texture = ExtResource("4_hmx4h")
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
@@ -109,6 +110,14 @@ roughness = 0.11
 metallic = 1.0
 roughness = 0.51
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2t0jo"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+
+[sub_resource type="TextMesh" id="TextMesh_hmx4h"]
+text = "N"
+pixel_size = 0.0485
+
 [node name="Node3D" type="Node3D"]
 
 [node name="SkyHandler" type="Node" parent="."]
@@ -118,7 +127,7 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.9350417, 0.08161885, -0.34501508, 0.32924852, 0.16104238, 0.9304089, 0.13150096, -0.98356694, 0.12370848, -0.6475706, 4.1878166, 0)
+transform = Transform3D(0.93504125, 0.0816172, -0.3450168, 0.34149382, 0.05422297, 0.93831897, 0.095290765, -0.9951873, 0.022828788, -0.6475706, 4.1878166, 0)
 light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
@@ -129,7 +138,7 @@ lighting_energy_curve = SubResource("Curve_2t0jo")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
 [node name="Moon3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.8947395, 0.28374612, -0.34486115, -0.103147045, 0.8826346, 0.45860323, 0.43451324, -0.37475896, 0.81899565, 0.70865345, 4.2314076, 0)
+transform = Transform3D(0.71316016, -0.61787635, 0.3311064, -0.65984327, -0.43222356, 0.614646, -0.23666316, -0.65681934, -0.7159462, 0.70865345, 4.2314076, 0)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
 script = ExtResource("6_yu7y7")
@@ -167,4 +176,9 @@ material_override = SubResource("StandardMaterial3D_frjel")
 mesh = SubResource("SphereMesh_2t0jo")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.93312657, -4.118606)
+transform = Transform3D(1, 1.5313382e-15, -1.7484554e-07, 3.3760426e-08, 0.98118156, 0.19308713, 1.7155523e-07, -0.19308713, 0.98118156, 0, 2.0264983, 2.881394)
+
+[node name="Nort" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, -2.9275248)
+material_override = SubResource("StandardMaterial3D_2t0jo")
+mesh = SubResource("TextMesh_hmx4h")

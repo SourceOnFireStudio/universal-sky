@@ -254,7 +254,6 @@ func _on_enviro_changed() -> void:
 func _update_celestials_data() -> void:
 	_update_sun_data()
 	_update_moon_data()
-	print("UPDATED_CELESTIALS")
 
 func _update_sun_data() -> void:
 	_on_sun_direction_changed()

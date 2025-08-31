@@ -181,9 +181,9 @@ func _on_light_curve_changed() -> void:
 	_update_light_energy()
 
 func _update_params() -> void:
+	emit_signal(DIRECTION_CHANGED)
 	_update_light_color()
 	_update_light_energy()
-	emit_signal(DIRECTION_CHANGED)
 
 func _update_light_color() -> void:
 	if is_instance_valid(lighting_gradient):

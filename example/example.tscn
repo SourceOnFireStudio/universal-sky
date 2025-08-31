@@ -118,8 +118,8 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.9557058, -0.21364716, 0.20243904, -0.23998904, -0.9638484, 0.11576545, 0.17038757, -0.15922083, -0.97242826, -0.6475706, 4.1878166, 0)
-light_color = Color(1, 0.5239258, 0.23828125, 1)
+transform = Transform3D(0.9557058, -0.21364714, 0.20243904, -0.2720789, -0.90362, 0.3308233, 0.11224851, -0.37124914, -0.92172366, -0.6475706, 4.1878166, 0)
+light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
 script = ExtResource("5_frjel")
 body_color = Color(1, 0.7058, 0.447, 1)
 body_intensity = 10.0

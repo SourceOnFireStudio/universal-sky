@@ -20,7 +20,7 @@ uniform float stars_scintillation_speed;
 uniform mat3 deep_space_matrix;
 
 vec3 getDeepSpaceCoords(vec3 pos){
-	return deep_space_matrix * pos.xyz;
+	return inverse(deep_space_matrix) * pos.xyz;
 }
 
 vec3 getBackground(vec2 uv){

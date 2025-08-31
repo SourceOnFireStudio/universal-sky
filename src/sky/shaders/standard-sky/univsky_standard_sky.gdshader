@@ -49,8 +49,9 @@ void sky(){
 	// Deep space
 	vec3 deepSpace = vec3(0.0);
 	vec3 deepSpaceCoords = getDeepSpaceCoords(worldPos);
-	deepSpace += getBackground(equirectUV(deepSpaceCoords));
-	deepSpace += getStarsField(equirectUV(deepSpaceCoords), TIME);
+	vec2 deepSpaceUV = equirectUV(deepSpaceCoords) + vec2(0.5, 0.0);
+	deepSpace += getBackground(deepSpaceUV);
+	deepSpace += getStarsField(deepSpaceUV, TIME);
 	deepSpace *= moon.a;
 	deepSpace.rgb *= saturate(1.0-(sun_direction.y+0.85));
 

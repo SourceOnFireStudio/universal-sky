@@ -49,8 +49,6 @@ var enviro_container: NodePath:
 		enviro_container = value
 		if enviro_container.is_empty():
 			_disconnect_enviro_changed()
-			#if _enviro != null && _enviro.sky != null:
-				#_enviro.sky.sky_material = null
 			if is_instance_valid(_enviro) && is_instance_valid(_enviro.sky):
 				_enviro.sky.sky_material = null
 			_enviro = null

@@ -31,7 +31,6 @@ const float kMieZenithLength = 1.25e3;
 // Simplified and with added ground color.
 void opticalDepth(float y, out vec3 sr, out vec3 sm){
 	vec3 zenith = max(0.03, y + 0.03) + (max(0.0, -y) * atm_ground_color.xyz);
-	//vec3 zenith = (max(-0.06, -y) * atm_ground_color.xyz);
 	zenith = 1.0 / zenith;
 	sr = vec3(zenith * kRayleighZenithLength * atm_rayleigh_level);
 	sm = vec3(zenith * kMieZenithLength);
@@ -43,9 +42,9 @@ vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 
 	vec3 betaMie = atm_beta_mie;
 	vec3 betaRay = atm_beta_ray * atm_thickness;
-	
+
 	float sunMus = sun_uMuS - 1.0;
-	
+
 	// TODO: Improve
 	float sunset = mix(sunMus, (sunMus * sunMus * sunMus * sunMus), atm_thickness - 1.0);
 	sunset = saturate(sunset);

@@ -451,10 +451,6 @@ func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
 	super(p_multiplier)
 	atm_night_intensity = atm_night_intensity
 
-#func get_celestial_uMus(dir: Vector3) -> float:
-	#return 0.015 + (atan(max(dir.y, - 0.1975) * tan(1.386))
-		#* 0.9090 + 0.74) * 0.5 * (0.96875);
-
 func get_celestial_uMuS(dir: Vector3) -> float:
 	return (atan(max(dir.y, -0.1975) * tan(1.386)) / 1.1 + (1.0 - 0.26));
 

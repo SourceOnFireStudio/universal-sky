@@ -46,7 +46,7 @@ vec3 atmosphericScattering(vec3 pos, vec3 horizonBlend){
 	float sunMus = sun_uMuS - 1.0;
 
 	// TODO: Improve
-	float sunset = mix(sunMus, (sunMus * sunMus * sunMus * sunMus), atm_thickness - 1.0);
+	float sunset = mix(sunMus, (sunMus * 0.05), atm_thickness - 1.0);
 	sunset = saturate(sunset);
 
 	vec3 extinction = saturate(exp(-betaRay * sr + betaMie * sm));

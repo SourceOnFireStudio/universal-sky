@@ -127,3 +127,8 @@ func _get_light_energy() -> float:
 
 func _on_sun_direction_changed() -> void:
 	_update_light_energy()
+
+func get_final_moon_mie_intensity() -> float:
+	if enable_mie_phases:
+		return mie_intensity * phases_mul
+	return mie_intensity

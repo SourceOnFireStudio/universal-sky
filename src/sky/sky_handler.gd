@@ -294,40 +294,19 @@ func _on_sun_value_changed(p_type: int) -> void:
 	
 	match(p_type):
 		CelestialBody3D.CelestialValueType.COLOR:
-			_update_sun_color()
+			material.sun_color = sun.body_color
 		CelestialBody3D.CelestialValueType.INTENSITY:
-			_update_sun_intensity()
+			material.sun_intensity = sun.body_intensity
 		CelestialBody3D.CelestialValueType.INTENSITY_MULTIPLIER:
-			_update_sun_instensity_multiplier()
+			material.sun_intensity_multiplier = sun.intensity_multiplier
 		CelestialBody3D.CelestialValueType.SIZE:
-			_update_sun_size()
+			material.sun_size = sun.body_size
 		CelestialBody3D.CelestialValueType.MIE_COLOR:
-			_update_sun_mie_color()
+			material.sun_mie_color = sun.mie_color
 		CelestialBody3D.CelestialValueType.MIE_INTENSITY:
-			_update_sun_mie_intensity()
+			material.sun_mie_intensity = sun.mie_intensity
 		CelestialBody3D.CelestialValueType.MIE_ANISOTROPY:
-			_update_sun_mie_anisotropy()
-
-func _update_sun_color() -> void:
-	material.sun_color = sun.body_color
-
-func _update_sun_intensity() -> void:
-	material.sun_intensity = sun.body_intensity
-
-func _update_sun_instensity_multiplier() -> void:
-	material.sun_intensity_multiplier = sun.intensity_multiplier
-
-func _update_sun_size() -> void:
-	material.sun_size = sun.body_size
-
-func _update_sun_mie_color() -> void:
-	material.sun_mie_color = sun.mie_color
-
-func _update_sun_mie_intensity() -> void:
-	material.sun_mie_intensity = sun.mie_intensity
-
-func _update_sun_mie_anisotropy() -> void:
-	material.sun_mie_anisotropy = sun.mie_anisotropy
+			material.sun_mie_anisotropy = sun.mie_anisotropy
 
 #endregion
 
@@ -352,52 +331,28 @@ func _on_moon_value_changed(p_type: int) -> void:
 		return
 	match(p_type):
 		Moon3D.CelestialValueType.COLOR:
-			_update_moon_color()
+			material.moon_color = moon.body_color
 		Moon3D.CelestialValueType.INTENSITY:
-			_update_moon_intensity()
+			material.moon_intensity = moon.body_intensity
 		Moon3D.CelestialValueType.INTENSITY_MULTIPLIER:
-			_update_moon_intensity_multiplier()
+			material.moon_intensity_multiplier = moon.intensity_multiplier
 		Moon3D.CelestialValueType.SIZE:
-			_update_moon_size()
+			material.moon_size = moon.body_size
 		Moon3D.CelestialValueType.TEXTURE:
-			_update_moon_texture()
+			material.moon_texture = moon.texture
 		Moon3D.CelestialValueType.MIE_COLOR:
-			_update_moon_mie_color()
+			material.moon_mie_color = moon.mie_color
 		Moon3D.CelestialValueType.MIE_INTENSITY:
 			_update_moon_mie_intensity()
 		Moon3D.CelestialValueType.MIE_ANISOTROPY:
-			_update_moon_mie_anisotropy()
-
-func _update_moon_color() -> void:
-	material.moon_color = moon.body_color
-
-func _update_moon_intensity() -> void:
-	material.moon_intensity = moon.body_intensity
-
-func _update_moon_intensity_multiplier() -> void:
-	material.moon_intensity_multiplier = moon.intensity_multiplier
-
-func _update_moon_size() -> void:
-	material.moon_size = moon.body_size
-
-func _update_moon_texture() -> void:
-	material.moon_texture = moon.texture
+			material.moon_mie_anisotropy = moon.mie_anisotropy
 
 func _on_moon_yaw_offset_changed() -> void:
 	if not _check_material_ready() || not is_instance_valid(moon):
 		return
 	material.moon_texture_yaw_offset = moon.yaw_offset
 
-func _update_moon_mie_color() -> void:
-	material.moon_mie_color = moon.mie_color
-
 func _update_moon_mie_intensity() -> void:
-	if moon.enable_mie_phases:
-		material.moon_mie_intensity = moon.mie_intensity * moon.phases_mul
-	else:
-		material.moon_mie_intensity = moon.mie_intensity
-
-func _update_moon_mie_anisotropy() -> void:
-	material.moon_mie_anisotropy = moon.mie_anisotropy
+	material.moon_mie_intensity = moon.get_final_moon_mie_intensity()
 
 #endregion

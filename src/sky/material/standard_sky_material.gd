@@ -447,6 +447,11 @@ func _update_sun_intensity_multiplier(p_multiplier: float) -> void:
 	super(p_multiplier)
 	atm_day_intensity = atm_day_intensity
 
+func _update_sun_eclipse_intensity(p_intensity: float) -> void:
+	super(p_intensity)
+	_set_atm_day_tint()
+
+
 func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
 	super(p_multiplier)
 	atm_night_intensity = atm_night_intensity

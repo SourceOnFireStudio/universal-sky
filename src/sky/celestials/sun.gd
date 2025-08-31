@@ -12,7 +12,17 @@ class_name Sun3D
 var _moon: Moon3D:
 	get: return _moon
 
+var eclipse_multiplier: float = 1.0:
+	get: return eclipse_multiplier
+
 @export_group("Eclipse")
+@export
+var enable_solar_eclipse: bool = false:
+	get: return enable_solar_eclipse
+	set(value):
+		enable_solar_eclipse = value
+		_update_params()
+
 @export
 var eclipse_threshold: float = -0.01:
 	get: return eclipse_threshold
@@ -60,23 +70,30 @@ func _on_moon_direction_changed() -> void:
 	_update_eclipse()
 
 func _update_params() -> void:
-	super()
 	_update_eclipse()
+	super()
+
+func _get_light_energy() -> float:
+	return super() * eclipse_multiplier
 
 func _update_eclipse() -> void:
 	if not is_instance_valid(_moon):
 		return
 	
-	const celestialSizeBase = 0.017453293
-	var sunSize = body_size * celestialSizeBase
-	var moonSize = _moon.body_size * celestialSizeBase
-	var threshold = eclipse_threshold - (-sunSize - moonSize)
-	var factor = UnivSkyMath.angular_intensity_sig(
-		direction, _moon.direction, threshold, eclipse_slope
-	)
+	if enable_solar_eclipse:
+		const celestialSizeBase = 0.017453293
+		var sunSize = body_size * celestialSizeBase
+		var moonSize = _moon.body_size * celestialSizeBase
+		var threshold = eclipse_threshold - (-sunSize - moonSize)
+		var factor = UnivSkyMath.angular_intensity_sig(
+			direction, _moon.direction, threshold, eclipse_slope
+		)
+			
+		factor = clamp(factor, min_eclipse_intensity, 1.0) \
+			if sunSize <= moonSize + celestialSizeBase else clamp(factor, 0.9, 1.0)
+			
+		eclipse_multiplier = factor
+	else:
+		eclipse_multiplier = 1.0
 	
-	factor = clamp(factor, min_eclipse_intensity, 1.0) \
-		if sunSize <= moonSize + celestialSizeBase else clamp(factor, 0.9, 1.0)
-	
-	eclipse_multiplier = factor
 	_update_light_energy()

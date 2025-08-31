@@ -27,8 +27,7 @@ signal value_changed(type)
 var direction: Vector3:
 	get: return -(basis * Vector3.FORWARD)
 
-var eclipse_multiplier: float = 1.0:
-	get: return eclipse_multiplier
+
 
 @export
 var intensity_multiplier: float = 1.0:
@@ -194,7 +193,7 @@ func _update_light_color() -> void:
 		light_color = lighting_color
 
 func _update_light_energy() -> void:
-	light_energy = _get_light_energy() * intensity_multiplier * eclipse_multiplier
+	light_energy = _get_light_energy() * intensity_multiplier
 
 func _get_light_energy() -> float:
 	if lighting_energy_curve != null:

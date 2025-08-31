@@ -277,6 +277,7 @@ func _on_sun_direction_changed() -> void:
 	if is_instance_valid(moon):
 		_on_moon_direction_changed()
 		_update_moon_mie_intensity()
+	
 	material.sun_direction = sun.direction
 	_update_sun_eclipse()
 

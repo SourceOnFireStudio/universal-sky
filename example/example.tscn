@@ -16,7 +16,7 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.79296875, 0.43984985, 0.4398
 [sub_resource type="Resource" id="Resource_uu07e"]
 script = ExtResource("3_2t0jo")
 atm_day_gradient = SubResource("Gradient_5pvsd")
-atm_ground_color = Color(0.7109375, 0.7109375, 0.7109375, 1)
+atm_ground_color = Color(0.72265625, 0.72265625, 0.72265625, 1)
 background_texture = ExtResource("2_gv6sx")
 stars_field_texture = ExtResource("4_hmx4h")
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
@@ -118,18 +118,18 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.9350418, 0.08161885, -0.3450153, 0.07499141, 0.9055913, 0.4174697, 0.34651616, -0.41622478, 0.8406448, -0.6475706, 4.1878166, 0)
+transform = Transform3D(0.9350417, 0.08161885, -0.34501508, 0.32924852, 0.16104238, 0.9304089, 0.13150096, -0.98356694, 0.12370848, -0.6475706, 4.1878166, 0)
 light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
 script = ExtResource("5_frjel")
+enable_solar_eclipse = true
 body_color = Color(1, 0.7058, 0.447, 1)
 body_intensity = 10.0
-mie_anisotropy = 0.0
 lighting_gradient = SubResource("Gradient_gv6sx")
 lighting_energy_curve = SubResource("Curve_2t0jo")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
 [node name="Moon3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.8947395, 0.28374612, -0.34486115, -0.12658378, 0.90167785, 0.4134653, 0.42827284, -0.3262899, 0.8426845, 0.70865345, 4.2314076, 0)
+transform = Transform3D(0.8947395, 0.28374612, -0.34486115, -0.103147045, 0.8826346, 0.45860323, 0.43451324, -0.37475896, 0.81899565, 0.70865345, 4.2314076, 0)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
 script = ExtResource("6_yu7y7")

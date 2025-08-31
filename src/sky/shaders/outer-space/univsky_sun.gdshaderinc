@@ -1,6 +1,5 @@
-#ifndef USKY_SUN
-#define USKY_SUN
-
+#ifndef UNIVSKY_SUN
+#define UNIVSKY_SUN
 // https://www.shadertoy.com/view/slSXRW
 float sunWithBloom(vec3 rayDir, vec3 sunDir, float size) {
     float sunSolidAngle = size * 0.017453293;
@@ -27,5 +26,4 @@ float sunDisk(vec3 pos, vec3 dir, lowp float size){
 	///ret = min(50.0, ret); // Prevent reflection artifacts.
 	return ret;
 }
-
 #endif

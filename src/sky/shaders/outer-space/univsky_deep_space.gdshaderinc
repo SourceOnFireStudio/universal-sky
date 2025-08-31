@@ -1,7 +1,8 @@
-#ifndef USKY_DEEP_SPACE
-#define USKY_DEEP_SPACE
-#include "res://addons/universal-sky/src/sky/shaders/library/usky_color.gdshaderinc"
-#include "usky_variables.gdshaderinc"
+#ifndef UNIVSKY_DEEP_SPACE
+#define UNIVSKY_DEEP_SPACE
+
+#include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_color.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/common/univsky_variables.gdshaderinc"
 
 // Background.
 uniform sampler2D background_texture: source_color;
@@ -26,7 +27,7 @@ vec3 getBackground(vec2 uv){
 	return contrastLevel(
 		textureLod(background_texture, uv, 0.0).rgb * background_color.rgb,
 			background_contrast
-	) * background_intensity;
+		) * background_intensity;
 }
 
 vec3 getStarsField(vec2 uv, float time){
@@ -37,4 +38,5 @@ vec3 getStarsField(vec2 uv, float time){
 	);
 	return saturate(field) * stars_field_intensity * stars_field_color.rgb;
 }
+
 #endif

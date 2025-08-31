@@ -4,7 +4,7 @@
 # License:
 # - J. Cuéllar 2025 MIT License
 # - See: LICENSE File.
-class_name USkyMath
+class_name UnivSkyMath
 
 const RAD_TO_DEG:= 57.29577951308232
 const DEG_TO_RAD:= 0.01745329251994

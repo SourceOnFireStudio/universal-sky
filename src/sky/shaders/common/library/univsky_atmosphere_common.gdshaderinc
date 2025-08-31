@@ -1,6 +1,6 @@
-#ifndef USKY_ATMOSPHERE_LIB
-#define USKY_ATMOSPHERE_LIB
-#include "usky_const.gdshaderinc"
+#ifndef UNIVSKY_ATMOSPHERE_COMMON
+#define UNIVSKY_ATMOSPHERE_COMMON
+#include "univsky_const.gdshaderinc"
 
 float rayleighPhase(float mu){
 	return k3PI16 * (1.0 + mu * mu);

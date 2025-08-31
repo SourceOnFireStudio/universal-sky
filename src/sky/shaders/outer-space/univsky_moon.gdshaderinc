@@ -1,17 +1,16 @@
-#ifndef USKY_MOON
-#define USKY_MOON
-#include "res://addons/universal-sky/src/sky/shaders/library/usky_color.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/library/usky_coords.gdshaderinc"
-#include "usky_variables.gdshaderinc"
+#ifndef UNIVSKY_MOON
+#define UNIVSKY_MOON
+#include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_color.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_coords.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/common/univsky_variables.gdshaderinc"
 
-
-struct SphereRay{
+struct MoonSphereRay{
 	vec3 origin;
 	vec3 direction;
 	float radius;
 };
 
-float moonSphere(SphereRay ray, inout float mask){
+float moonSphere(MoonSphereRay ray, inout float mask){
 	ray.origin = -ray.origin;
 	//float a = dot(ray.direction, ray.direction);
 	float b = dot(ray.direction, ray.origin);
@@ -23,14 +22,13 @@ float moonSphere(SphereRay ray, inout float mask){
 	d = sqrt(d);
 	float ret = -b - d;
 	mask = ret > -1.0 ? 1.0 : 0.0;
-
 	return ret;
 }
 
 vec4 computeMoon(vec3 pos){
 	float moonMu = dot(moon_direction, pos);
 
-	SphereRay ray;
+	MoonSphereRay ray;
 	ray.origin = pos;
 	ray.direction = moon_direction;
 	ray.radius = moon_size * 0.017453293;
@@ -55,4 +53,5 @@ vec4 computeMoon(vec3 pos){
 
 	return vec4(result.rgb, saturate(1.0 - mask));
 }
+
 #endif

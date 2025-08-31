@@ -4,7 +4,7 @@
 # License:
 # - J. Cuéllar 2025 MIT License
 # - See: LICENSE File.
-class_name USkyUtil
+class_name UnivSkyUtil
 
 static func interpolate_full(p_dir: float) -> float:
 	return (1.0 - p_dir) * 0.5

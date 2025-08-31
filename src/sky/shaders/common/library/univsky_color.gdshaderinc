@@ -1,5 +1,5 @@
-#ifndef USKY_COLOR
-#define USKY_COLOR
+#ifndef UNIVSKY_COLOR
+#define UNIVSKY_COLOR
 
 #define saturate(x) clamp(x, 0.0, 1.0)
 

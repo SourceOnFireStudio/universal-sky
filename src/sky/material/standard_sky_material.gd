@@ -1,9 +1,15 @@
+# Universal Sky
+# Description:
+# - Standar sky.
+# License:
+# - J. Cuéllar 2025 MIT License
+# - See: LICENSE File.
 @tool
-extends USkyMaterialBase
-class_name USkyStandardMaterial
+extends SkyMaterialBase
+class_name StandardSkyMaterial
 
 const SHADER:= preload(
-	"res://addons/universal-sky/src/sky/shaders/sky/standard-sky/usky_standard_sky.gdshader"
+	"res://addons/universal-sky/src/sky/shaders/standard-sky/univsky_standard_sky.gdshader"
 )
 
 const _DEFAULT_BACKGROUND_TEXTURE:= preload(
@@ -14,7 +20,6 @@ const _DEFAULT_STARS_FIELD_TEXTURE:= preload(
 	"res://addons/universal-sky/assets/textures/milky-way/StarField.jpg"
 )
 
-#region Shader params
 const TONEMAP_LEVEL_PARAM:= &"tonemap_level"
 const EXPOSURE_PARAM:= &"exposure"
 const HORIZON_OFFSET_PARAM:= &"horizon_offset"
@@ -44,9 +49,7 @@ const STARS_FIELD_INTENSITY_PARAM:= &"stars_field_intensity"
 const STARS_FIELD_TEXTURE_PARAM:= &"stars_field_texture"
 const STARS_SCINTILLATION_PARAM:= &"stars_scintillation"
 const STARS_SCINTILLATION_SPEED_PARAM:=&"stars_scintillation_speed"
-#endregion
 
-#region Atmospheric scattering const
 # Index of the air refraction.
 const n: float = 1.0003
 
@@ -58,7 +61,9 @@ const N: float = 2.545e25
 
 # Depolatization factor for standard air.
 const pn: float = 0.035
-#endregion
+
+func material_is_valid() -> bool:
+	return true
 
 #region General Settings
 @export_group("General Settings")
@@ -363,10 +368,6 @@ var stars_scintillation_speed: float = 1.0:
 		emit_changed()
 #endregion
 
-#region Setup
-func material_is_valid() -> bool:
-	return true
-
 func _on_init() -> void:
 	super()
 	material.shader = SHADER
@@ -409,6 +410,12 @@ func _on_init() -> void:
 	stars_scintillation = stars_scintillation
 	stars_scintillation_speed = stars_scintillation_speed
 
+func _validate_property(property: Dictionary) -> void:
+	if not use_custom_bg_texture && property.name == "background_texture":
+		property.usage &= ~PROPERTY_USAGE_EDITOR
+	if not use_custom_stars_field_texture && property.name == "stars_field_texture":
+		property.usage &= ~PROPERTY_USAGE_EDITOR
+
 func _connect_changed_atm_day_gradient() -> void:
 	if !atm_day_gradient.changed.is_connected(_set_atm_day_tint):
 		atm_day_gradient.changed.connect(_set_atm_day_tint)
@@ -417,12 +424,6 @@ func _disconnect_changed_atm_day_gradient() -> void:
 	if atm_day_gradient.changed.is_connected(_set_atm_day_tint):
 		atm_day_gradient.changed.disconnect(_set_atm_day_tint)
 
-func _validate_property(property: Dictionary) -> void:
-	if not use_custom_bg_texture && property.name == "background_texture":
-		property.usage &= ~PROPERTY_USAGE_EDITOR
-	if not use_custom_stars_field_texture && property.name == "stars_field_texture":
-		property.usage &= ~PROPERTY_USAGE_EDITOR
-
 func _compatibility_changed() -> void:
 	super()
 	_set_atm_day_tint()
@@ -430,8 +431,6 @@ func _compatibility_changed() -> void:
 	atm_ground_color = atm_ground_color
 	background_color = background_color
 	stars_field_color = stars_field_color
-
-#endregion
 
 func _update_sun_direction(p_direction: Vector3) -> void:
 	super(p_direction)
@@ -452,10 +451,12 @@ func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
 	super(p_multiplier)
 	atm_night_intensity = atm_night_intensity
 
-#region Atmospheric Scattering
-func get_celestial_uMus(dir: Vector3) -> float:
-	return 0.015 + (atan(max(dir.y, - 0.1975) * tan(1.386))
-		* 0.9090 + 0.74) * 0.5 * (0.96875);
+#func get_celestial_uMus(dir: Vector3) -> float:
+	#return 0.015 + (atan(max(dir.y, - 0.1975) * tan(1.386))
+		#* 0.9090 + 0.74) * 0.5 * (0.96875);
+
+func get_celestial_uMuS(dir: Vector3) -> float:
+	return (atan(max(dir.y, -0.1975) * tan(1.386)) / 1.1 + (1.0 - 0.26));
 
 func compute_wavelenghts_lambda(value: Vector3) -> Vector3:
 	return value * 1e-9
@@ -485,7 +486,7 @@ func compute_beta_mie(mie: float, turbidity: float) -> Vector3:
 
 func _set_sun_uMuS() -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_UMUS_PARAM, get_celestial_uMus(sun_direction)
+		material.get_rid(), SUN_UMUS_PARAM, get_celestial_uMuS(sun_direction)
 	)
 	emit_changed()
 
@@ -505,7 +506,7 @@ func _set_beta_mie() -> void:
 	emit_changed()
 
 func _set_atm_day_tint() -> void:
-	var c: Color = atm_day_gradient.sample(USkyUtil.interpolate_by_above(sun_direction.y))\
+	var c: Color = atm_day_gradient.sample(UnivSkyUtil.interpolate_by_above(sun_direction.y))\
 		if is_instance_valid(atm_day_gradient) else Color.WHITE
 	RenderingServer.material_set_param(
 		material.get_rid(), DAY_TINT_PARAM,
@@ -518,7 +519,7 @@ func get_atm_night_intensity() -> float:
 	if not atm_enable_night_scattering:
 		ret = clamp(-sun_direction.y + 0.80, 0.0, 1.0)
 	else:
-		ret = get_celestial_uMus(moon_direction)
+		ret = get_celestial_uMuS(moon_direction)
 	
 	return ret * atm_night_intensity * get_atm_moon_phases_mul() * moon_intensity_multiplier
 
@@ -534,4 +535,3 @@ func _set_atm_night_tint() -> void:
 	)
 	_update_moon_mie_intensity(moon_mie_intensity)
 	emit_changed()
-#endregion

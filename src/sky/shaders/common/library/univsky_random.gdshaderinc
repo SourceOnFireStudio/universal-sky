@@ -1,5 +1,5 @@
-#ifndef USKY_RANDOM
-#define USKY_RANDOM
+#ifndef UNIVSKY_RANDOM
+#define UNIVSKY_RANDOM
 
 // Simple random from https://thebookofshaders.com/10/
 float simpleRandom(vec2 st){

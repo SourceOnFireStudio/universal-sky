@@ -1,6 +1,6 @@
-#ifndef USKY_COORDS
-#define USKY_COORDS
-#include "usky_const.gdshaderinc"
+#ifndef UNIVSKY_COORS
+#define UNIVSKY_COORS
+#include "univsky_const.gdshaderinc"
 
 vec2 equirectUV(vec3 norm){
 	vec2 ret;

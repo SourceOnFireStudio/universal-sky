@@ -1,6 +1,7 @@
-#ifndef USKY_CONST
-#define USKY_CONST
+#ifndef UNIVSKY_COORDS
+#define UNIVSKY_COORDS
 
+//TODO: Remove unnecessary constants.
 const float kPI          = 3.1415927f;
 const float kINV_PI      = 0.3183098f;
 const float kHALF_PI     = 1.5707963f;

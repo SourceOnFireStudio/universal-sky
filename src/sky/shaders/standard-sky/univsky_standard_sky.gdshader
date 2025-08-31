@@ -5,12 +5,12 @@ render_mode use_quarter_res_pass, use_half_res_pass;
 //#define TONEMAP_ACES
 #define ENABLE_TONEMAP
 
-#include "res://addons/universal-sky/src/sky/shaders/library/usky_coords.gdshaderinc"
-#include "usky_standard_atmosphere.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/library/usky_random.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_sun.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_moon.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/sky/common/usky_deep_space.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_coords.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/atmospheric-scattering/univsky_atmospheric_scattering.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_random.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_sun.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_moon.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_deep_space.gdshaderinc"
 
 uniform float debanding_level;
 

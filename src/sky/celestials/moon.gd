@@ -1,25 +1,37 @@
-@tool
-extends USkyCelestialBody3D
-class_name USkyMoon3D
+# Universal Sky
+# Description:
+# - Moon.
+# License:
+# - J. Cuéllar 2025 MIT License
+# - See: LICENSE File.
+@tool 
+@icon("res://addons/universal-sky/assets/icons/moon.svg")
+extends CelestialBody3D
+class_name Moon3D
 
-#region Resources
 const _DEFAULT_MOON_MAP_TEXTURE:= preload(
 	"res://addons/universal-sky/assets/textures/moon/MoonMap.png"
 )
-#endregion
 
 signal yaw_offset_changed
 
-@export
-var sun: USkySun3D:
-	get: return sun
-	set(value):
-		if is_instance_valid(value):
-			sun = value
-			_connect_sun_signals()
-		else:
-			_disconnect_sun_signals()
-			sun = value
+var _sun: Sun3D:
+	get: return _sun
+
+var phases_mul: float:
+	get:
+		if is_instance_valid(_sun):
+			return clamp(-_sun.direction.dot(_sun.direction) + 0.50, 0.0, 1.0)
+		return 1.0
+
+var clamped_matrix: Basis:
+	get: return Basis(
+		-(basis * Vector3.FORWARD),
+		-(basis * Vector3.UP),
+		-(basis * Vector3.RIGHT)
+	).transposed()
+
+var sun_moon_light_curve: Curve = Curve.new()
 
 @export_group("Texture")
 @export
@@ -33,14 +45,12 @@ var use_custom_texture: bool = false:
 			texture = _DEFAULT_MOON_MAP_TEXTURE
 		notify_property_list_changed()
 
-
-
 @export
 var texture: Texture = null:
 	get: return texture
 	set(value):
 		texture = value
-		emit_signal(VALUE_CHANGED, BodyValueType.TEXTURE)
+		emit_signal(VALUE_CHANGED, CelestialValueType.TEXTURE)
 
 @export
 var yaw_offset: float = -0.3:
@@ -62,21 +72,6 @@ var enable_light_moon_phases: bool = false:
 	set(value):
 		enable_light_moon_phases = value
 		_update_light_energy()
-
-var phases_mul: float:
-	get: 
-		if is_instance_valid(sun):
-			return clamp(-sun.direction.dot(direction) + 0.50, 0.0, 1.0)
-		return 1.0
-
-var clamped_matrix: Basis:
-	get: return Basis(
-		-(basis * Vector3.FORWARD),
-		-(basis * Vector3.UP),
-		-(basis * Vector3.RIGHT)
-	).transposed()
-
-var sun_moon_light_curve: Curve = Curve.new()
 
 func _on_init() -> void:
 	super()
@@ -103,23 +98,32 @@ func _validate_property(property: Dictionary) -> void:
 	if not use_custom_texture && property.name == "texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
 
+func set_sun(p_sun: Sun3D) -> void:
+	if is_instance_valid(p_sun):
+		_sun = p_sun
+		_connect_sun_signals()
+	else:
+		_disconnect_sun_signals()
+		_sun = null
+
+func _connect_sun_signals() -> void:
+	if not _sun.direction_changed.is_connected(_on_sun_direction_changed):
+		_sun.direction_changed.connect(_on_sun_direction_changed)
+
+func _disconnect_sun_signals() -> void:
+	if _sun.direction_changed.is_connected(_on_sun_direction_changed):
+		_sun.direction_changed.disconnect(_on_sun_direction_changed)
+
 func _get_light_energy() -> float:
-	var energy = super()
+	var energy: float = super()
 	if enable_light_moon_phases:
 		energy *= phases_mul
-	if is_instance_valid(sun) && is_instance_valid(sun_moon_light_curve):
-		var fade: float = (1.0 - sun.direction.y) - 0.5
+
+	if is_instance_valid(_sun) and is_instance_valid(sun_moon_light_curve):
+		var fade: float = (1.0 - _sun.direction.y) - 0.5
 		return energy * sun_moon_light_curve.sample_baked(fade)
 	
 	return energy
-
-func _connect_sun_signals() -> void:
-	if not sun.direction_changed.is_connected(_on_sun_direction_changed):
-		sun.direction_changed.connect(_on_sun_direction_changed)
-
-func _disconnect_sun_signals() -> void:
-	if sun.direction_changed.is_connected(_on_sun_direction_changed):
-		sun.direction_changed.disconnect(_on_sun_direction_changed)
 
 func _on_sun_direction_changed() -> void:
 	_update_light_energy()

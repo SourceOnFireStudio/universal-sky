@@ -1,0 +1,169 @@
+[gd_scene load_steps=23 format=3 uid="uid://bw15xc6jb81e6"]
+
+[ext_resource type="Script" uid="uid://cyj8uwon5dmh1" path="res://addons/universal-sky/src/sky/sky_handler.gd" id="1_5pvsd"]
+[ext_resource type="Texture2D" uid="uid://cvqafkrcfb246" path="res://addons/universal-sky/assets/textures/milky-way/Milkyway.jpg" id="2_gv6sx"]
+[ext_resource type="Script" uid="uid://hrqegiwf7gbo" path="res://addons/universal-sky/src/sky/material/standard_sky_material.gd" id="3_2t0jo"]
+[ext_resource type="Texture2D" uid="uid://bvyqf03kl2e61" path="res://addons/universal-sky/assets/textures/milky-way/StarField.jpg" id="4_hmx4h"]
+[ext_resource type="Script" uid="uid://cu18k8ov4dxkq" path="res://addons/universal-sky/src/sky/celestials/sun.gd" id="5_frjel"]
+[ext_resource type="Script" uid="uid://dg8d3ajenewmk" path="res://addons/universal-sky/src/sky/celestials/moon.gd" id="6_yu7y7"]
+[ext_resource type="Texture2D" uid="uid://bg0ltx4f5n1qx" path="res://addons/universal-sky/assets/textures/moon/MoonMap.png" id="7_cvb06"]
+[ext_resource type="Shader" uid="uid://eeupldpiba2s" path="res://addons/universal-sky/src/sky/shaders/standard-sky/univsky_standard_sky.gdshader" id="8_gxt2a"]
+
+[sub_resource type="Gradient" id="Gradient_5pvsd"]
+offsets = PackedFloat32Array(0, 0.80497926, 0.88381743)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.79296875, 0.43984985, 0.43984985, 1)
+
+[sub_resource type="Resource" id="Resource_uu07e"]
+script = ExtResource("3_2t0jo")
+atm_day_gradient = SubResource("Gradient_5pvsd")
+atm_ground_color = Color(0.7109375, 0.7109375, 0.7109375, 1)
+background_texture = ExtResource("2_gv6sx")
+stars_field_texture = ExtResource("4_hmx4h")
+metadata/_custom_type_script = "uid://hrqegiwf7gbo"
+
+[sub_resource type="Gradient" id="Gradient_gv6sx"]
+offsets = PackedFloat32Array(0.73992676, 0.82783884)
+colors = PackedColorArray(0.9843137, 0.84313726, 0.7882353, 1, 1, 0.5239258, 0.23828125, 1)
+
+[sub_resource type="Curve" id="Curve_2t0jo"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.93979937, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_hmx4h"]
+_data = [Vector2(0, 0.3023098), 0.0, 0.0, 0, 0, Vector2(0.92642146, 0.3023098), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5pvsd"]
+shader = ExtResource("8_gxt2a")
+shader_parameter/exposure = 1.0
+shader_parameter/tonemap_level = 0.0
+shader_parameter/horizon_offset = 0.0
+shader_parameter/sun_direction = Vector3(0, 0, 0)
+shader_parameter/sun_color = Color(0, 0, 0, 1)
+shader_parameter/sun_intensity = 0.0
+shader_parameter/sun_size = 0.0
+shader_parameter/sun_eclipse_intensity = 0.0
+shader_parameter/moon_direction = Vector3(0, 0, 0)
+shader_parameter/moon_color = Color(0, 0, 0, 1)
+shader_parameter/moon_intensity = 0.0
+shader_parameter/moon_size = 0.0
+shader_parameter/moon_texture = ExtResource("7_cvb06")
+shader_parameter/moon_texture_yaw_offset = 0.0
+shader_parameter/moon_matrix = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
+shader_parameter/atm_sun_mie_anisotropy = 0.0
+shader_parameter/atm_sun_mie_color = Color(0, 0, 0, 1)
+shader_parameter/atm_sun_mie_intensity = 0.0
+shader_parameter/atm_moon_mie_anisotropy = 0.0
+shader_parameter/atm_moon_mie_color = Color(0, 0, 0, 1)
+shader_parameter/atm_moon_mie_intensity = 0.0
+shader_parameter/atm_day_intensity = 15.0
+shader_parameter/atm_contrast = 0.1
+shader_parameter/atm_thickness = 1.0
+shader_parameter/atm_rayleigh_level = 1.0
+shader_parameter/atm_day_tint = Color(1, 1, 1, 1)
+shader_parameter/atm_night_tint = Color(0.255, 0.337, 0.447, 1)
+shader_parameter/atm_beta_ray = Vector3(0, 0, 0)
+shader_parameter/atm_beta_mie = Vector3(0, 0, 0)
+shader_parameter/atm_ground_color = Color(0.255, 0.337, 0.447, 1)
+shader_parameter/sun_uMuS = 0.0
+shader_parameter/background_texture = ExtResource("2_gv6sx")
+shader_parameter/background_color = Color(0, 0, 0, 1)
+shader_parameter/background_intensity = 0.0
+shader_parameter/background_contrast = 0.0
+shader_parameter/stars_field_texture = ExtResource("4_hmx4h")
+shader_parameter/stars_field_color = Color(0, 0, 0, 1)
+shader_parameter/stars_field_intensity = 0.0
+shader_parameter/stars_scintillation = 0.0
+shader_parameter/stars_scintillation_speed = 0.0
+shader_parameter/deep_space_matrix = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
+shader_parameter/debanding_level = 0.0
+
+[sub_resource type="Sky" id="Sky_ljm3b"]
+sky_material = SubResource("ShaderMaterial_5pvsd")
+process_mode = 2
+radiance_size = 1
+
+[sub_resource type="Environment" id="Environment_tycrn"]
+background_mode = 2
+sky = SubResource("Sky_ljm3b")
+tonemap_mode = 3
+tonemap_white = 6.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5pvsd"]
+roughness = 0.97
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_1aaaw"]
+size = Vector2(7, 7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gv6sx"]
+metallic = 0.17
+roughness = 0.29
+
+[sub_resource type="SphereMesh" id="SphereMesh_2t0jo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hmx4h"]
+metallic = 1.0
+roughness = 0.11
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_frjel"]
+metallic = 1.0
+roughness = 0.51
+
+[node name="Node3D" type="Node3D"]
+
+[node name="SkyHandler" type="Node" parent="."]
+script = ExtResource("1_5pvsd")
+material = SubResource("Resource_uu07e")
+enviro_container = NodePath("../WorldEnvironment")
+metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
+
+[node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
+transform = Transform3D(0.9557058, -0.21364716, 0.20243904, -0.23998904, -0.9638484, 0.11576545, 0.17038757, -0.15922083, -0.97242826, -0.6475706, 4.1878166, 0)
+light_color = Color(1, 0.5239258, 0.23828125, 1)
+script = ExtResource("5_frjel")
+body_color = Color(1, 0.7058, 0.447, 1)
+body_intensity = 10.0
+lighting_gradient = SubResource("Gradient_gv6sx")
+lighting_energy_curve = SubResource("Curve_2t0jo")
+metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
+
+[node name="Moon3D" type="DirectionalLight3D" parent="SkyHandler"]
+transform = Transform3D(0.8947395, 0.28374612, -0.34486115, -0.12658378, 0.90167785, 0.4134653, 0.42827284, -0.3262899, 0.8426845, 0.70865345, 4.2314076, 0)
+light_color = Color(0.54, 0.7, 0.9, 1)
+light_energy = 0.0
+script = ExtResource("6_yu7y7")
+texture = ExtResource("7_cvb06")
+body_color = Color(1, 1, 1, 1)
+mie_color = Color(0.623, 0.786, 1, 1)
+lighting_color = Color(0.54, 0.7, 0.9, 1)
+lighting_energy = 0.3
+lighting_energy_curve = SubResource("Curve_hmx4h")
+metadata/_custom_type_script = "uid://dg8d3ajenewmk"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tycrn")
+
+[node name="Primitives" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Primitives"]
+material_override = SubResource("StandardMaterial3D_5pvsd")
+mesh = SubResource("PlaneMesh_1aaaw")
+skeleton = NodePath("../..")
+
+[node name="Sphere" type="MeshInstance3D" parent="Primitives"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0221938, 0.4953506, 0)
+material_override = SubResource("StandardMaterial3D_gv6sx")
+mesh = SubResource("SphereMesh_2t0jo")
+
+[node name="Sphere2" type="MeshInstance3D" parent="Primitives"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4953506, 0)
+material_override = SubResource("StandardMaterial3D_hmx4h")
+mesh = SubResource("SphereMesh_2t0jo")
+
+[node name="Sphere3" type="MeshInstance3D" parent="Primitives"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.022, 0.495, 0)
+material_override = SubResource("StandardMaterial3D_frjel")
+mesh = SubResource("SphereMesh_2t0jo")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.93312657, -4.118606)

@@ -95,7 +95,7 @@ func _on_init() -> void:
 	enable_light_moon_phases = enable_light_moon_phases
 
 func _validate_property(property: Dictionary) -> void:
-	if not use_custom_texture && property.name == "texture":
+	if not use_custom_texture and property.name == "texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
 
 func set_sun(p_sun: Sun3D) -> void:

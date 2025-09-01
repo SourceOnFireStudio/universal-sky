@@ -27,8 +27,6 @@ signal value_changed(type)
 var direction: Vector3:
 	get: return -(basis * Vector3.FORWARD)
 
-
-
 @export
 var intensity_multiplier: float = 1.0:
 	get: return intensity_multiplier
@@ -196,6 +194,6 @@ func _update_light_energy() -> void:
 	light_energy = _get_light_energy() * intensity_multiplier
 
 func _get_light_energy() -> float:
-	if lighting_energy_curve != null:
+	if is_instance_valid(lighting_energy_curve):
 		return lighting_energy_curve.sample(UnivSkyUtil.interpolate_by_above(direction.y))
 	return lerp(0.0, lighting_energy, clamp(direction.y, 0.0, 1.0))

@@ -62,7 +62,7 @@ void sky(){
 	
 	// 2D Dynamic Clouds
 	if(enable_dynamic_clouds){
-		float cloudsBlend = saturate(worldPos.y * 2.0);
+		float cloudsBlend = saturate(worldPos.y * 3.0);
 		vec2 cloudsUV = getDynamicCloudsUV(worldPos);
 		vec4 clouds = dynamicClouds(cloudsUV, TIME);
 		vec3 cloudsColor = cloudsColorScattering(worldPos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));

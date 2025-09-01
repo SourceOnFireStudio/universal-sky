@@ -30,6 +30,9 @@ background_texture = ExtResource("2_gv6sx")
 stars_field_texture = ExtResource("4_hmx4h")
 enable_dynamic_clouds = true
 dynamic_clouds_texture = SubResource("NoiseTexture2D_gv6sx")
+dynamic_clouds_coverage = 0.515
+dynamic_clouds_size = 1.28
+dynamic_clouds_uv = Vector2(0.045, 0.065)
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
 
 [sub_resource type="Gradient" id="Gradient_gv6sx"]
@@ -94,8 +97,11 @@ shader_parameter/dynamic_clouds_density = 30.0
 shader_parameter/dynamic_clouds_direction = Vector2(0.005, 0.005)
 shader_parameter/dynamic_clouds_size = 1.0
 shader_parameter/dynamic_clouds_uv = Vector2(0.1, 0.1)
+shader_parameter/clouds_panorama_speed = 0.01
+shader_parameter/clouds_panorama_intensity = 1.525
 shader_parameter/debanding_level = 0.0
 shader_parameter/enable_dynamic_clouds = false
+shader_parameter/enable_clouds_panorama = false
 
 [sub_resource type="Sky" id="Sky_ljm3b"]
 sky_material = SubResource("ShaderMaterial_5pvsd")
@@ -145,8 +151,8 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.99101174, -0.12340161, 0.05165831, -0.03367147, 0.14362943, 0.98905903, -0.12947117, -0.98190814, 0.13818324, 3.9577432, 5.021492, 0)
-light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
+transform = Transform3D(0.9910125, -0.05146627, -0.123481795, -0.033671502, -0.98928106, 0.14209284, -0.12947127, -0.13665771, -0.9821217, 3.9577432, 5.021492, 0)
+light_color = Color(1, 0.5239258, 0.23828125, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
@@ -157,13 +163,14 @@ lighting_energy_curve = SubResource("Curve_2t0jo")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
 [node name="Moon3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.71316016, -0.61787635, 0.3311064, -0.65984327, -0.43222356, 0.614646, -0.23666316, -0.65681934, -0.7159462, 0.70865345, 4.2314076, 0)
+transform = Transform3D(0.8086336, -0.47981972, 0.3404189, -0.5776062, -0.75739735, 0.30450007, 0.11172719, -0.44285703, -0.88960373, 0.70865345, 4.2314076, 0)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
 shadow_enabled = true
 script = ExtResource("6_yu7y7")
 texture = ExtResource("7_cvb06")
 body_color = Color(1, 1, 1, 1)
+body_size = 2.015
 mie_color = Color(0.623, 0.786, 1, 1)
 lighting_color = Color(0.54, 0.7, 0.9, 1)
 lighting_energy = 0.3

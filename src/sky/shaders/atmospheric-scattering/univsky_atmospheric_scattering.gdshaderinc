@@ -62,7 +62,7 @@ vec3 cloudsColorScattering(vec3 pos, vec3 horizonBlend, vec3 groundColor){
 	Lin *= atm_day_tint.rgb;
 
 	// Night
-	float moonMu = dot(moon_direction, pos);
+	//float moonMu = dot(moon_direction, pos);
 	vec3 nLin = (1.0 - extinction);
 	nLin *= atm_night_tint.rgb;
 

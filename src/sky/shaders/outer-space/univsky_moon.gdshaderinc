@@ -26,8 +26,6 @@ float moonSphere(MoonSphereRay ray, inout float mask){
 }
 
 vec4 computeMoon(vec3 pos){
-	float moonMu = dot(moon_direction, pos);
-
 	MoonSphereRay ray;
 	ray.origin = pos;
 	ray.direction = moon_direction;

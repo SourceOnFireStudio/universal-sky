@@ -48,7 +48,16 @@ const STARS_FIELD_COLOR_PARAM:= &"stars_field_color"
 const STARS_FIELD_INTENSITY_PARAM:= &"stars_field_intensity"
 const STARS_FIELD_TEXTURE_PARAM:= &"stars_field_texture"
 const STARS_SCINTILLATION_PARAM:= &"stars_scintillation"
-const STARS_SCINTILLATION_SPEED_PARAM:=&"stars_scintillation_speed"
+const STARS_SCINTILLATION_SPEED_PARAM:= &"stars_scintillation_speed"
+
+const ENABLE_DYNAMIC_CLOUDS_PARAM:= &"enable_dynamic_clouds"
+const DYNAMIC_CLOUDS_TEXTURE_PARAM:= &"dynamic_clouds_texture"
+const DYNAMIC_CLOUDS_COVERAGE_PARAM:= &"dynamic_clouds_coverage"
+const DYNAMIC_CLOUDS_ABSORPTION_PARAM:= &"dynamic_clouds_absorption"
+const DYNAMIC_CLOUDS_DENSITY_PARAM:= &"dynamic_clouds_density"
+const DYNAMIC_CLOUDS_DIRECTION_PARAM:= &"dynamic_clouds_direction"
+const DYNAMIC_CLOUDS_SIZE_PARAM:= &"dynamic_clouds_size"
+const DYNAMIC_CLOUDS_UV_PARAM:= &"dynamic_clouds_uv"
 
 # Index of the air refraction.
 const n: float = 1.0003
@@ -227,7 +236,8 @@ var atm_ground_color:= Color(0.543, 0.543, 0.543): # Color(0.204, 0.345, 0.467):
 		)
 		emit_changed()
 #endregion
-#region Deep
+
+#region Deep Space
 @export_group("Deep Space")
 @export 
 var deep_space_euler:= Vector3(0.0, 0.0, 0.0):
@@ -368,6 +378,90 @@ var stars_scintillation_speed: float = 1.0:
 		emit_changed()
 #endregion
 
+#region Clouds
+
+@export_group('Dynamic Clouds')
+@export
+var enable_dynamic_clouds: bool = false:
+	get: return enable_dynamic_clouds
+	set(value):
+		enable_dynamic_clouds = value
+		RenderingServer.material_set_param(
+			material.get_rid(), ENABLE_DYNAMIC_CLOUDS_PARAM, enable_dynamic_clouds
+		)
+		emit_changed()
+
+@export
+var dynamic_clouds_texture: Texture2D = null:
+	get: return dynamic_clouds_texture
+	set(value):
+		dynamic_clouds_texture = value
+		material.set_shader_parameter(DYNAMIC_CLOUDS_TEXTURE_PARAM, dynamic_clouds_texture)
+		emit_changed()
+
+@export
+var dynamic_clouds_coverage:= 0.5:
+	get: return dynamic_clouds_coverage
+	set(value):
+		dynamic_clouds_coverage = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DYNAMIC_CLOUDS_COVERAGE_PARAM, dynamic_clouds_coverage
+		)
+		emit_changed()
+
+@export
+var dynamic_clouds_absorption:= 15.0:
+	get: return dynamic_clouds_absorption
+	set(value):
+		dynamic_clouds_absorption = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DYNAMIC_CLOUDS_ABSORPTION_PARAM, dynamic_clouds_absorption
+		)
+		emit_changed()
+
+@export
+var dynamic_clouds_density: float = 30.0:
+	get: return dynamic_clouds_density
+	set(value):
+		dynamic_clouds_density = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DYNAMIC_CLOUDS_DENSITY_PARAM, dynamic_clouds_density
+		)
+		emit_changed()
+
+@export
+var dynamic_clouds_direction:= Vector2(0.005, 0.005):
+	get: return dynamic_clouds_direction
+	set(value):
+		dynamic_clouds_direction = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DYNAMIC_CLOUDS_DIRECTION_PARAM, dynamic_clouds_direction
+		)
+		emit_changed()
+
+@export
+var dynamic_clouds_size: float = 1.0:
+	get: return dynamic_clouds_size
+	set(value):
+		dynamic_clouds_size = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DYNAMIC_CLOUDS_SIZE_PARAM, dynamic_clouds_size
+		)
+		emit_changed()
+
+@export
+var dynamic_clouds_uv:= Vector2(0.1, 0.1):
+	get: return dynamic_clouds_uv
+	set(value):
+		dynamic_clouds_uv = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DYNAMIC_CLOUDS_UV_PARAM, dynamic_clouds_uv
+		)
+		emit_changed()
+
+#endregion
+
+
 func _on_init() -> void:
 	super()
 	material.shader = SHADER
@@ -409,6 +503,15 @@ func _on_init() -> void:
 	stars_field_texture = stars_field_texture
 	stars_scintillation = stars_scintillation
 	stars_scintillation_speed = stars_scintillation_speed
+	
+	enable_dynamic_clouds = enable_dynamic_clouds
+	dynamic_clouds_texture = dynamic_clouds_texture
+	dynamic_clouds_coverage = dynamic_clouds_coverage
+	dynamic_clouds_absorption = dynamic_clouds_absorption
+	dynamic_clouds_density = dynamic_clouds_density
+	dynamic_clouds_direction = dynamic_clouds_direction
+	dynamic_clouds_size = dynamic_clouds_size
+	dynamic_clouds_uv = dynamic_clouds_uv
 
 func _validate_property(property: Dictionary) -> void:
 	if not use_custom_bg_texture && property.name == "background_texture":

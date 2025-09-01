@@ -11,8 +11,10 @@ render_mode use_quarter_res_pass, use_half_res_pass;
 #include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_sun.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_moon.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_deep_space.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/dynamic-clouds/univsky_dynamic_clouds.gdshaderinc"
 
 uniform float debanding_level;
+uniform bool enable_dynamic_clouds;
 
 vec3 colorCorrection(vec3 col, vec2 fragcoord){
 	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
@@ -57,10 +59,18 @@ void sky(){
 
 	// Apply deep and near space.
 	finalColor.rgb += (deepSpace + nearSpace) * horizonBlend;
-
+	
+	// 2D Dynamic Clouds
+	if(enable_dynamic_clouds){
+		vec2 cloudsUV = getDynamicCloudsUV(worldPos);
+		vec4 clouds = dynamicClouds(cloudsUV, TIME);
+		vec3 cloudsColor = cloudsColorScattering(worldPos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));
+		finalColor.rgb = mix(finalColor.rgb, clouds.rgb * cloudsColor,  clouds.a * horizonBlend);
+	}
+	
 	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
+	finalColor.rgb += scatter;
 	COLOR = finalColor.rgb;
-	COLOR += scatter;
 	COLOR = colorCorrection(COLOR, FRAGCOORD.xy);
 	#else
 	if(AT_QUARTER_RES_PASS && AT_CUBEMAP_PASS){

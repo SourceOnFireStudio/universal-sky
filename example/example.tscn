@@ -14,6 +14,9 @@ offsets = PackedFloat32Array(0, 0.80497926, 0.88381743)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.79296875, 0.43984985, 0.43984985, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5pvsd"]
+noise_type = 3
+seed = 2
+frequency = 0.02
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gv6sx"]
 noise = SubResource("FastNoiseLite_5pvsd")
@@ -27,7 +30,6 @@ background_texture = ExtResource("2_gv6sx")
 stars_field_texture = ExtResource("4_hmx4h")
 enable_dynamic_clouds = true
 dynamic_clouds_texture = SubResource("NoiseTexture2D_gv6sx")
-compatibility = true
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
 
 [sub_resource type="Gradient" id="Gradient_gv6sx"]
@@ -42,7 +44,7 @@ point_count = 3
 _data = [Vector2(0, 0.3023098), 0.0, 0.0, 0, 0, Vector2(0.92642146, 0.3023098), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2t0jo"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5pvsd"]
 shader = ExtResource("8_gxt2a")
 shader_parameter/exposure = 1.0
 shader_parameter/tonemap_level = 0.0
@@ -96,7 +98,7 @@ shader_parameter/debanding_level = 0.0
 shader_parameter/enable_dynamic_clouds = false
 
 [sub_resource type="Sky" id="Sky_ljm3b"]
-sky_material = SubResource("ShaderMaterial_2t0jo")
+sky_material = SubResource("ShaderMaterial_5pvsd")
 process_mode = 2
 radiance_size = 1
 
@@ -143,8 +145,9 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.93927693, -0.3212352, -0.120693125, -0.1803205, -0.76126766, 0.6228616, -0.29196477, -0.56327593, -0.77296627, 3.9577432, 5.021492, 0)
+transform = Transform3D(0.99101174, -0.12340161, 0.05165831, -0.03367147, 0.14362943, 0.98905903, -0.12947117, -0.98190814, 0.13818324, 3.9577432, 5.021492, 0)
 light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
+shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
 body_color = Color(1, 0.7058, 0.447, 1)
@@ -157,6 +160,7 @@ metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 transform = Transform3D(0.71316016, -0.61787635, 0.3311064, -0.65984327, -0.43222356, 0.614646, -0.23666316, -0.65681934, -0.7159462, 0.70865345, 4.2314076, 0)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
+shadow_enabled = true
 script = ExtResource("6_yu7y7")
 texture = ExtResource("7_cvb06")
 body_color = Color(1, 1, 1, 1)
@@ -192,7 +196,7 @@ material_override = SubResource("StandardMaterial3D_frjel")
 mesh = SubResource("SphereMesh_2t0jo")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 1.5313382e-15, -1.7484554e-07, 3.3760426e-08, 0.98118156, 0.19308713, 1.7155523e-07, -0.19308713, 0.98118156, 0, 2.0264983, 2.881394)
+transform = Transform3D(0.6602245, 0.0114696035, -0.75098073, 1.998471e-09, 0.9998834, 0.015271054, 0.75106835, -0.010082325, 0.6601475, -5.487791, 1.0326862, 3.5734463)
 
 [node name="Nort" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, -2.9275248)

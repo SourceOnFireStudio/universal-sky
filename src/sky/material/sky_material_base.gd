@@ -44,6 +44,9 @@ func _init() -> void:
 	_on_init()
 
 func _on_init() -> void:
+	initialize_params()
+
+func initialize_params() -> void:
 	_initialize_default_celestial_values()
 	compatibility = compatibility
 

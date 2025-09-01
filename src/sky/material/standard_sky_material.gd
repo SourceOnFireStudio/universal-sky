@@ -465,7 +465,10 @@ var dynamic_clouds_uv:= Vector2(0.1, 0.1):
 func _on_init() -> void:
 	super()
 	material.shader = SHADER
-	
+	initialize_params()
+
+func initialize_params() -> void:
+	super()
 	tonemap_level = tonemap_level
 	debanding_level = debanding_level
 	exposure = exposure

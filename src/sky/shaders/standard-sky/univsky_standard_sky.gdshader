@@ -12,9 +12,13 @@ render_mode use_quarter_res_pass, use_half_res_pass;
 #include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_moon.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_deep_space.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/dynamic-clouds/univsky_dynamic_clouds.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/clouds_panorama/univsky_clouds_panorama.gdshaderinc"
 
 uniform float debanding_level;
 uniform bool enable_dynamic_clouds;
+uniform bool enable_clouds_panorama;
+
+
 
 vec3 colorCorrection(vec3 col, vec2 fragcoord){
 	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
@@ -60,13 +64,28 @@ void sky(){
 	// Apply deep and near space.
 	finalColor.rgb += (deepSpace + nearSpace) * horizonBlend;
 	
+	// Clouds
+	vec3 cloudsColor = vec3(0.0);
+	float cloudsBlend = 0.0;
+	if(enable_dynamic_clouds || enable_clouds_panorama){
+		cloudsColor = cloudsColorScattering(worldPos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));
+		cloudsBlend = saturate(worldPos.y * 3.0);
+		cloudsBlend *= cloudsBlend * cloudsBlend;
+	}
+	
 	// 2D Dynamic Clouds
+	float dynamicloudsAlpha = -1.0;
 	if(enable_dynamic_clouds){
-		float cloudsBlend = saturate(worldPos.y * 3.0);
 		vec2 cloudsUV = getDynamicCloudsUV(worldPos);
-		vec4 clouds = dynamicClouds(cloudsUV, TIME);
-		vec3 cloudsColor = cloudsColorScattering(worldPos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));
-		finalColor.rgb = mix(finalColor.rgb, clouds.rgb * cloudsColor, clouds.a * (cloudsBlend * cloudsBlend * cloudsBlend) );
+		vec4 clouds = dynamicClouds(cloudsUV, cloudsColor, TIME);
+		finalColor.rgb = mix(finalColor.rgb, clouds.rgb, clouds.a * cloudsBlend);
+		dynamicloudsAlpha = clouds.a;
+	}
+	
+	// Clouds Panorama
+	if(enable_clouds_panorama){
+		vec4 pano = cloudsPanoramaRB(worldPos, cloudsColor, TIME);
+		finalColor.rgb += mix(finalColor.rgb, pano.rgb, pano.a * cloudsBlend * (1.0-dynamicloudsAlpha));
 	}
 	
 	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY

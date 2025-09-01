@@ -59,6 +59,11 @@ const DYNAMIC_CLOUDS_DIRECTION_PARAM:= &"dynamic_clouds_direction"
 const DYNAMIC_CLOUDS_SIZE_PARAM:= &"dynamic_clouds_size"
 const DYNAMIC_CLOUDS_UV_PARAM:= &"dynamic_clouds_uv"
 
+const ENABLE_CLOUDS_PANORAMA_PARAM:= &"enable_clouds_panorama"
+const CLOUDS_PANORAMA_PARAM:= &"clouds_panorama"
+const CLOUDS_PANORAMA_INTENSITY_PARAM:= &"clouds_panorama_intensity"
+const CLOUDS_PANORAMA_SPEED_PARAM:= &"clouds_panorama_speed"
+
 # Index of the air refraction.
 const n: float = 1.0003
 
@@ -459,6 +464,45 @@ var dynamic_clouds_uv:= Vector2(0.1, 0.1):
 		)
 		emit_changed()
 
+@export_group('Clouds Panorama')
+@export
+var enable_clouds_panorama: bool = false:
+	get: return enable_clouds_panorama
+	set(value):
+		enable_clouds_panorama = value
+		RenderingServer.material_set_param(
+			material.get_rid(), ENABLE_CLOUDS_PANORAMA_PARAM, enable_clouds_panorama
+		)
+		emit_changed()
+
+@export 
+var clouds_panorama: Texture2D = null:
+	get: return clouds_panorama
+	set(value):
+		clouds_panorama = value
+		material.set_shader_parameter(CLOUDS_PANORAMA_PARAM, clouds_panorama)
+		emit_changed()
+
+@export
+var clouds_panorama_intensity: float = 1.0:
+	get: return clouds_panorama_intensity
+	set(value):
+		clouds_panorama_intensity = value
+		RenderingServer.material_set_param(
+			material.get_rid(), CLOUDS_PANORAMA_INTENSITY_PARAM, clouds_panorama_intensity
+		)
+		emit_changed()
+
+@export
+var clouds_panorama_speed: float = 0.005:
+	get: return clouds_panorama_speed
+	set(value):
+		clouds_panorama_speed = value
+		RenderingServer.material_set_param(
+			material.get_rid(), CLOUDS_PANORAMA_SPEED_PARAM, clouds_panorama_speed
+		)
+		emit_changed()
+
 #endregion
 
 
@@ -515,6 +559,11 @@ func initialize_params() -> void:
 	dynamic_clouds_direction = dynamic_clouds_direction
 	dynamic_clouds_size = dynamic_clouds_size
 	dynamic_clouds_uv = dynamic_clouds_uv
+	
+	enable_clouds_panorama = enable_clouds_panorama
+	clouds_panorama = clouds_panorama
+	clouds_panorama_intensity = clouds_panorama_intensity
+	clouds_panorama_speed = clouds_panorama_speed
 
 func _validate_property(property: Dictionary) -> void:
 	if not use_custom_bg_texture && property.name == "background_texture":

@@ -17,7 +17,7 @@ vec2 getDynamicCloudsUV(vec3 pos){
 	return pos.xz * dynamic_clouds_size;
 }
 
-vec4 dynamicClouds(vec2 uv, float time){
+vec4 dynamicClouds(vec2 uv, vec3 color, float time){
 	vec4 res = vec4(0.0);
 	
 	vec2 wind = time * dynamic_clouds_direction;
@@ -32,7 +32,7 @@ vec4 dynamicClouds(vec2 uv, float time){
 	float sh = saturate(exp(-dynamic_clouds_absorption * density));
 	float a = saturate(density * dynamic_clouds_density);
 	
-	res.rgb = vec3(sh);
+	res.rgb = sh * color;
 	res.a = a;
 	
 	return res;

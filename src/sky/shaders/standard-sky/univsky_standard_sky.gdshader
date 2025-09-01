@@ -34,7 +34,7 @@ void sky(){
 	vec3 horizonBlend = mix(vec3(0.0), vec3(1.0), smoothstep(-0.1, 1.0, dot(vec3(0.0, 1.0, 0.0),
 		worldPos + vec3(0.0, horizon_offset, 0.0)) * 10.0)
 	);
-
+	
 	// Atmosphere
 	vec3 scatter = atmosphericScattering(worldPos, horizonBlend);
 
@@ -62,10 +62,11 @@ void sky(){
 	
 	// 2D Dynamic Clouds
 	if(enable_dynamic_clouds){
+		float cloudsBlend = saturate(worldPos.y * 2.0);
 		vec2 cloudsUV = getDynamicCloudsUV(worldPos);
 		vec4 clouds = dynamicClouds(cloudsUV, TIME);
 		vec3 cloudsColor = cloudsColorScattering(worldPos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));
-		finalColor.rgb = mix(finalColor.rgb, clouds.rgb * cloudsColor,  clouds.a * horizonBlend);
+		finalColor.rgb = mix(finalColor.rgb, clouds.rgb * cloudsColor, clouds.a * (cloudsBlend * cloudsBlend * cloudsBlend) );
 	}
 	
 	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY

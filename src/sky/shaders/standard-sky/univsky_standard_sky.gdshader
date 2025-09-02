@@ -69,7 +69,7 @@ void sky(){
 	float cloudsBlend = 0.0;
 	if(enable_dynamic_clouds || enable_clouds_panorama){
 		cloudsColor = cloudsColorScattering(worldPos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));
-		cloudsBlend = saturate(worldPos.y * 3.0);
+		cloudsBlend = saturate(worldPos.y * 7.0);
 		cloudsBlend *= cloudsBlend * cloudsBlend;
 	}
 	

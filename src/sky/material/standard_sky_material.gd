@@ -52,6 +52,7 @@ const STARS_SCINTILLATION_SPEED_PARAM:= &"stars_scintillation_speed"
 
 const ENABLE_DYNAMIC_CLOUDS_PARAM:= &"enable_dynamic_clouds"
 const DYNAMIC_CLOUDS_TEXTURE_PARAM:= &"dynamic_clouds_texture"
+const DYNAMIC_CLOUDS_TEXTURE2_PARAM:= &"dynamic_clouds_texture2"
 const DYNAMIC_CLOUDS_COVERAGE_PARAM:= &"dynamic_clouds_coverage"
 const DYNAMIC_CLOUDS_ABSORPTION_PARAM:= &"dynamic_clouds_absorption"
 const DYNAMIC_CLOUDS_DENSITY_PARAM:= &"dynamic_clouds_density"
@@ -406,6 +407,13 @@ var dynamic_clouds_texture: Texture2D = null:
 		emit_changed()
 
 @export
+var dynamic_clouds_texture2: Texture2D = null:
+	get: return dynamic_clouds_texture2
+	set(value):
+		dynamic_clouds_texture2 = value
+		material.set_shader_parameter(DYNAMIC_CLOUDS_TEXTURE2_PARAM, dynamic_clouds_texture2)
+		emit_changed()
+@export
 var dynamic_clouds_coverage:= 0.5:
 	get: return dynamic_clouds_coverage
 	set(value):
@@ -564,6 +572,7 @@ func initialize_params() -> void:
 	
 	enable_dynamic_clouds = enable_dynamic_clouds
 	dynamic_clouds_texture = dynamic_clouds_texture
+	dynamic_clouds_texture2 = dynamic_clouds_texture2
 	dynamic_clouds_coverage = dynamic_clouds_coverage
 	dynamic_clouds_absorption = dynamic_clouds_absorption
 	dynamic_clouds_density = dynamic_clouds_density

@@ -55,6 +55,7 @@ const DYNAMIC_CLOUDS_TEXTURE_PARAM:= &"dynamic_clouds_texture"
 const DYNAMIC_CLOUDS_COVERAGE_PARAM:= &"dynamic_clouds_coverage"
 const DYNAMIC_CLOUDS_ABSORPTION_PARAM:= &"dynamic_clouds_absorption"
 const DYNAMIC_CLOUDS_DENSITY_PARAM:= &"dynamic_clouds_density"
+const DYNAMIC_CLOUDS_INTENSITY_PARAM:= &"dynamic_clouds_intensity"
 const DYNAMIC_CLOUDS_DIRECTION_PARAM:= &"dynamic_clouds_direction"
 const DYNAMIC_CLOUDS_SIZE_PARAM:= &"dynamic_clouds_size"
 const DYNAMIC_CLOUDS_UV_PARAM:= &"dynamic_clouds_uv"
@@ -435,6 +436,16 @@ var dynamic_clouds_density: float = 30.0:
 		emit_changed()
 
 @export
+var dynamic_clouds_intensity: float = 1.0:
+	get: return dynamic_clouds_intensity
+	set(value):
+		dynamic_clouds_intensity = value
+		RenderingServer.material_set_param(
+			material.get_rid(), DYNAMIC_CLOUDS_INTENSITY_PARAM, dynamic_clouds_intensity
+		)
+		emit_changed()
+
+@export
 var dynamic_clouds_direction:= Vector2(0.005, 0.005):
 	get: return dynamic_clouds_direction
 	set(value):
@@ -556,6 +567,7 @@ func initialize_params() -> void:
 	dynamic_clouds_coverage = dynamic_clouds_coverage
 	dynamic_clouds_absorption = dynamic_clouds_absorption
 	dynamic_clouds_density = dynamic_clouds_density
+	dynamic_clouds_intensity = dynamic_clouds_intensity
 	dynamic_clouds_direction = dynamic_clouds_direction
 	dynamic_clouds_size = dynamic_clouds_size
 	dynamic_clouds_uv = dynamic_clouds_uv

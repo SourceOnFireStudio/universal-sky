@@ -1,8 +1,9 @@
-[gd_scene load_steps=27 format=3 uid="uid://bw15xc6jb81e6"]
+[gd_scene load_steps=28 format=3 uid="uid://bw15xc6jb81e6"]
 
 [ext_resource type="Script" uid="uid://cyj8uwon5dmh1" path="res://addons/universal-sky/src/sky/sky_handler.gd" id="1_5pvsd"]
 [ext_resource type="Texture2D" uid="uid://cvqafkrcfb246" path="res://addons/universal-sky/assets/textures/milky-way/Milkyway.jpg" id="2_gv6sx"]
 [ext_resource type="Script" uid="uid://hrqegiwf7gbo" path="res://addons/universal-sky/src/sky/material/standard_sky_material.gd" id="3_2t0jo"]
+[ext_resource type="Texture2D" uid="uid://5p8h36xman8f" path="res://addons/universal-sky/example/textures/clouds_pano_example.png" id="3_gv6sx"]
 [ext_resource type="Texture2D" uid="uid://bvyqf03kl2e61" path="res://addons/universal-sky/assets/textures/milky-way/StarField.jpg" id="4_hmx4h"]
 [ext_resource type="Script" uid="uid://cu18k8ov4dxkq" path="res://addons/universal-sky/src/sky/celestials/sun.gd" id="5_frjel"]
 [ext_resource type="Script" uid="uid://dg8d3ajenewmk" path="res://addons/universal-sky/src/sky/celestials/moon.gd" id="6_yu7y7"]
@@ -10,29 +11,33 @@
 [ext_resource type="Shader" uid="uid://eeupldpiba2s" path="res://addons/universal-sky/src/sky/shaders/standard-sky/univsky_standard_sky.gdshader" id="8_gxt2a"]
 
 [sub_resource type="Gradient" id="Gradient_5pvsd"]
-offsets = PackedFloat32Array(0, 0.80497926, 0.88381743)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 0.79296875, 0.43984985, 0.43984985, 1)
+offsets = PackedFloat32Array(0.80497926, 0.88381743)
+colors = PackedColorArray(1, 1, 1, 1, 0.79296875, 0.43984985, 0.43984985, 1)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_5pvsd"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_2t0jo"]
 noise_type = 3
-seed = 2
-frequency = 0.02
+offset = Vector3(0, 166.67, 0)
+fractal_type = 3
+fractal_weighted_strength = 0.34
+cellular_distance_function = 3
+cellular_return_type = 4
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gv6sx"]
-noise = SubResource("FastNoiseLite_5pvsd")
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hmx4h"]
+noise = SubResource("FastNoiseLite_2t0jo")
 seamless = true
 
 [sub_resource type="Resource" id="Resource_uu07e"]
 script = ExtResource("3_2t0jo")
+atm_day_intensity = 7.215
 atm_day_gradient = SubResource("Gradient_5pvsd")
 deep_space_euler = Vector3(0.735, 0, 0)
 background_texture = ExtResource("2_gv6sx")
 stars_field_texture = ExtResource("4_hmx4h")
-enable_dynamic_clouds = true
-dynamic_clouds_texture = SubResource("NoiseTexture2D_gv6sx")
-dynamic_clouds_coverage = 0.515
-dynamic_clouds_size = 1.28
-dynamic_clouds_uv = Vector2(0.045, 0.065)
+dynamic_clouds_texture = SubResource("NoiseTexture2D_hmx4h")
+dynamic_clouds_absorption = 2.0
+dynamic_clouds_density = 3.0
+enable_clouds_panorama = true
+clouds_panorama = ExtResource("3_gv6sx")
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
 
 [sub_resource type="Gradient" id="Gradient_gv6sx"]
@@ -47,7 +52,7 @@ point_count = 3
 _data = [Vector2(0, 0.3023098), 0.0, 0.0, 0, 0, Vector2(0.92642146, 0.3023098), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5pvsd"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gv6sx"]
 shader = ExtResource("8_gxt2a")
 shader_parameter/exposure = 1.0
 shader_parameter/tonemap_level = 0.0
@@ -90,21 +95,23 @@ shader_parameter/stars_field_intensity = 0.0
 shader_parameter/stars_scintillation = 0.0
 shader_parameter/stars_scintillation_speed = 0.0
 shader_parameter/deep_space_matrix = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
-shader_parameter/dynamic_clouds_texture = SubResource("NoiseTexture2D_gv6sx")
+shader_parameter/dynamic_clouds_texture = SubResource("NoiseTexture2D_hmx4h")
 shader_parameter/dynamic_clouds_coverage = 0.5
 shader_parameter/dynamic_clouds_absorption = 15.0
 shader_parameter/dynamic_clouds_density = 30.0
+shader_parameter/dynamic_clouds_intensity = 1.0
 shader_parameter/dynamic_clouds_direction = Vector2(0.005, 0.005)
 shader_parameter/dynamic_clouds_size = 1.0
 shader_parameter/dynamic_clouds_uv = Vector2(0.1, 0.1)
+shader_parameter/clouds_panorama = ExtResource("3_gv6sx")
 shader_parameter/clouds_panorama_speed = 0.01
-shader_parameter/clouds_panorama_intensity = 1.525
+shader_parameter/clouds_panorama_intensity = 1.0
 shader_parameter/debanding_level = 0.0
 shader_parameter/enable_dynamic_clouds = false
 shader_parameter/enable_clouds_panorama = false
 
 [sub_resource type="Sky" id="Sky_ljm3b"]
-sky_material = SubResource("ShaderMaterial_5pvsd")
+sky_material = SubResource("ShaderMaterial_gv6sx")
 process_mode = 2
 radiance_size = 1
 
@@ -151,8 +158,8 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.9910125, -0.05146627, -0.123481795, -0.033671502, -0.98928106, 0.14209284, -0.12947127, -0.13665771, -0.9821217, 3.9577432, 5.021492, 0)
-light_color = Color(1, 0.5239258, 0.23828125, 1)
+transform = Transform3D(0.9570652, 0.250028, -0.14668328, 0.2784266, -0.9337069, 0.22510493, -0.08067681, -0.25627974, -0.9632304, 3.9416847, 5.046468, -0.1294108)
+light_color = Color(0.9905532, 0.71616626, 0.56948304, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
@@ -163,10 +170,9 @@ lighting_energy_curve = SubResource("Curve_2t0jo")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
 [node name="Moon3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.8086336, -0.47981972, 0.3404189, -0.5776062, -0.75739735, 0.30450007, 0.11172719, -0.44285703, -0.88960373, 0.70865345, 4.2314076, 0)
+transform = Transform3D(0.846038, 0.46275043, 0.2647295, -0.5326428, 0.7126333, 0.4565587, 0.022618035, -0.5272723, 0.8493954, 0.70865345, 4.2314076, 0)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
-shadow_enabled = true
 script = ExtResource("6_yu7y7")
 texture = ExtResource("7_cvb06")
 body_color = Color(1, 1, 1, 1)

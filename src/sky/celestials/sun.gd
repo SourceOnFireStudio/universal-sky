@@ -88,10 +88,10 @@ func _update_eclipse() -> void:
 		var factor = UnivSkyMath.angular_intensity_sig(
 			direction, _moon.direction, threshold, eclipse_slope
 		)
-			
+		
 		factor = clamp(factor, min_eclipse_intensity, 1.0) \
 			if sunSize <= moonSize + celestialSizeBase else clamp(factor, 0.9, 1.0)
-			
+		
 		eclipse_multiplier = factor
 	else:
 		eclipse_multiplier = 1.0

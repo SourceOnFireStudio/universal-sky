@@ -78,6 +78,8 @@ const N: float = 2.545e25
 # Depolatization factor for standard air.
 const pn: float = 0.035
 
+var _atm_day_gradient: Gradient = null
+
 func material_is_valid() -> bool:
 	return true
 
@@ -191,8 +193,6 @@ var atm_day_intensity: float = 15.0:
 			material.get_rid(), ATM_DAY_INTENSITY_PARAM, atm_day_intensity * sun_intensity_multiplier
 		)
 		emit_changed()
-
-var _atm_day_gradient: Gradient = null
 
 @export
 var atm_day_gradient: Gradient:

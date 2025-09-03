@@ -95,12 +95,6 @@ var light_transition_curve: Curve:
 
 func _on_init() -> void:
 	super()
-	#light_transition_curve.add_point(Vector2(0, 0), 0.0, 0.0, 0, 0)
-	#light_transition_curve.add_point(Vector2(0.504975, 0), 0.0, 0.0467088, 1, 0)
-	#light_transition_curve.add_point(Vector2(0.552239, 1), 0.0, 0.0, 0, 0)
-	#light_transition_curve.add_point(Vector2(1, 1), 0.0, 0.0, 0, 0)
-	#light_transition_curve.bake()
-	
 	body_size =  1.0
 	body_intensity = 1.0
 	body_color = Color.WHITE
@@ -166,7 +160,6 @@ func _on_sun_direction_changed() -> void:
 
 func _on_light_transition_curve_changed() -> void: 
 	_update_light_energy()
-	print("LIGHT_TRANSITION")
 
 func get_final_moon_mie_intensity() -> float:
 	if enable_mie_phases:

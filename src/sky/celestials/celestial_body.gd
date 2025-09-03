@@ -96,6 +96,7 @@ var lighting_gradient: Gradient = null:
 	get: return lighting_gradient
 	set(value):
 		lighting_gradient = value
+		#FIXME
 		if !is_instance_valid(lighting_gradient):
 			_disconnect_light_gradient_changed()
 		_connect_light_gradient_changed()
@@ -113,6 +114,7 @@ var lighting_energy_curve: Curve = null:
 	get: return lighting_energy_curve
 	set(value):
 		lighting_energy_curve = value
+		#FIXME
 		if !is_instance_valid(lighting_energy_curve):
 			_disconnect_light_curve_changed()
 		_connect_light_curve_changed()
@@ -192,8 +194,11 @@ func _update_light_color() -> void:
 
 func _update_light_energy() -> void:
 	light_energy = _get_light_energy() * intensity_multiplier
+	shadow_enabled = true if light_energy > 0.0 else false
 
 func _get_light_energy() -> float:
-	if is_instance_valid(lighting_energy_curve):
-		return lighting_energy_curve.sample(UnivSkyUtil.interpolate_by_above(direction.y))
-	return lerp(0.0, lighting_energy, clamp(direction.y, 0.0, 1.0))
+	if not is_instance_valid(lighting_energy_curve):
+		var uMuS = (atan(max(direction.y, -0.1975) * tan(1.386)) / 1.1 + (1.0 - 0.26));
+		uMuS = clamp(uMuS-0.3, 0.0, 1.0)
+		return lerp(0.0, lighting_energy, uMuS)
+	return lighting_energy_curve.sample(UnivSkyUtil.interpolate_full(direction.y))

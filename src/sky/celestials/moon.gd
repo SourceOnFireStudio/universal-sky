@@ -15,6 +15,8 @@ const _DEFAULT_MOON_MAP_TEXTURE:= preload(
 
 signal yaw_offset_changed
 
+var _light_transition_curve: Curve
+
 var _sun: Sun3D:
 	get: return _sun
 
@@ -30,8 +32,6 @@ var clamped_matrix: Basis:
 		-(basis * Vector3.UP),
 		-(basis * Vector3.RIGHT)
 	).transposed()
-
-var sun_moon_light_curve: Curve = Curve.new()
 
 @export_group("Texture")
 @export
@@ -73,13 +73,33 @@ var enable_light_moon_phases: bool = false:
 		enable_light_moon_phases = value
 		_update_light_energy()
 
+@export_group("Light Transition")
+@export
+var light_transition_threshold: float = 0.8:
+	get: return light_transition_threshold
+	set(value):
+		light_transition_threshold = value
+		_update_light_energy()
+
+@export
+var light_transition_curve: Curve:
+	get: return _light_transition_curve
+	set(value):
+		if is_instance_valid(value):
+			_light_transition_curve = value
+			_connect_light_transition_curve_changed()
+		else:
+			_disconnect_light_transition_curve_changed()
+			_light_transition_curve = null
+		_update_light_energy()
+
 func _on_init() -> void:
 	super()
-	sun_moon_light_curve.add_point(Vector2(0, 0), 0.0, 0.0, 0, 0)
-	sun_moon_light_curve.add_point(Vector2(0.504975, 0), 0.0, 0.0467088, 1, 0)
-	sun_moon_light_curve.add_point(Vector2(0.552239, 1), 0.0, 0.0, 0, 0)
-	sun_moon_light_curve.add_point(Vector2(1, 1), 0.0, 0.0, 0, 0)
-	sun_moon_light_curve.bake()
+	#light_transition_curve.add_point(Vector2(0, 0), 0.0, 0.0, 0, 0)
+	#light_transition_curve.add_point(Vector2(0.504975, 0), 0.0, 0.0467088, 1, 0)
+	#light_transition_curve.add_point(Vector2(0.552239, 1), 0.0, 0.0, 0, 0)
+	#light_transition_curve.add_point(Vector2(1, 1), 0.0, 0.0, 0, 0)
+	#light_transition_curve.bake()
 	
 	body_size =  1.0
 	body_intensity = 1.0
@@ -93,6 +113,8 @@ func _on_init() -> void:
 	use_custom_texture = use_custom_texture
 	texture = texture
 	enable_light_moon_phases = enable_light_moon_phases
+	light_transition_curve = light_transition_curve
+	light_transition_threshold = light_transition_threshold
 
 func _validate_property(property: Dictionary) -> void:
 	if not use_custom_texture and property.name == "texture":
@@ -114,18 +136,35 @@ func _disconnect_sun_signals() -> void:
 	if _sun.direction_changed.is_connected(_on_sun_direction_changed):
 		_sun.direction_changed.disconnect(_on_sun_direction_changed)
 
+func _connect_light_transition_curve_changed() -> void:
+	if not _light_transition_curve.changed.is_connected(_on_light_transition_curve_changed):
+		_light_transition_curve.changed.connect(_on_light_transition_curve_changed)
+
+func _disconnect_light_transition_curve_changed() -> void:
+	if _light_transition_curve.changed.is_connected(_on_light_transition_curve_changed):
+		_light_transition_curve.changed.disconnect(_on_light_transition_curve_changed)
+
 func _get_light_energy() -> float:
 	var energy: float = super()
 	if enable_light_moon_phases:
 		energy *= phases_mul
 
-	if is_instance_valid(_sun) and is_instance_valid(sun_moon_light_curve):
-		var fade: float = (1.0 - _sun.direction.y) - 0.5
-		return energy * sun_moon_light_curve.sample_baked(fade)
+	if is_instance_valid(_sun):
+		var invLE = 1.0 - clamp(_sun.light_energy, 0.0, 1.0)
+		if is_instance_valid(light_transition_curve):
+			var fade: float = clamp(invLE - (1.0-light_transition_threshold), 0.0, 1.0);
+			return energy * light_transition_curve.sample_baked(fade)
+			
+		else:
+			var fade: float = clamp(invLE - light_transition_threshold, 0.0, 1.0)
+			return energy * lerp(0.0, 1.0, fade);
 	
 	return energy
 
 func _on_sun_direction_changed() -> void:
+	_update_light_energy()
+
+func _on_light_transition_curve_changed() -> void: 
 	_update_light_energy()
 
 func get_final_moon_mie_intensity() -> float:

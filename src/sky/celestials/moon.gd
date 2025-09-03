@@ -88,7 +88,7 @@ var light_transition_curve: Curve:
 		if is_instance_valid(value):
 			_light_transition_curve = value
 			_connect_light_transition_curve_changed()
-		else:
+		elif is_instance_valid(_light_transition_curve):
 			_disconnect_light_transition_curve_changed()
 			_light_transition_curve = null
 		_update_light_energy()
@@ -166,6 +166,7 @@ func _on_sun_direction_changed() -> void:
 
 func _on_light_transition_curve_changed() -> void: 
 	_update_light_energy()
+	print("LIGHT_TRANSITION")
 
 func get_final_moon_mie_intensity() -> float:
 	if enable_mie_phases:

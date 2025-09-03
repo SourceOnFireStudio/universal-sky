@@ -24,6 +24,9 @@ const VALUE_CHANGED:= &"value_changed"
 signal direction_changed()
 signal value_changed(type)
 
+var _lighting_gradient: Gradient = null
+var _lighting_energy_curve: Curve = null
+
 var direction: Vector3:
 	get: return -(basis * Vector3.FORWARD)
 
@@ -93,13 +96,14 @@ var lighting_color:= Color(0.984314, 0.843137, 0.788235):
 
 @export
 var lighting_gradient: Gradient = null:
-	get: return lighting_gradient
+	get: return _lighting_gradient
 	set(value):
-		lighting_gradient = value
-		#FIXME
-		if !is_instance_valid(lighting_gradient):
+		if is_instance_valid(value):
+			_lighting_gradient = value
+			_connect_light_gradient_changed()
+		elif is_instance_valid(_lighting_gradient):
 			_disconnect_light_gradient_changed()
-		_connect_light_gradient_changed()
+			_lighting_gradient = null
 		_update_light_color()
 
 @export
@@ -111,13 +115,14 @@ var lighting_energy: float = 1.0:
 
 @export
 var lighting_energy_curve: Curve = null:
-	get: return lighting_energy_curve
+	get: return _lighting_energy_curve
 	set(value):
-		lighting_energy_curve = value
-		#FIXME
-		if !is_instance_valid(lighting_energy_curve):
+		if is_instance_valid(value):
+			_lighting_energy_curve = value
+			_connect_light_curve_changed()
+		elif is_instance_valid(_lighting_gradient):
 			_disconnect_light_curve_changed()
-		_connect_light_curve_changed()
+			_lighting_energy_curve = null
 		_update_light_energy()
 #endregion
 
@@ -133,26 +138,18 @@ func _notification(what: int) -> void:
 		_on_exit_tree()
 
 func _connect_light_gradient_changed() -> void:
-	if not is_instance_valid(lighting_gradient):
-		return
 	if !lighting_gradient.changed.is_connected(_on_light_gradient_changed):
 		lighting_gradient.changed.connect(_on_light_gradient_changed)
 
 func _disconnect_light_gradient_changed() -> void:
-	if not is_instance_valid(lighting_gradient):
-		return
 	if lighting_gradient.changed.is_connected(_on_light_gradient_changed):
 		lighting_gradient.changed.disconnect(_on_light_gradient_changed)
 
 func _connect_light_curve_changed() -> void:
-	if not is_instance_valid(lighting_energy_curve):
-		return
 	if !lighting_energy_curve.changed.is_connected(_on_light_curve_changed):
 		lighting_energy_curve.changed.connect(_on_light_curve_changed)
 
 func _disconnect_light_curve_changed() -> void:
-	if not is_instance_valid(lighting_energy_curve):
-		return
 	if lighting_energy_curve.changed.is_connected(_on_light_curve_changed):
 		lighting_energy_curve.changed.disconnect(_on_light_curve_changed)
 

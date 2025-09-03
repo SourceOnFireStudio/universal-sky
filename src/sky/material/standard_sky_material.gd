@@ -192,14 +192,18 @@ var atm_day_intensity: float = 15.0:
 		)
 		emit_changed()
 
+var _atm_day_gradient: Gradient = null
+
 @export
 var atm_day_gradient: Gradient:
-	get: return atm_day_gradient
+	get: return _atm_day_gradient
 	set(value):
-		atm_day_gradient = value
 		if is_instance_valid(value):
-			_disconnect_changed_atm_day_gradient()
-			_connect_changed_atm_day_gradient()
+			_atm_day_gradient = value
+			_connect_atm_day_gradient_changed()
+		elif is_instance_valid(_atm_day_gradient):
+			_disconnect_atm_day_gradient_changed()
+			_atm_day_gradient = null
 		
 		_set_atm_day_tint()
 		emit_changed()
@@ -592,11 +596,11 @@ func _validate_property(property: Dictionary) -> void:
 	if not use_custom_stars_field_texture && property.name == "stars_field_texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
 
-func _connect_changed_atm_day_gradient() -> void:
+func _connect_atm_day_gradient_changed() -> void:
 	if !atm_day_gradient.changed.is_connected(_set_atm_day_tint):
 		atm_day_gradient.changed.connect(_set_atm_day_tint)
 
-func _disconnect_changed_atm_day_gradient() -> void:
+func _disconnect_atm_day_gradient_changed() -> void:
 	if atm_day_gradient.changed.is_connected(_set_atm_day_tint):
 		atm_day_gradient.changed.disconnect(_set_atm_day_tint)
 

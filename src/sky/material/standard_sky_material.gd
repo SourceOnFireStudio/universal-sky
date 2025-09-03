@@ -243,7 +243,7 @@ var atm_ground_color:= Color(0.543, 0.543, 0.543): # Color(0.204, 0.345, 0.467):
 		var c = atm_ground_color * 5.0
 		RenderingServer.material_set_param(
 			material.get_rid(), ATM_GROUND_COLOR_PARAM, 
-				c.srgb_to_linear() if compatibility else c
+				c.srgb_to_linear() if is_compatibility else c
 		)
 		emit_changed()
 #endregion
@@ -283,7 +283,7 @@ var background_color:= Color(1.0, 1.0, 1.0, 1.0):
 		background_color = value
 		RenderingServer.material_set_param(
 			material.get_rid(), DEEP_SPACE_BACKGROUND_COLOR_PARAM, 
-				background_color.srgb_to_linear() if compatibility else background_color
+				background_color.srgb_to_linear() if is_compatibility else background_color
 		)
 		emit_changed()
 
@@ -334,7 +334,7 @@ var stars_field_color:= Color.WHITE:
 		stars_field_color = value
 		RenderingServer.material_set_param(
 			material.get_rid(), STARS_FIELD_COLOR_PARAM, 
-				stars_field_color.srgb_to_linear() if compatibility else stars_field_color
+				stars_field_color.srgb_to_linear() if is_compatibility else stars_field_color
 		)
 		emit_changed()
 
@@ -690,7 +690,7 @@ func _set_atm_day_tint() -> void:
 		if is_instance_valid(atm_day_gradient) else Color.WHITE
 	RenderingServer.material_set_param(
 		material.get_rid(), DAY_TINT_PARAM,
-		c.srgb_to_linear() if compatibility else c
+		c.srgb_to_linear() if is_compatibility else c
 	)
 	emit_changed()
 
@@ -711,7 +711,7 @@ func get_atm_moon_phases_mul() -> float:
 func _set_atm_night_tint() -> void:
 	var tint:= atm_night_tint * get_atm_night_intensity()
 	RenderingServer.material_set_param(
-		material.get_rid(), NIGHT_TINT_PARAM, tint.srgb_to_linear() if compatibility else tint
+		material.get_rid(), NIGHT_TINT_PARAM, tint.srgb_to_linear() if is_compatibility else tint
 	)
 	_update_moon_mie_intensity(moon_mie_intensity)
 	emit_changed()

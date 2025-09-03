@@ -9,6 +9,9 @@
 extends Node
 class_name SkyHandler 
 
+const RENDERING_METHOD_PATH:= &"rendering/renderer/rendering_method"
+const COMPATIBILITY_RENDER_METHOD_NAME:= &"gl_compatibility"
+
 var _tree: SceneTree
 var _enviro: Environment = null
 
@@ -93,9 +96,15 @@ func _notification(what: int) -> void:
 			if Engine.is_editor_hint():
 				material.initialize_params()
 			
+			if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
+				material.set_compatibility(true)
+			else:
+				material.set_compatibility(false)
+			
 			enviro_container = enviro_container
 			sky_process_mode = sky_process_mode
 			sky_radiance_size = sky_radiance_size
+		
 		NOTIFICATION_EXIT_TREE:
 			_disconnect_child_tree_signals()
 			SkyInstances.remove_instance(self)
@@ -103,6 +112,9 @@ func _notification(what: int) -> void:
 			if is_instance_valid(_enviro):
 				_enviro.sky.sky_material = null
 				_disconnect_enviro_changed()
+
+func _get_rendering_method() -> String:
+	return str(ProjectSettings.get_setting_with_override(RENDERING_METHOD_PATH))
 
 func _get_configuration_warnings() -> PackedStringArray:
 	if not is_instance_valid(sun):

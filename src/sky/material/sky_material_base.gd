@@ -33,12 +33,16 @@ var _material:= ShaderMaterial.new()
 var material: ShaderMaterial:
 	get: return _material
 
-@export
-var compatibility: bool:
-	get: return compatibility
-	set(value):
-		compatibility = value
-		_compatibility_changed()
+#@export
+#var compatibility: bool:
+	#get: return compatibility
+	#set(value):
+		#compatibility = value
+		#_compatibility_changed()
+
+var _compatibility: bool = false
+var is_compatibility: bool:
+	get: return _compatibility
 
 func _init() -> void:
 	_on_init()
@@ -48,10 +52,14 @@ func _on_init() -> void:
 
 func initialize_params() -> void:
 	_initialize_default_celestial_values()
-	compatibility = compatibility
+	#compatibility = compatibility
 
 func material_is_valid() -> bool:
 	return false
+
+func set_compatibility(value: bool) -> void:
+	_compatibility = value
+	_compatibility_changed()
 
 func _compatibility_changed() -> void:
 	_update_sun_color(sun_color)
@@ -155,7 +163,7 @@ func _update_sun_direction(p_direction: Vector3) -> void:
 
 func _update_sun_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
+		material.get_rid(), SUN_COLOR_PARAM, p_color.srgb_to_linear() if _compatibility else p_color
 	)
 	emit_changed()
 
@@ -173,7 +181,7 @@ func _update_sun_size(p_size: float) -> void:
 
 func _update_sun_mie_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_MIE_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
+		material.get_rid(), SUN_MIE_COLOR_PARAM, p_color.srgb_to_linear() if _compatibility else p_color
 	)
 	emit_changed()
 
@@ -296,7 +304,7 @@ func _update_moon_texture_yaw_offset(p_offset: float) -> void:
 
 func _update_moon_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), MOON_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
+		material.get_rid(), MOON_COLOR_PARAM, p_color.srgb_to_linear() if _compatibility else p_color
 	)
 	emit_changed()
 
@@ -318,7 +326,7 @@ func _update_moon_texture(p_texture: Texture2D) -> void:
 
 func _update_moon_mie_color(p_color: Color) -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), MOON_MIE_COLOR_PARAM, p_color.srgb_to_linear() if compatibility else p_color
+		material.get_rid(), MOON_MIE_COLOR_PARAM, p_color.srgb_to_linear() if _compatibility else p_color
 	)
 	emit_changed()
 

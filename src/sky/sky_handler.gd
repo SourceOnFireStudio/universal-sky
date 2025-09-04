@@ -129,13 +129,11 @@ func _set_sky_material_to_enviro() -> void:
 		_enviro.sky.sky_material = null
 
 func _initialize_material() -> void:
-	# Prevent black sky when saving a script
-	if Engine.is_editor_hint():
-		material.initialize_params()
-		if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
-			material.set_compatibility(true)
-		else:
-			material.set_compatibility(false)
+	material.initialize_params()
+	if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
+		material.set_compatibility(true)
+	else:
+		material.set_compatibility(false)
 
 func _get_rendering_method() -> String:
 	return str(ProjectSettings.get_setting_with_override(RENDERING_METHOD_PATH))

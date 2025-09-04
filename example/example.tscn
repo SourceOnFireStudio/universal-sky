@@ -43,7 +43,6 @@ stars_field_texture = ExtResource("4_hmx4h")
 enable_dynamic_clouds = true
 dynamic_clouds_texture = SubResource("NoiseTexture2D_hmx4h")
 dynamic_clouds_texture2 = SubResource("NoiseTexture2D_2t0jo")
-dynamic_clouds_coverage = 0.535
 clouds_panorama = ExtResource("3_gv6sx")
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
 
@@ -52,14 +51,14 @@ offsets = PackedFloat32Array(0.73992676, 0.82783884)
 colors = PackedColorArray(0.9843137, 0.84313726, 0.7882353, 1, 1, 0.5239258, 0.23828125, 1)
 
 [sub_resource type="Curve" id="Curve_gv6sx"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.44961244, 1), 0.0, 0.0, 0, 0, Vector2(0.55813956, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.44061303, 1), 0.0, 0.0, 0, 0, Vector2(0.55813956, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_2t0jo"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.44854876, 0), 0.0, 0.0, 0, 0, Vector2(0.49868068, 1), 0.0, 0.0, 0, 0, Vector2(0.7546174, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2t0jo"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gv6sx"]
 shader = ExtResource("8_gxt2a")
 shader_parameter/exposure = 1.0
 shader_parameter/tonemap_level = 0.0
@@ -119,7 +118,7 @@ shader_parameter/enable_dynamic_clouds = false
 shader_parameter/enable_clouds_panorama = false
 
 [sub_resource type="Sky" id="Sky_ljm3b"]
-sky_material = SubResource("ShaderMaterial_2t0jo")
+sky_material = SubResource("ShaderMaterial_gv6sx")
 process_mode = 2
 radiance_size = 1
 
@@ -129,6 +128,8 @@ sky = SubResource("Sky_ljm3b")
 tonemap_mode = 3
 tonemap_white = 6.0
 sdfgi_read_sky_light = false
+fog_light_color = Color(0.51953125, 0.51953125, 0.51953125, 1)
+fog_density = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5pvsd"]
 roughness = 0.97
@@ -167,8 +168,8 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(-0.62713265, 0.75596064, 0.18769267, -0.7390929, -0.6535977, 0.1629493, 0.24585843, -0.036531497, 0.96861726, 4.929316, 6.0736904, 0.8407279)
-light_color = Color(1, 0.5239258, 0.23828125, 1)
+transform = Transform3D(-0.015717706, 0.95853305, -0.2845521, 0.98053855, 0.07047698, 0.18324345, 0.19569907, -0.27613404, -0.9409851, 4.929316, 6.0736904, 0.8407279)
+light_color = Color(0.99802256, 0.56416595, 0.30760905, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
@@ -179,15 +180,15 @@ lighting_energy_curve = SubResource("Curve_gv6sx")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
 [node name="Moon3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(-0.86980915, -0.2993936, -0.3921682, -0.061184585, -0.7232577, 0.68786263, -0.4895808, 0.622304, 0.61077756, 0.8188499, 4.2795825, 0.016280778)
+transform = Transform3D(0.589601, 0.39318138, 0.7055351, 0.14353439, -0.91061836, 0.38752174, 0.7948395, -0.12721513, -0.59333575, 0.8188499, 4.2795825, 0.016280778)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
 script = ExtResource("6_yu7y7")
 texture = ExtResource("7_cvb06")
 light_transition_curve = SubResource("Curve_2t0jo")
 body_color = Color(1, 1, 1, 1)
-body_size = 26.175
 mie_color = Color(0.623, 0.786, 1, 1)
+mie_anisotropy = 0.0
 lighting_color = Color(0.54, 0.7, 0.9, 1)
 lighting_energy = 0.065
 metadata/_custom_type_script = "uid://dg8d3ajenewmk"

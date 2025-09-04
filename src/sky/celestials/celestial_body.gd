@@ -124,6 +124,14 @@ var lighting_energy_curve: Curve = null:
 			_disconnect_light_curve_changed()
 			_lighting_energy_curve = null
 		_update_light_energy()
+
+@export
+var lighting_enable_shadows: bool = true:
+	get: return lighting_enable_shadows
+	set(value):
+		lighting_enable_shadows = value
+		_update_light_energy()
+
 #endregion
 
 func _init() -> void:
@@ -191,7 +199,11 @@ func _update_light_color() -> void:
 
 func _update_light_energy() -> void:
 	light_energy = _get_light_energy() * intensity_multiplier
-	shadow_enabled = true if light_energy > 0.0 else false
+	
+	if lighting_enable_shadows:
+		shadow_enabled = true if light_energy > 0.0 else false
+	else:
+		shadow_enabled = false
 
 func _get_light_energy() -> float:
 	if not is_instance_valid(lighting_energy_curve):

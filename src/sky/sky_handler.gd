@@ -38,10 +38,10 @@ var material: SkyMaterialBase:
 				)
 				material = null
 			else:
+				_update_celestials_data()
+				_initialize_material()
 				_set_sky_material_to_enviro()
 				_connect_enviro_changed()
-				_update_celestials_data()
-
 #region Enviro
 
 @export_group("Enviroment")
@@ -92,17 +92,6 @@ func _notification(what: int) -> void:
 			_tree = get_tree()
 			_connect_child_tree_signals()
 			material = material
-			
-			if is_instance_valid(material):
-				# Prevent black sky when saving a script
-				if Engine.is_editor_hint():
-					material.initialize_params()
-				
-				if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
-					material.set_compatibility(true)
-				else:
-					material.set_compatibility(false)
-			
 			enviro_container = enviro_container
 			sky_process_mode = sky_process_mode
 			sky_radiance_size = sky_radiance_size
@@ -114,6 +103,39 @@ func _notification(what: int) -> void:
 			if is_instance_valid(_enviro):
 				_enviro.sky.sky_material = null
 				_disconnect_enviro_changed()
+
+func _check_material_ready() -> bool: 
+	if not is_instance_valid(material):
+		return false
+	if not material.material_is_valid():
+		return false
+	return true
+
+func _set_sky_material_to_enviro() -> void:
+	if not is_instance_valid(_enviro):
+		_disconnect_enviro_changed()
+		return
+		
+	_enviro.background_mode = Environment.BG_SKY
+	if not is_instance_valid(_enviro.sky):
+		_enviro.sky = Sky.new()
+		_enviro.sky.process_mode = sky_process_mode
+		_enviro.sky.radiance_size = sky_radiance_size
+	
+	if is_instance_valid(material):
+		_enviro.sky.sky_material = material.material
+		_on_enviro_changed()
+	else:
+		_enviro.sky.sky_material = null
+
+func _initialize_material() -> void:
+	# Prevent black sky when saving a script
+	if Engine.is_editor_hint():
+		material.initialize_params()
+		if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
+			material.set_compatibility(true)
+		else:
+			material.set_compatibility(false)
 
 func _get_rendering_method() -> String:
 	return str(ProjectSettings.get_setting_with_override(RENDERING_METHOD_PATH))
@@ -239,30 +261,6 @@ func _on_child_exiting_tree(p_node: Node) -> void:
 		moon = null
 		
 	_update_celestials_data()
-
-func _check_material_ready() -> bool: 
-	if not is_instance_valid(material):
-		return false
-	if not material.material_is_valid():
-		return false
-	return true
-
-func _set_sky_material_to_enviro() -> void:
-	if not is_instance_valid(_enviro):
-		_disconnect_enviro_changed()
-		return
-		
-	_enviro.background_mode = Environment.BG_SKY
-	if not is_instance_valid(_enviro.sky):
-		_enviro.sky = Sky.new()
-		_enviro.sky.process_mode = sky_process_mode
-		_enviro.sky.radiance_size = sky_radiance_size
-	
-	if is_instance_valid(material):
-		_enviro.sky.sky_material = material.material
-		_on_enviro_changed()
-	else:
-		_enviro.sky.sky_material = null
 
 func _on_enviro_changed() -> void:
 	pass

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5p8h36xman8f"
-path.s3tc="res://.godot/imported/clouds_pano_example.png-6d31785c0cebca55c26a2f9ef70d8b78.s3tc.ctex"
+uid="uid://c05osp1sjpmxh"
+path.s3tc="res://.godot/imported/clouds_panorama.png-42041127d0779989d149d848cc66591e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/universal-sky/example/textures/clouds_pano_example.png"
-dest_files=["res://.godot/imported/clouds_pano_example.png-6d31785c0cebca55c26a2f9ef70d8b78.s3tc.ctex"]
+source_file="res://addons/universal-sky/example/textures/clouds_panorama.png"
+dest_files=["res://.godot/imported/clouds_panorama.png-42041127d0779989d149d848cc66591e.s3tc.ctex"]
 
 [params]
 

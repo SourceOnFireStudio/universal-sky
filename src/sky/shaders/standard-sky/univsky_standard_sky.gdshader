@@ -74,8 +74,9 @@ void sky(){
 	}
 	
 	// 2D Dynamic Clouds
-	float dynamicloudsAlpha = -1.0;
-	if(enable_dynamic_clouds){
+	float dynamicloudsAlpha = 0.0;
+	if(enable_dynamic_clouds)
+	{
 		vec2 cloudsUV = getDynamicCloudsUV(worldPos);
 		vec4 clouds = dynamicClouds(cloudsUV, cloudsColor, TIME);
 		finalColor.rgb = mix(finalColor.rgb, clouds.rgb, clouds.a * cloudsBlend);
@@ -83,9 +84,10 @@ void sky(){
 	}
 	
 	// Clouds Panorama
-	if(enable_clouds_panorama){
+	if(enable_clouds_panorama)
+	{
 		vec4 pano = cloudsPanoramaRB(worldPos, cloudsColor, TIME);
-		finalColor.rgb += mix(finalColor.rgb, pano.rgb, pano.a * cloudsBlend * (1.0-dynamicloudsAlpha));
+		finalColor.rgb = mix(finalColor.rgb, pano.rgb, pano.a * cloudsBlend * (1.0-dynamicloudsAlpha));
 	}
 	
 	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY

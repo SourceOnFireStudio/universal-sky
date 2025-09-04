@@ -43,7 +43,7 @@ stars_field_texture = ExtResource("4_hmx4h")
 enable_dynamic_clouds = true
 dynamic_clouds_texture = SubResource("NoiseTexture2D_hmx4h")
 dynamic_clouds_texture2 = SubResource("NoiseTexture2D_2t0jo")
-dynamic_clouds_coverage = 0.51
+dynamic_clouds_coverage = 0.535
 clouds_panorama = ExtResource("3_gv6sx")
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
 
@@ -128,6 +128,7 @@ background_mode = 2
 sky = SubResource("Sky_ljm3b")
 tonemap_mode = 3
 tonemap_white = 6.0
+sdfgi_read_sky_light = false
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5pvsd"]
 roughness = 0.97
@@ -166,8 +167,8 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.2260605, 0.5585846, 0.7980478, -0.63414776, -0.5374898, 0.5558432, 0.7394275, -0.63173443, 0.23271994, 4.929316, 6.0736904, 0.8407279)
-light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
+transform = Transform3D(-0.62713265, 0.75596064, 0.18769267, -0.7390929, -0.6535977, 0.1629493, 0.24585843, -0.036531497, 0.96861726, 4.929316, 6.0736904, 0.8407279)
+light_color = Color(1, 0.5239258, 0.23828125, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true

@@ -3,7 +3,7 @@
 
 #include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_coords.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_color.gdshaderinc"
-uniform sampler2D clouds_panorama: source_color;
+uniform sampler2D clouds_panorama: source_color, filter_linear, hint_default_black;
 uniform float clouds_panorama_speed = 0.01;
 uniform float clouds_panorama_intensity = 1.0;
 

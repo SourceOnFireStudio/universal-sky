@@ -3,8 +3,8 @@
 
 #include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_color.gdshaderinc"
 
-uniform sampler2D dynamic_clouds_texture: source_color;
-uniform sampler2D dynamic_clouds_texture2: source_color;
+uniform sampler2D dynamic_clouds_texture: source_color, filter_linear, hint_default_black;
+uniform sampler2D dynamic_clouds_texture2: source_color, filter_linear, hint_default_black;
 uniform float dynamic_clouds_coverage = 0.5;
 uniform float dynamic_clouds_absorption = 15.0;
 uniform float dynamic_clouds_density = 30.0;

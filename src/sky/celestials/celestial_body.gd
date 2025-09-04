@@ -7,7 +7,7 @@
 extends DirectionalLight3D
 class_name CelestialBody3D
 
-enum CelestialValueType{
+enum CelestialParam{
 	COLOR = 0, 
 	INTENSITY = 1, 
 	SIZE = 2, 
@@ -19,10 +19,10 @@ enum CelestialValueType{
 }
 
 const DIRECTION_CHANGED:= &"direction_changed"
-const VALUE_CHANGED:= &"value_changed"
+const PARAM_CHANGED:= &"param_changed"
 
 signal direction_changed()
-signal value_changed(type)
+signal param_changed(type)
 
 var _lighting_gradient: Gradient = null
 var _lighting_energy_curve: Curve = null
@@ -44,21 +44,21 @@ var body_color:=Color(1.0, 0.936, 0.766, 1.0):
 	get: return body_color
 	set(value):
 		body_color = value
-		emit_signal(VALUE_CHANGED, CelestialValueType.COLOR)
+		emit_signal(PARAM_CHANGED, CelestialParam.COLOR)
 
 @export
 var body_intensity: float = 1.0:
 	get: return body_intensity
 	set(value):
 		body_intensity = value
-		emit_signal(VALUE_CHANGED, CelestialValueType.INTENSITY)
+		emit_signal(PARAM_CHANGED, CelestialParam.INTENSITY)
 
 @export
 var body_size: float = 1.0:
 	get: return body_size
 	set(value):
 		body_size = value
-		emit_signal(VALUE_CHANGED, CelestialValueType.SIZE)
+		emit_signal(PARAM_CHANGED, CelestialParam.SIZE)
 #endregion
 
 #region Mie
@@ -68,21 +68,21 @@ var mie_color:= Color.WHITE:
 	get: return mie_color
 	set(value):
 		mie_color = value
-		emit_signal(VALUE_CHANGED, CelestialValueType.MIE_COLOR)
+		emit_signal(PARAM_CHANGED, CelestialParam.MIE_COLOR)
 
 @export
 var mie_intensity: float = 1.0:
 	get: return mie_intensity
 	set(value):
 		mie_intensity = value
-		emit_signal(VALUE_CHANGED, CelestialValueType.MIE_INTENSITY)
+		emit_signal(PARAM_CHANGED, CelestialParam.MIE_INTENSITY)
 
 @export_range(0.0, 0.9999)
 var mie_anisotropy: float = 0.85:
 	get: return mie_anisotropy
 	set(value):
 		mie_anisotropy = value
-		emit_signal(VALUE_CHANGED, CelestialValueType.MIE_ANISOTROPY)
+		emit_signal(PARAM_CHANGED, CelestialParam.MIE_ANISOTROPY)
 #endregion
 
 #region Lighting
@@ -168,7 +168,7 @@ func _on_exit_tree() -> void:
 
 func _on_intensity_multiplier() -> void:
 	_update_light_energy()
-	emit_signal(VALUE_CHANGED, CelestialValueType.INTENSITY_MULTIPLIER)
+	emit_signal(PARAM_CHANGED, CelestialParam.INTENSITY_MULTIPLIER)
 
 func _on_light_gradient_changed() -> void:
 	_update_light_color()

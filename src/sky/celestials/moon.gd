@@ -50,7 +50,7 @@ var texture: Texture = null:
 	get: return texture
 	set(value):
 		texture = value
-		emit_signal(VALUE_CHANGED, CelestialValueType.TEXTURE)
+		emit_signal(PARAM_CHANGED, CelestialParam.TEXTURE)
 
 @export
 var yaw_offset: float = -0.3:

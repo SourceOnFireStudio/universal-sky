@@ -50,7 +50,7 @@ vec3 cloudsColorScattering(vec3 pos, vec3 horizonBlend, vec3 groundColor){
 	vec3 extinction = saturate(exp(-betaRay * sr));
 	vec3 extincH = (1.0 -(extinction * 0.75)) * sr * 0.00002;
 	vec3 finalExtc = mix((1.0-extinction), extinction * extincH, 1.0-sunset);
-
+	
 	float sunMu = dot(sun_direction, pos);
 	float rayleighPhase = rayleighPhase(sunMu);
 

@@ -60,29 +60,28 @@ vec4 getSky(vec3 scatter, vec3 pos, vec3 horizonBlend, float time){
 	// Clouds
 	vec3 cloudsColor = vec3(0.0);
 	vec3 cloudsFog = vec3(0.0);
-	float cloudsBlend = 0.0;
 	if(enable_dynamic_clouds || enable_clouds_panorama){
 		cloudsColor = cloudsColorScattering(pos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));
-		cloudsBlend = saturate(pos.y * 7.0);
-		cloudsBlend *= cloudsBlend * cloudsBlend;
 		cloudsFog = scatter;
 	}
 	
 	// 2D Dynamic Clouds
-	float dynamicloudsAlpha = 0.0;
+	float dynamicloudsMask = 0.0;
 	if(enable_dynamic_clouds)
 	{
+		float cloudsBlend = saturate(pos.y * 7.0);
 		vec2 cloudsUV = getDynamicCloudsUV(pos);
 		vec4 clouds = dynamicClouds(cloudsUV, cloudsColor, time);
 		finalColor.rgb = mix(finalColor.rgb, clouds.rgb + cloudsFog, clouds.a * cloudsBlend);
-		dynamicloudsAlpha = clouds.a;
+		dynamicloudsMask = clouds.a;
 	}
 	
 	// Clouds Panorama
 	if(enable_clouds_panorama)
 	{
+		float cloudsBlend = saturate(pos.y * 20.0);
 		vec4 pano = cloudsPanoramaRB(pos, cloudsColor, time);
-		finalColor.rgb = mix(finalColor.rgb, pano.rgb + cloudsFog, pano.a * cloudsBlend * (1.0-dynamicloudsAlpha));
+		finalColor.rgb = mix(finalColor.rgb, pano.rgb + cloudsFog, (pano.a * cloudsBlend) * (1.0 - dynamicloudsMask));
 	}
 	return finalColor;
 }

@@ -168,8 +168,8 @@ enviro_container = NodePath("../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(-0.015717706, 0.95853305, -0.2845521, 0.98053855, 0.07047698, 0.18324345, 0.19569907, -0.27613404, -0.9409851, 4.929316, 6.0736904, 0.8407279)
-light_color = Color(0.99802256, 0.56416595, 0.30760905, 1)
+transform = Transform3D(-0.013477407, 0.9585331, -0.284667, 0.97906584, 0.07047699, 0.19095594, 0.20309989, -0.276134, -0.93941545, 4.929316, 6.0736904, 0.8407279)
+light_color = Color(0.9966464, 0.59217024, 0.35585627, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true

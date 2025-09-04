@@ -92,16 +92,16 @@ func _notification(what: int) -> void:
 			_tree = get_tree()
 			_connect_child_tree_signals()
 			material = material
-			# Prevent black sky when saving a script
 			
-			#FIXME: Check material is not null.
-			if Engine.is_editor_hint():
-				material.initialize_params()
-			
-			if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
-				material.set_compatibility(true)
-			else:
-				material.set_compatibility(false)
+			if is_instance_valid(material):
+				# Prevent black sky when saving a script
+				if Engine.is_editor_hint():
+					material.initialize_params()
+				
+				if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
+					material.set_compatibility(true)
+				else:
+					material.set_compatibility(false)
 			
 			enviro_container = enviro_container
 			sky_process_mode = sky_process_mode

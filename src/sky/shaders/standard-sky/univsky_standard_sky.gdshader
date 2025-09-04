@@ -62,6 +62,7 @@ vec4 getSky(vec3 scatter, vec3 pos, vec3 horizonBlend, float time){
 	vec3 cloudsFog = vec3(0.0);
 	if(enable_dynamic_clouds || enable_clouds_panorama){
 		cloudsColor = cloudsColorScattering(pos+vec3(0.0, -1.0, 0.0), horizonBlend, vec3(0.0));
+		cloudsColor *= sun_eclipse_intensity;
 		cloudsFog = scatter;
 	}
 	

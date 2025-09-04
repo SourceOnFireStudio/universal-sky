@@ -28,7 +28,7 @@ vec4 dynamicClouds(vec2 uv, vec3 color, float time){
 	float noiseB = textureLod(dynamic_clouds_texture2, uv * dynamic_clouds_uv + wind2, 0.0).r;
 	float noise = (noiseA + noiseB) * 0.5;
 	float coverage = 1.0 - dynamic_clouds_coverage;
-	float density = (noise - (coverage));
+	float density = saturate(noise - (coverage));
 	float sh = saturate(exp(-dynamic_clouds_absorption * density));
 	float a = saturate(density * dynamic_clouds_density);
 	

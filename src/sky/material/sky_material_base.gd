@@ -8,7 +8,7 @@
 extends Resource
 class_name SkyMaterialBase
 
-#region Shader Param names
+#region Shader Param Names
 const SUN_DIRECTION_PARAM:= &"sun_direction"
 const SUN_COLOR_PARAM:= &"sun_color"
 const SUN_INTENSITY_PARAM:= &"sun_intensity"
@@ -33,28 +33,26 @@ var _material:= ShaderMaterial.new()
 var material: ShaderMaterial:
 	get: return _material
 
-#@export
-#var compatibility: bool:
-	#get: return compatibility
-	#set(value):
-		#compatibility = value
-		#_compatibility_changed()
-
 var _compatibility: bool = false
 var is_compatibility: bool:
 	get: return _compatibility
 
-func _init() -> void:
+func _init() -> void: # Tree
 	_on_init()
 
-func _on_init() -> void:
+func _on_init() -> void: # POO
 	initialize_params()
 
 func initialize_params() -> void:
+	_initialize_params()
+
+func _initialize_params() -> void:
 	_initialize_default_celestial_values()
-	#compatibility = compatibility
 
 func material_is_valid() -> bool:
+	return _material_is_valid()
+
+func _material_is_valid() -> bool:
 	return false
 
 func set_compatibility(value: bool) -> void:
@@ -68,10 +66,10 @@ func _compatibility_changed() -> void:
 	_update_moon_mie_color(moon_mie_color)
 
 func _initialize_default_celestial_values() -> void:
-	set_default_sun_values()
-	set_default_moon_values()
+	_set_default_sun_values()
+	_set_default_moon_values()
 
-func set_default_sun_values() -> void:
+func _set_default_sun_values() -> void:
 	sun_intensity_multiplier = 1.0
 	_update_sun_direction(Vector3.ZERO)
 	_update_sun_color(Color.BLANCHED_ALMOND)
@@ -81,7 +79,7 @@ func set_default_sun_values() -> void:
 	_update_sun_mie_intensity(1.0)
 	_update_sun_mie_anisotropy(0.8)
 
-func set_default_moon_values() -> void:
+func _set_default_moon_values() -> void:
 	moon_intensity_multiplier = 1.0
 	_update_moon_direction(Vector3.ZERO)
 	_update_moon_texture(null)
@@ -95,7 +93,6 @@ func set_default_moon_values() -> void:
 	_update_moon_mie_anisotropy(0.8)
 
 #region Sun
-
 var sun_direction:= Vector3.ZERO:
 	get: return sun_direction
 	set(value):
@@ -202,11 +199,9 @@ func _update_sun_eclipse_intensity(p_intensity: float) -> void:
 		material.get_rid(), &"sun_eclipse_intensity", p_intensity
 	)
 	emit_changed()
-
 #endregion
 
 #region Moon
-
 var moon_direction:= Vector3.ZERO:
 	get: return moon_direction
 	set(value):
@@ -341,5 +336,4 @@ func _update_moon_mie_anisotropy(p_anisotropy: float) -> void:
 		material.get_rid(), MOON_MIE_ANISOTROPY_PARAM, p_anisotropy
 	)
 	emit_changed()
-
 #endregion

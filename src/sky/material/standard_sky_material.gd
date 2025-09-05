@@ -20,6 +20,7 @@ const _DEFAULT_STARS_FIELD_TEXTURE:= preload(
 	"res://addons/universal-sky/assets/textures/milky-way/StarField.jpg"
 )
 
+#region Shader Param Names
 const TONEMAP_LEVEL_PARAM:= &"tonemap_level"
 const EXPOSURE_PARAM:= &"exposure"
 const HORIZON_OFFSET_PARAM:= &"horizon_offset"
@@ -65,6 +66,7 @@ const ENABLE_CLOUDS_PANORAMA_PARAM:= &"enable_clouds_panorama"
 const CLOUDS_PANORAMA_PARAM:= &"clouds_panorama"
 const CLOUDS_PANORAMA_INTENSITY_PARAM:= &"clouds_panorama_intensity"
 const CLOUDS_PANORAMA_SPEED_PARAM:= &"clouds_panorama_speed"
+#endregion
 
 # Index of the air refraction.
 const n: float = 1.0003
@@ -390,7 +392,6 @@ var stars_scintillation_speed: float = 1.0:
 #endregion
 
 #region Clouds
-
 @export_group('Dynamic Clouds')
 @export
 var enable_dynamic_clouds: bool = false:
@@ -525,16 +526,14 @@ var clouds_panorama_speed: float = 0.005:
 			material.get_rid(), CLOUDS_PANORAMA_SPEED_PARAM, clouds_panorama_speed
 		)
 		emit_changed()
-
 #endregion
-
 
 func _on_init() -> void:
 	super()
 	material.shader = SHADER
 	initialize_params()
 
-func initialize_params() -> void:
+func _initialize_params() -> void:
 	super()
 	tonemap_level = tonemap_level
 	debanding_level = debanding_level
@@ -635,24 +634,24 @@ func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
 	super(p_multiplier)
 	atm_night_intensity = atm_night_intensity
 
-func get_celestial_uMuS(dir: Vector3) -> float:
+func _get_celestial_uMuS(dir: Vector3) -> float:
 	return (atan(max(dir.y, -0.1975) * tan(1.386)) / 1.1 + (1.0 - 0.26));
 
-func compute_wavelenghts_lambda(value: Vector3) -> Vector3:
+func _compute_wavelenghts_lambda(value: Vector3) -> Vector3:
 	return value * 1e-9
 
-func compute_wavelenghts(value: Vector3, computeLambda: bool = false) -> Vector3:
+func _compute_wavelenghts(value: Vector3, computeLambda: bool = false) -> Vector3:
 	var k: float = 4.0
 	var ret: Vector3 = value
 	if computeLambda:
-		ret = compute_wavelenghts_lambda(ret)
+		ret = _compute_wavelenghts_lambda(ret)
 	
 	ret.x = pow(ret.x, k)
 	ret.y = pow(ret.y, k)
 	ret.z = pow(ret.z, k)
 	return ret
 
-func compute_beta_ray(wavelenghts: Vector3) -> Vector3:
+func _compute_beta_ray(wavelenghts: Vector3) -> Vector3:
 	var kr: float =  (8.0 * pow(PI, 3.0) * pow(n2 - 1.0, 2.0) * (6.0 + 3.0 * pn))
 	var ret: Vector3 = 3.0 * N * wavelenghts * (6.0 - 7.0 * pn)
 	ret.x = kr / ret.x
@@ -660,26 +659,26 @@ func compute_beta_ray(wavelenghts: Vector3) -> Vector3:
 	ret.z = kr / ret.z
 	return ret
 
-func compute_beta_mie(mie: float, turbidity: float) -> Vector3:
+func _compute_beta_mie(mie: float, turbidity: float) -> Vector3:
 	var k: float = 434e-6
 	return Vector3.ONE * mie * turbidity * k
 
 func _set_sun_uMuS() -> void:
 	RenderingServer.material_set_param(
-		material.get_rid(), SUN_UMUS_PARAM, get_celestial_uMuS(sun_direction)
+		material.get_rid(), SUN_UMUS_PARAM, _get_celestial_uMuS(sun_direction)
 	)
 	emit_changed()
 
 func _set_beta_ray() -> void:
-	var wls:= compute_wavelenghts(atm_wavelenghts, true)
-	var br:= compute_beta_ray(wls)
+	var wls:= _compute_wavelenghts(atm_wavelenghts, true)
+	var br:= _compute_beta_ray(wls)
 	RenderingServer.material_set_param(
 		material.get_rid(), ATM_BETA_RAY_PARAM, br
 	)
 	emit_changed()
 
 func _set_beta_mie() -> void:
-	var bm:= compute_beta_mie(atm_mie, atm_turbidity)
+	var bm:= _compute_beta_mie(atm_mie, atm_turbidity)
 	RenderingServer.material_set_param(
 		material.get_rid(), ATM_BETA_MIE_PARAM, bm
 	)
@@ -694,22 +693,22 @@ func _set_atm_day_tint() -> void:
 	)
 	emit_changed()
 
-func get_atm_night_intensity() -> float:
+func _get_atm_night_intensity() -> float:
 	var ret = 0.0
 	if not atm_enable_night_scattering:
 		ret = clamp(-sun_direction.y + 0.80, 0.0, 1.0)
 	else:
-		ret = get_celestial_uMuS(moon_direction)
+		ret = _get_celestial_uMuS(moon_direction)
 	
-	return ret * atm_night_intensity * get_atm_moon_phases_mul() * moon_intensity_multiplier
+	return ret * atm_night_intensity * _get_atm_moon_phases_mul() * moon_intensity_multiplier
 
-func get_atm_moon_phases_mul() -> float:
+func _get_atm_moon_phases_mul() -> float:
 	if atm_enable_night_scattering:
 		return moon_phases_mul
 	return 1.0
 
 func _set_atm_night_tint() -> void:
-	var tint:= atm_night_tint * get_atm_night_intensity()
+	var tint:= atm_night_tint * _get_atm_night_intensity()
 	RenderingServer.material_set_param(
 		material.get_rid(), NIGHT_TINT_PARAM, tint.srgb_to_linear() if is_compatibility else tint
 	)

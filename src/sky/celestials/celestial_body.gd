@@ -131,7 +131,6 @@ var lighting_enable_shadows: bool = true:
 	set(value):
 		lighting_enable_shadows = value
 		_update_light_energy()
-
 #endregion
 
 func _init() -> void:

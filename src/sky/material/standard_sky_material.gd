@@ -82,7 +82,7 @@ const pn: float = 0.035
 
 var _atm_day_gradient: Gradient = null
 
-func material_is_valid() -> bool:
+func _material_is_valid() -> bool:
 	return true
 
 #region General Settings

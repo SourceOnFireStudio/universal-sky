@@ -31,7 +31,7 @@ var material: SkyMaterialBase:
 	set(value):
 		material = value
 		if is_instance_valid(material):
-			if not material.material_is_valid():
+			if not material.material_is_valid:
 				push_warning(
 					"this {material} is abstract resource class, please add valid material"
 					.format({"material": material.get_class()})
@@ -106,7 +106,7 @@ func _notification(what: int) -> void:
 func _check_material_ready() -> bool: 
 	if not is_instance_valid(material):
 		return false
-	if not material.material_is_valid():
+	if not material.material_is_valid:
 		return false
 	return true
 

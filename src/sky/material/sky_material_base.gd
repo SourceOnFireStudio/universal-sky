@@ -37,6 +37,9 @@ var _compatibility: bool = false
 var is_compatibility: bool:
 	get: return _compatibility
 
+var material_is_valid: bool:
+	get: return _material_is_valid()
+
 func _init() -> void: # Tree
 	_on_init()
 
@@ -48,9 +51,6 @@ func initialize_params() -> void:
 
 func _initialize_params() -> void:
 	_initialize_default_celestial_values()
-
-func material_is_valid() -> bool:
-	return _material_is_valid()
 
 func _material_is_valid() -> bool:
 	return false

@@ -6,11 +6,14 @@
 # - See: LICENSE File.
 class_name UnivSkyMath
 
+#TODO: Remove unnecessary constants and functions.
+
 const RAD_TO_DEG:= 57.29577951308232
 const DEG_TO_RAD:= 0.01745329251994
 const EPSILON:= 1.1920928955078125e-7
 const EPSILON_DBL:= 2.22044604925031308085e-16
 
+# NOTE: There are some corner cases where it is more convenient to use these clamp functions.
 static func clamp_f(p_value: float, p_min: float, p_max: float) -> float:
 	return p_min if p_value < p_min else p_max if p_value > p_max else p_value
 
@@ -27,6 +30,23 @@ static func clamp_vec3(p_value: Vector3, p_min: Vector3, p_max: Vector3) -> Vect
 	
 	return p_value
 
+static func clampO1(p_value: Variant) -> Variant:
+	if p_value as float:
+		return clamp(p_value, 0.0, 1.0)
+	elif p_value as Vector3:
+		return clamp(p_value, Vector3.ZERO, Vector3.ONE)
+	return clamp(p_value, Vector2.ZERO, Vector2.ONE)
+
+static func clamp01f(p_value: float) -> float:
+	return clamp(p_value, 0.0, 1.0)
+
+static func clamp01v2(p_value: Vector2) -> Vector2:
+	return clamp(p_value, Vector2.ZERO, Vector2.ONE)
+
+static func clamp01v3(p_value: Vector3) -> Vector3:
+	return clamp(p_value, Vector3.ZERO, Vector3.ONE)
+
+# TODO: Moved to time of day
 static func rev(p_value: float) -> float:
 	return p_value - floori(p_value / 360.0) * 360.0
 

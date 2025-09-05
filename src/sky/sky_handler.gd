@@ -239,7 +239,7 @@ func _on_child_exiting_tree(p_node: Node) -> void:
 	if p_node is Sun3D and p_node.get_instance_id() == sun.get_instance_id():
 		_disconnect_sun_signals()
 		if is_instance_valid(material):
-			material.set_default_sun_values()
+			material.initialize_params()
 		
 		if is_instance_valid(moon):
 			moon.set_sun(null)
@@ -248,7 +248,7 @@ func _on_child_exiting_tree(p_node: Node) -> void:
 	if p_node is Moon3D and p_node.get_instance_id() == moon.get_instance_id():
 		_disconnect_moon_signals()
 		if is_instance_valid(material):
-			material.set_default_moon_values()
+			material.initialize_params()
 		
 		if is_instance_valid(sun):
 			sun.set_moon(null)

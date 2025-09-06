@@ -419,7 +419,7 @@ var dynamic_clouds_texture2: Texture2D = null:
 		material.set_shader_parameter(DYNAMIC_CLOUDS_TEXTURE2_PARAM, dynamic_clouds_texture2)
 		emit_changed()
 @export
-var dynamic_clouds_coverage:= 0.5:
+var dynamic_clouds_coverage:= 0.4:
 	get: return dynamic_clouds_coverage
 	set(value):
 		dynamic_clouds_coverage = value
@@ -429,7 +429,7 @@ var dynamic_clouds_coverage:= 0.5:
 		emit_changed()
 
 @export
-var dynamic_clouds_absorption:= 15.0:
+var dynamic_clouds_absorption:= 1.0:
 	get: return dynamic_clouds_absorption
 	set(value):
 		dynamic_clouds_absorption = value
@@ -439,7 +439,7 @@ var dynamic_clouds_absorption:= 15.0:
 		emit_changed()
 
 @export
-var dynamic_clouds_density: float = 30.0:
+var dynamic_clouds_density: float = 2.0:
 	get: return dynamic_clouds_density
 	set(value):
 		dynamic_clouds_density = value

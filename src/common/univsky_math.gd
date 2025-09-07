@@ -34,9 +34,9 @@ static func clamp_vec3(p_value: Vector3, p_min: Vector3, p_max: Vector3) -> Vect
 	return p_value
 
 static func clampO1(p_value: Variant) -> Variant:
-	if p_value as float:
+	if p_value is float:
 		return clamp(p_value, 0.0, 1.0)
-	elif p_value as Vector3:
+	elif p_value is Vector3:
 		return clamp(p_value, Vector3.ZERO, Vector3.ONE)
 	return clamp(p_value, Vector2.ZERO, Vector2.ONE)
 

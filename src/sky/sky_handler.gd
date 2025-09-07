@@ -303,7 +303,7 @@ func _on_moon_direction_changed() -> void:
 	material.moon_phases_mul = moon.phases_mul
 	material.moon_matrix = moon.clamped_matrix
 	_update_moon_mie_intensity()
-	if is_instance_valid(sun):
+	if sun_is_valid:
 		_update_sun_eclipse()
 
 func _on_moon_value_changed(p_type: int) -> void:

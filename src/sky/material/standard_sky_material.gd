@@ -533,9 +533,6 @@ func _on_init() -> void:
 	material.shader = SHADER
 	initialize_params()
 
-func _material_is_valid() -> bool:
-	return true
-
 func _initialize_params() -> void:
 	super()
 	tonemap_level = tonemap_level

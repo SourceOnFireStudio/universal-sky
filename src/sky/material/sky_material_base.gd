@@ -4,7 +4,7 @@
 # License:
 # - J. Cuéllar 2025 MIT License
 # - See: LICENSE File.
-@tool
+@tool @abstract
 extends Resource
 class_name SkyMaterialBase
 
@@ -37,9 +37,6 @@ var material: ShaderMaterial:
 
 var is_compatibility: bool:
 	get: return _compatibility
-
-var material_is_valid: bool:
-	get: return _material_is_valid()
 
 #region Sun
 var sun_direction:= Vector3.ZERO:
@@ -183,9 +180,6 @@ func initialize_params() -> void:
 
 func _initialize_params() -> void:
 	_initialize_default_celestial_values()
-
-func _material_is_valid() -> bool:
-	return false
 
 func set_compatibility(value: bool) -> void:
 	_compatibility = value

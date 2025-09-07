@@ -24,24 +24,32 @@ var moon: Moon3D:
 var enviro: Environment:
 	get: return _enviro
 
+var enviro_is_valid: bool:
+	get: return is_instance_valid(_enviro)
+
+var enviro_sky_is_valid: bool:
+	get: return is_instance_valid(_enviro.sky)
+
+var material_is_valid: bool:
+	get: return is_instance_valid(material)
+
+var sun_is_valid: bool:
+	get: return is_instance_valid(sun)
+
+var moon_is_valid: bool:
+	get: return is_instance_valid(moon)
+
 @export_group("Resources")
 @export
 var material: SkyMaterialBase:
 	get: return material
 	set(value):
 		material = value
-		if is_instance_valid(material):
-			if not material.material_is_valid:
-				push_warning(
-					"this {material} is abstract resource class, please add valid material"
-					.format({"material": material.get_class()})
-				)
-				material = null
-			else:
-				_update_celestials_data()
-				_initialize_material()
-				_set_sky_material_to_enviro()
-				_connect_enviro_changed()
+		if material_is_valid:
+			_update_celestials_data()
+			_initialize_material()
+			_set_sky_material_to_enviro()
+			_connect_enviro_changed()
 
 #region Enviro
 @export_group("Enviroment")
@@ -52,7 +60,7 @@ var enviro_container: NodePath:
 		enviro_container = value
 		if enviro_container.is_empty():
 			_disconnect_enviro_changed()
-			if is_instance_valid(_enviro) and is_instance_valid(_enviro.sky):
+			if enviro_is_valid and enviro_sky_is_valid:
 				_enviro.sky.sky_material = null
 			_enviro = null
 		else:
@@ -72,7 +80,7 @@ var sky_process_mode: int = 2:
 	get: return sky_process_mode
 	set(value):
 		sky_process_mode = value
-		if is_instance_valid(_enviro) and is_instance_valid(_enviro.sky):
+		if enviro_is_valid and enviro_sky_is_valid:
 			_enviro.sky.process_mode = sky_process_mode
 
 @export_enum("32", "64", "128", "256", "512", "1024", "2048")
@@ -80,7 +88,7 @@ var sky_radiance_size: int = 1:
 	get: return sky_radiance_size
 	set(value):
 		sky_radiance_size = value
-		if is_instance_valid(_enviro) and is_instance_valid(_enviro.sky):
+		if enviro_is_valid and enviro_sky_is_valid:
 			_enviro.sky.radiance_size = sky_radiance_size
 #endregion
 
@@ -95,33 +103,25 @@ func _notification(what: int) -> void:
 			enviro_container = enviro_container
 			sky_process_mode = sky_process_mode
 			sky_radiance_size = sky_radiance_size
-		
 		NOTIFICATION_EXIT_TREE:
 			_disconnect_child_tree_signals()
 			SkyInstances.remove_instance(self)
 			_tree = null
-			if is_instance_valid(_enviro):
+			if enviro_is_valid:
 				_enviro.sky.sky_material = null
 				_disconnect_enviro_changed()
 
 func _get_configuration_warnings() -> PackedStringArray:
-	if not is_instance_valid(sun):
+	if not sun_is_valid:
 		return ["Sun unassigned"]
-	if not is_instance_valid(moon):
+	if not moon_is_valid:
 		return ["Moon unassigned"]
-	if not is_instance_valid(material):
+	if not material_is_valid:
 		return ["Material unassigned"]
 	return []
 #endregion
 
 #region Setup
-func _check_material_ready() -> bool: 
-	if not is_instance_valid(material):
-		return false
-	if not material.material_is_valid:
-		return false
-	return true
-
 func _initialize_material() -> void:
 	material.initialize_params()
 	if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
@@ -133,17 +133,17 @@ func _get_rendering_method() -> String:
 	return str(ProjectSettings.get_setting_with_override(RENDERING_METHOD_PATH))
 
 func _set_sky_material_to_enviro() -> void:
-	if not is_instance_valid(_enviro):
+	if not enviro_is_valid:
 		_disconnect_enviro_changed()
 		return
 		
 	_enviro.background_mode = Environment.BG_SKY
-	if not is_instance_valid(_enviro.sky):
+	if not enviro_sky_is_valid:
 		_enviro.sky = Sky.new()
 		_enviro.sky.process_mode = sky_process_mode
 		_enviro.sky.radiance_size = sky_radiance_size
 	
-	if is_instance_valid(material):
+	if material_is_valid:
 		_enviro.sky.sky_material = material.material
 		_on_enviro_changed()
 	else:
@@ -219,22 +219,22 @@ func _disconnect_moon_signals() -> void:
 func _on_child_entered_tree(p_node: Node) -> void:
 	if p_node is Sun3D and not is_instance_valid(sun):
 		sun = p_node
-		if is_instance_valid(sun):
+		if sun_is_valid:
 			_connect_sun_signals()
 			
-			if is_instance_valid(moon):
+			if moon_is_valid:
 				sun.set_moon(moon)
 				moon.set_sun(sun)
 		
 		_update_celestials_data()
 
-	if p_node is Moon3D and not is_instance_valid(moon):
+	if p_node is Moon3D and not moon_is_valid:
 		moon = p_node
 		
-		if is_instance_valid(moon):
+		if moon_is_valid:
 			_connect_moon_signals()
 			
-			if is_instance_valid(sun):
+			if sun_is_valid:
 				moon.set_sun(sun)
 				sun.set_moon(moon)
 		
@@ -243,19 +243,19 @@ func _on_child_entered_tree(p_node: Node) -> void:
 func _on_child_exiting_tree(p_node: Node) -> void:
 	if p_node is Sun3D and p_node.get_instance_id() == sun.get_instance_id():
 		_disconnect_sun_signals()
-		if is_instance_valid(material):
+		if material_is_valid:
 			material.initialize_params()
 		
-		if is_instance_valid(moon):
+		if moon_is_valid:
 			moon.set_sun(null)
 		sun = null
 	
 	if p_node is Moon3D and p_node.get_instance_id() == moon.get_instance_id():
 		_disconnect_moon_signals()
-		if is_instance_valid(material):
+		if material_is_valid:
 			material.initialize_params()
 		
-		if is_instance_valid(sun):
+		if sun_is_valid:
 			sun.set_moon(null)
 		moon = null
 		
@@ -267,10 +267,10 @@ func _on_enviro_changed() -> void:
 
 # Sun
 func _on_sun_direction_changed() -> void:
-	if not _check_material_ready() or not is_instance_valid(sun):
+	if not material_is_valid or not sun_is_valid:
 		return
 	
-	if is_instance_valid(moon):
+	if moon_is_valid:
 		_on_moon_direction_changed()
 		_update_moon_mie_intensity()
 	
@@ -278,7 +278,7 @@ func _on_sun_direction_changed() -> void:
 	_update_sun_eclipse()
 
 func _on_sun_value_changed(p_type: int) -> void:
-	if not _check_material_ready() or not is_instance_valid(sun):
+	if not material_is_valid or not sun_is_valid:
 		return
 	
 	match(p_type):
@@ -299,7 +299,7 @@ func _on_sun_value_changed(p_type: int) -> void:
 
 # Moon
 func _on_moon_direction_changed() -> void:
-	if not _check_material_ready() or not is_instance_valid(moon):
+	if not material_is_valid or not moon_is_valid:
 		return
 	material.moon_direction = moon.direction
 	material.moon_phases_mul = moon.phases_mul
@@ -309,7 +309,7 @@ func _on_moon_direction_changed() -> void:
 		_update_sun_eclipse()
 
 func _on_moon_value_changed(p_type: int) -> void:
-	if not _check_material_ready() or not is_instance_valid(moon):
+	if not material_is_valid or not moon_is_valid:
 		return
 	match(p_type):
 		Moon3D.CelestialParam.COLOR:
@@ -330,7 +330,7 @@ func _on_moon_value_changed(p_type: int) -> void:
 			material.moon_mie_anisotropy = moon.mie_anisotropy
 
 func _on_moon_yaw_offset_changed() -> void:
-	if not _check_material_ready() or not is_instance_valid(moon):
+	if not material_is_valid or not moon_is_valid:
 		return
 	material.moon_texture_yaw_offset = moon.yaw_offset
 #endregion

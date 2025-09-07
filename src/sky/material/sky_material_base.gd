@@ -97,6 +97,80 @@ var sun_eclipse_intensity: float = 1.0:
 		_update_sun_eclipse_intensity(sun_eclipse_intensity)
 #endregion
 
+#region Moon
+var moon_direction:= Vector3.ZERO:
+	get: return moon_direction
+	set(value):
+		moon_direction = value
+		_update_moon_direction(moon_direction)
+
+var moon_matrix: Basis:
+	get: return moon_matrix
+	set(value):
+		moon_matrix = value
+		_update_moon_matrix(moon_matrix)
+
+var moon_texture: Texture2D = null:
+	get: return moon_texture
+	set(value):
+		moon_texture = value
+		_update_moon_texture(moon_texture)
+
+var moon_texture_yaw_offset: float = -0.3:
+	get: return moon_texture_yaw_offset
+	set(value):
+		moon_texture_yaw_offset = value
+		_update_moon_texture_yaw_offset(moon_texture_yaw_offset)
+
+var moon_color:= Color.WHITE:
+	get: return moon_color
+	set(value):
+		moon_color = value
+		_update_moon_color(moon_color)
+
+var moon_intensity: float = 0.5:
+	get: return moon_intensity
+	set(value):
+		moon_intensity = value
+		_update_moon_intensity(moon_intensity)
+
+var moon_intensity_multiplier: float = 1.0:
+	get: return moon_intensity_multiplier
+	set(value):
+		moon_intensity_multiplier = value
+		_update_moon_intensity_multiplier(moon_intensity_multiplier)
+
+var moon_size: float = 1.0:
+	get: return moon_size
+	set(value):
+		moon_size = value
+		_update_moon_size(moon_size)
+
+var moon_mie_color:= Color.WHITE:
+	get: return moon_mie_color
+	set(value):
+		moon_mie_color = value
+		_update_moon_mie_color(moon_mie_color)
+
+var moon_mie_intensity: float = 1.0:
+	get: return moon_mie_intensity
+	set(value):
+		moon_mie_intensity = value
+		_update_moon_mie_intensity(moon_mie_intensity)
+
+var moon_mie_anisotropy: float = 0.8:
+	get: return moon_mie_anisotropy
+	set(value):
+		moon_mie_anisotropy = value
+		_update_moon_mie_anisotropy(moon_mie_anisotropy)
+
+var moon_phases_mul: float = 1.0:
+	get: return moon_phases_mul
+	set(value):
+		moon_phases_mul = value
+		emit_changed()
+#endregion
+
 #region Setup
 func _init() -> void: # Tree
 	_on_init()
@@ -207,78 +281,6 @@ func _update_sun_eclipse_intensity(p_intensity: float) -> void:
 #endregion
 
 #region Moon
-var moon_direction:= Vector3.ZERO:
-	get: return moon_direction
-	set(value):
-		moon_direction = value
-		_update_moon_direction(moon_direction)
-
-var moon_matrix: Basis:
-	get: return moon_matrix
-	set(value):
-		moon_matrix = value
-		_update_moon_matrix(moon_matrix)
-
-var moon_texture: Texture2D = null:
-	get: return moon_texture
-	set(value):
-		moon_texture = value
-		_update_moon_texture(moon_texture)
-
-var moon_texture_yaw_offset: float = -0.3:
-	get: return moon_texture_yaw_offset
-	set(value):
-		moon_texture_yaw_offset = value
-		_update_moon_texture_yaw_offset(moon_texture_yaw_offset)
-
-var moon_color:= Color.WHITE:
-	get: return moon_color
-	set(value):
-		moon_color = value
-		_update_moon_color(moon_color)
-
-var moon_intensity: float = 0.5:
-	get: return moon_intensity
-	set(value):
-		moon_intensity = value
-		_update_moon_intensity(moon_intensity)
-
-var moon_intensity_multiplier: float = 1.0:
-	get: return moon_intensity_multiplier
-	set(value):
-		moon_intensity_multiplier = value
-		_update_moon_intensity_multiplier(moon_intensity_multiplier)
-
-var moon_size: float = 1.0:
-	get: return moon_size
-	set(value):
-		moon_size = value
-		_update_moon_size(moon_size)
-
-var moon_mie_color:= Color.WHITE:
-	get: return moon_mie_color
-	set(value):
-		moon_mie_color = value
-		_update_moon_mie_color(moon_mie_color)
-
-var moon_mie_intensity: float = 1.0:
-	get: return moon_mie_intensity
-	set(value):
-		moon_mie_intensity = value
-		_update_moon_mie_intensity(moon_mie_intensity)
-
-var moon_mie_anisotropy: float = 0.8:
-	get: return moon_mie_anisotropy
-	set(value):
-		moon_mie_anisotropy = value
-		_update_moon_mie_anisotropy(moon_mie_anisotropy)
-
-var moon_phases_mul: float = 1.0:
-	get: return moon_phases_mul
-	set(value):
-		moon_phases_mul = value
-		emit_changed()
-
 func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
 	_update_moon_intensity(moon_intensity)
 	_update_moon_mie_intensity(moon_mie_intensity)

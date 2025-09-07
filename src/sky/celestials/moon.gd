@@ -50,14 +50,14 @@ var texture: Texture = null:
 	get: return texture
 	set(value):
 		texture = value
-		emit_signal(PARAM_CHANGED, CelestialParam.TEXTURE)
+		param_changed.emit(CelestialParam.TEXTURE)
 
 @export
 var yaw_offset: float = -0.3:
 	get: return yaw_offset
 	set(value):
 		yaw_offset = value
-		emit_signal("yaw_offset_changed")
+		yaw_offset_changed.emit()
 
 @export_group("Phases")
 @export

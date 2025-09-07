@@ -7,8 +7,8 @@
 extends DirectionalLight3D
 class_name CelestialBody3D
 
-const DIRECTION_CHANGED:= &"direction_changed"
-const PARAM_CHANGED:= &"param_changed"
+#const DIRECTION_CHANGED:= &"direction_changed"
+#const PARAM_CHANGED:= &"param_changed"
 
 enum CelestialParam{
 	COLOR = 0, 
@@ -44,21 +44,21 @@ var body_color:=Color(1.0, 0.936, 0.766, 1.0):
 	get: return body_color
 	set(value):
 		body_color = value
-		emit_signal(PARAM_CHANGED, CelestialParam.COLOR)
+		param_changed.emit(CelestialParam.COLOR)
 
 @export
 var body_intensity: float = 1.0:
 	get: return body_intensity
 	set(value):
 		body_intensity = value
-		emit_signal(PARAM_CHANGED, CelestialParam.INTENSITY)
+		param_changed.emit(CelestialParam.INTENSITY)
 
 @export
 var body_size: float = 1.0:
 	get: return body_size
 	set(value):
 		body_size = value
-		emit_signal(PARAM_CHANGED, CelestialParam.SIZE)
+		param_changed.emit(CelestialParam.SIZE)
 #endregion
 
 #region Mie
@@ -68,21 +68,21 @@ var mie_color:= Color.WHITE:
 	get: return mie_color
 	set(value):
 		mie_color = value
-		emit_signal(PARAM_CHANGED, CelestialParam.MIE_COLOR)
+		param_changed.emit(CelestialParam.MIE_COLOR)
 
 @export
 var mie_intensity: float = 1.0:
 	get: return mie_intensity
 	set(value):
 		mie_intensity = value
-		emit_signal(PARAM_CHANGED, CelestialParam.MIE_INTENSITY)
+		param_changed.emit(CelestialParam.MIE_INTENSITY)
 
 @export_range(0.0, 0.9999)
 var mie_anisotropy: float = 0.85:
 	get: return mie_anisotropy
 	set(value):
 		mie_anisotropy = value
-		emit_signal(PARAM_CHANGED, CelestialParam.MIE_ANISOTROPY)
+		param_changed.emit(CelestialParam.MIE_ANISOTROPY)
 #endregion
 
 #region Lighting
@@ -184,7 +184,7 @@ func _disconnect_light_curve_changed() -> void:
 #region Signal Events
 func _on_intensity_multiplier() -> void:
 	_update_light_energy()
-	emit_signal(PARAM_CHANGED, CelestialParam.INTENSITY_MULTIPLIER)
+	param_changed.emit(CelestialParam.INTENSITY_MULTIPLIER)
 
 func _on_light_gradient_changed() -> void:
 	_update_light_color()
@@ -195,7 +195,7 @@ func _on_light_curve_changed() -> void:
 
 # Update
 func _update_params() -> void:
-	emit_signal(DIRECTION_CHANGED)
+	direction_changed.emit()
 	_update_light_color()
 	_update_light_energy()
 

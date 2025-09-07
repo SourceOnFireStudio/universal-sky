@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bw15xc6jb81e6"]
+[gd_scene load_steps=32 format=3 uid="uid://bw15xc6jb81e6"]
 
 [ext_resource type="Script" uid="uid://cyj8uwon5dmh1" path="res://addons/universal-sky/src/sky/sky_handler.gd" id="1_5pvsd"]
 [ext_resource type="Texture2D" uid="uid://cvqafkrcfb246" path="res://addons/universal-sky/assets/textures/milky-way/Milkyway.jpg" id="2_gv6sx"]
@@ -8,7 +8,9 @@
 [ext_resource type="Script" uid="uid://cu18k8ov4dxkq" path="res://addons/universal-sky/src/sky/celestials/sun.gd" id="5_frjel"]
 [ext_resource type="Script" uid="uid://dg8d3ajenewmk" path="res://addons/universal-sky/src/sky/celestials/moon.gd" id="6_yu7y7"]
 [ext_resource type="Texture2D" uid="uid://bg0ltx4f5n1qx" path="res://addons/universal-sky/assets/textures/moon/MoonMap.png" id="7_cvb06"]
-[ext_resource type="Shader" uid="uid://eeupldpiba2s" path="res://addons/universal-sky/src/sky/shaders/standard-sky/univsky_standard_sky.gdshader" id="8_gxt2a"]
+[ext_resource type="Shader" uid="uid://eeupldpiba2s" path="res://addons/universal-sky/src/sky/shaders/standard-sky/univsky_standard_sky.gdshader" id="9_2t0jo"]
+[ext_resource type="Script" uid="uid://bldir3yls8ej6" path="res://addons/universal-sky/src/planetary/planetary_date_time.gd" id="10_frjel"]
+[ext_resource type="Script" uid="uid://gok381plcuqb" path="res://addons/universal-sky/src/planetary/planetary.gd" id="10_hmx4h"]
 
 [sub_resource type="Gradient" id="Gradient_5pvsd"]
 offsets = PackedFloat32Array(0.80497926, 0.88381743)
@@ -37,15 +39,16 @@ seamless = true
 script = ExtResource("3_2t0jo")
 atm_day_intensity = 7.215
 atm_day_gradient = SubResource("Gradient_5pvsd")
-deep_space_euler = Vector3(0.735, 0, 0)
+deep_space_euler = Vector3(1.545, 0, 0)
+background_intensity = 1.155
+background_contrast = 0.0
 background_texture = ExtResource("2_gv6sx")
+stars_field_intensity = 0.0
 stars_field_texture = ExtResource("4_hmx4h")
 enable_dynamic_clouds = true
 dynamic_clouds_texture = SubResource("NoiseTexture2D_hmx4h")
 dynamic_clouds_texture2 = SubResource("NoiseTexture2D_2t0jo")
 dynamic_clouds_coverage = 0.435
-dynamic_clouds_absorption = 1.0
-dynamic_clouds_density = 2.0
 clouds_panorama = ExtResource("3_gv6sx")
 metadata/_custom_type_script = "uid://hrqegiwf7gbo"
 
@@ -61,8 +64,8 @@ point_count = 3
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.44854876, 0), 0.0, 0.0, 0, 0, Vector2(0.49868068, 1), 0.0, 0.0, 0, 0, Vector2(0.7546174, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_gv6sx"]
-shader = ExtResource("8_gxt2a")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hmx4h"]
+shader = ExtResource("9_2t0jo")
 shader_parameter/exposure = 1.0
 shader_parameter/tonemap_level = 0.0
 shader_parameter/horizon_offset = 0.0
@@ -121,7 +124,7 @@ shader_parameter/enable_dynamic_clouds = false
 shader_parameter/enable_clouds_panorama = false
 
 [sub_resource type="Sky" id="Sky_ljm3b"]
-sky_material = SubResource("ShaderMaterial_gv6sx")
+sky_material = SubResource("ShaderMaterial_hmx4h")
 process_mode = 2
 radiance_size = 1
 
@@ -153,8 +156,8 @@ metallic = 1.0
 roughness = 0.51
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2t0jo"]
-emission_enabled = true
-emission = Color(1, 1, 1, 1)
+shading_mode = 0
+albedo_color = Color(0, 1, 0.015625, 1)
 
 [sub_resource type="TextMesh" id="TextMesh_hmx4h"]
 text = "N"
@@ -162,15 +165,26 @@ pixel_size = 0.0485
 
 [node name="Node3D" type="Node3D"]
 
-[node name="SkyHandler" type="Node" parent="."]
+[node name="Planetary" type="Node" parent="." node_paths=PackedStringArray("_sky_handler", "_sun", "_moon", "_date_time")]
+script = ExtResource("10_hmx4h")
+_sky_handler = NodePath("SkyHandler")
+_sun = NodePath("SkyHandler/Sun3D")
+_moon = NodePath("SkyHandler/Moon3D")
+_date_time = NodePath("PlanetaryDateTime")
+_timeline = 8.126421368889268
+_day = 2
+_month = 10
+metadata/_custom_type_script = "uid://gok381plcuqb"
+
+[node name="SkyHandler" type="Node" parent="Planetary"]
 script = ExtResource("1_5pvsd")
 material = SubResource("Resource_uu07e")
-enviro_container = NodePath("../WorldEnvironment")
+enviro_container = NodePath("../../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
-[node name="Sun3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(-0.14552894, 0.05766819, 0.9876722, 0.98507696, -0.084285125, 0.15006751, 0.091900356, 0.99477273, -0.044541962, 0.8197903, 6.7678933, 0.94397706)
-light_color = Color(1, 0.5239258, 0.23828125, 1)
+[node name="Sun3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
+transform = Transform3D(0, -0.5283838, 0.8490057, 0, 0.84900564, 0.5283838, -1, 0, 0, 0, 0, 0)
+light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
@@ -180,8 +194,8 @@ lighting_gradient = SubResource("Gradient_gv6sx")
 lighting_energy_curve = SubResource("Curve_gv6sx")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
-[node name="Moon3D" type="DirectionalLight3D" parent="SkyHandler"]
-transform = Transform3D(0.79590905, -0.23340872, 0.55861485, -0.5174642, -0.741227, 0.42756778, 0.31426233, -0.6293688, -0.71072924, -2.1338947, 6.599295, 0.94167733)
+[node name="Moon3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
+transform = Transform3D(0, -0.5283838, -0.8490057, 0, 0.84900564, -0.5283838, 1, 0, 0, -2.1338947, 6.599295, 0.94167733)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
 script = ExtResource("6_yu7y7")
@@ -190,10 +204,16 @@ light_transition_curve = SubResource("Curve_2t0jo")
 body_color = Color(1, 1, 1, 1)
 body_size = 2.815
 mie_color = Color(0.623, 0.786, 1, 1)
-mie_anisotropy = 0.0
+mie_anisotropy = 0.669
 lighting_color = Color(0.54, 0.7, 0.9, 1)
 lighting_energy = 0.065
 metadata/_custom_type_script = "uid://dg8d3ajenewmk"
+
+[node name="PlanetaryDateTime" type="Node" parent="Planetary"]
+script = ExtResource("10_frjel")
+process_time_mode = 3
+timeline = 8.126421368889268
+metadata/_custom_type_script = "uid://bldir3yls8ej6"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tycrn")
@@ -224,6 +244,6 @@ mesh = SubResource("SphereMesh_2t0jo")
 transform = Transform3D(0.6602245, 0.0114696035, -0.75098073, 1.998471e-09, 0.9998834, 0.015271054, 0.75106835, -0.010082325, 0.6601475, -5.487791, 1.0326862, 3.5734463)
 
 [node name="Nort" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, -2.9275248)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -4.371139e-08, -3.9275248)
 material_override = SubResource("StandardMaterial3D_2t0jo")
 mesh = SubResource("TextMesh_hmx4h")

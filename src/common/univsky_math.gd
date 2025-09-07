@@ -17,6 +17,9 @@ const EPSILON_DBL:= 2.22044604925031308085e-16
 static func clamp_f(p_value: float, p_min: float, p_max: float) -> float:
 	return p_min if p_value < p_min else p_max if p_value > p_max else p_value
 
+static func clamp_i(p_value: int, p_min: int, p_max: int) -> int:
+	return p_min if p_value < p_min else p_max if p_value > p_max else p_value
+
 static func clamp_vec2(p_value: Vector2, p_min: Vector2, p_max: Vector2) -> Vector2:
 	p_value.x = p_min.x if p_value.x < p_min.x else p_max.x if p_value.x > p_max.x else p_value.x
 	p_value.y = p_min.y if p_value.y < p_min.y else p_max.y if p_value.y > p_max.y else p_value.y

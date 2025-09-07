@@ -18,6 +18,18 @@ var _day: int = 1
 var _month: int = 9
 var _year: int = 2025
 
+var sky_handler_is_valid: bool:
+	get: return is_instance_valid(_sky_handler)
+
+var date_time_is_valid: bool:
+	get: return is_instance_valid(_date_time)
+
+var sun_is_valid: bool:
+	get: return is_instance_valid(_sun)
+
+var moon_is_valid: bool:
+	get: return is_instance_valid(_moon)
+
 var timeline_utc: float:
 	get: return _timeline - utc
 
@@ -127,42 +139,42 @@ func _on_child_entered_tree(p_node: Node) -> void:
 	# Sky Handler
 	if p_node is SkyHandler:
 		_sky_handler = p_node as SkyHandler
-		if is_instance_valid(_sky_handler):
+		if sky_handler_is_valid:
 			_connect_sky_handler_child_tree_signals()
 	
 	# Date Time
 	if p_node is PlanetaryDateTime:
 		_date_time = p_node as PlanetaryDateTime
-		if is_instance_valid(_date_time):
+		if date_time_is_valid:
 			_connect_date_time_signals()
 
 func _on_child_exiting_tree(p_node: Node) -> void:
-	if is_instance_valid(_sky_handler):
+	if sky_handler_is_valid:
 		if p_node is SkyHandler and p_node.get_instance_id() == _sky_handler.get_instance_id():
 			_disconnect_sky_handler_child_tree_signals()
 			_sky_handler = null
 	
-	if is_instance_valid(_date_time):
+	if date_time_is_valid:
 		if p_node is PlanetaryDateTime and p_node.get_instance_id() == _date_time.get_instance_id():
 			_disconnect_date_time_signals()
 			_date_time = null
 
 func _on_sky_handler_child_entered_tree(p_node: Node) -> void:
 	if p_node is Sun3D:
-		if is_instance_valid(_sky_handler.sun):
+		if _sky_handler.sun_is_valid:
 			_sun = _sky_handler.sun
 	if p_node is Moon3D:
-		if is_instance_valid(_sky_handler.moon):
+		if _sky_handler.moon_is_valid:
 			_moon = _sky_handler.moon
 
 func _on_sky_handler_child_exiting_tree(p_node: Node) -> void:
-	if not is_instance_valid(_sky_handler):
+	if not sky_handler_is_valid:
 		return
 	if p_node is Sun3D:
-		if not is_instance_valid(_sky_handler.sun):
+		if not _sky_handler.sun_is_valid:
 			_sun = null
 	if p_node is Moon3D:
-		if not is_instance_valid(_sky_handler.moon):
+		if not _sky_handler.moon_is_valid:
 			_moon = null
 
 func _on_date_time_param_changed(p_param) -> void:
@@ -190,9 +202,9 @@ func _update_celestial_coords() -> void:
 		Vector3(moon_altitude_rad - deg_to_rad(90.0), moon_azimuth_rad, 0.0)
 	)
 	
-	if is_instance_valid(_sun):
+	if sun_is_valid:
 		_sun.basis = sunQuat
-	if is_instance_valid(_moon):
+	if moon_is_valid:
 		_moon.basis = moonQuat
 
 # Simple coords

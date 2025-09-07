@@ -6,13 +6,13 @@ render_mode use_quarter_res_pass, use_half_res_pass;
 #define ENABLE_TONEMAP
 
 #include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_coords.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/atmospheric-scattering/univsky_atmospheric_scattering.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky-components/univsky_atmospheric_scattering.gdshaderinc"
 #include "res://addons/universal-sky/src/sky/shaders/common/library/univsky_random.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_sun.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_moon.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/outer-space/univsky_deep_space.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/dynamic-clouds/univsky_dynamic_clouds.gdshaderinc"
-#include "res://addons/universal-sky/src/sky/shaders/clouds_panorama/univsky_clouds_panorama.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky-components/univsky_sun.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky-components/univsky_moon.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky-components/univsky_deep_space.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky-components/univsky_dynamic_clouds.gdshaderinc"
+#include "res://addons/universal-sky/src/sky/shaders/sky-components/univsky_clouds_panorama.gdshaderinc"
 
 uniform float debanding_level;
 uniform bool enable_dynamic_clouds;

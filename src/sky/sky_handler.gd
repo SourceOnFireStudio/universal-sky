@@ -217,11 +217,10 @@ func _disconnect_moon_signals() -> void:
 #region Signal Events
 # Child
 func _on_child_entered_tree(p_node: Node) -> void:
-	if p_node is Sun3D and not is_instance_valid(sun):
+	if p_node is Sun3D and not sun_is_valid:
 		sun = p_node
 		if sun_is_valid:
 			_connect_sun_signals()
-			
 			if moon_is_valid:
 				sun.set_moon(moon)
 				moon.set_sun(sun)
@@ -230,10 +229,8 @@ func _on_child_entered_tree(p_node: Node) -> void:
 
 	if p_node is Moon3D and not moon_is_valid:
 		moon = p_node
-		
 		if moon_is_valid:
 			_connect_moon_signals()
-			
 			if sun_is_valid:
 				moon.set_sun(sun)
 				sun.set_moon(moon)
@@ -245,20 +242,20 @@ func _on_child_exiting_tree(p_node: Node) -> void:
 		_disconnect_sun_signals()
 		if material_is_valid:
 			material.initialize_params()
-		
 		if moon_is_valid:
 			moon.set_sun(null)
+		
 		sun = null
 	
 	if p_node is Moon3D and p_node.get_instance_id() == moon.get_instance_id():
 		_disconnect_moon_signals()
 		if material_is_valid:
 			material.initialize_params()
-		
 		if sun_is_valid:
 			sun.set_moon(null)
-		moon = null
 		
+		moon = null
+	
 	_update_celestials_data()
 
 # Enviro
@@ -301,6 +298,7 @@ func _on_sun_value_changed(p_type: int) -> void:
 func _on_moon_direction_changed() -> void:
 	if not material_is_valid or not moon_is_valid:
 		return
+	
 	material.moon_direction = moon.direction
 	material.moon_phases_mul = moon.phases_mul
 	material.moon_matrix = moon.clamped_matrix
@@ -311,6 +309,7 @@ func _on_moon_direction_changed() -> void:
 func _on_moon_value_changed(p_type: int) -> void:
 	if not material_is_valid or not moon_is_valid:
 		return
+	
 	match(p_type):
 		Moon3D.CelestialParam.COLOR:
 			material.moon_color = moon.body_color

@@ -7,9 +7,6 @@
 extends DirectionalLight3D
 class_name CelestialBody3D
 
-#const DIRECTION_CHANGED:= &"direction_changed"
-#const PARAM_CHANGED:= &"param_changed"
-
 enum CelestialParam{
 	COLOR = 0, 
 	INTENSITY = 1, 
@@ -29,6 +26,12 @@ var _lighting_energy_curve: Curve = null
 
 var direction: Vector3:
 	get: return -(basis * Vector3.FORWARD)
+
+var lighting_gradient_is_valid: bool:
+	get: return is_instance_valid(_lighting_gradient)
+
+var lighting_energy_curve_is_valid: bool:
+	get: return is_instance_valid(_lighting_energy_curve)
 
 @export
 var intensity_multiplier: float = 1.0:
@@ -101,7 +104,7 @@ var lighting_gradient: Gradient = null:
 		if is_instance_valid(value):
 			_lighting_gradient = value
 			_connect_light_gradient_changed()
-		elif is_instance_valid(_lighting_gradient):
+		elif lighting_gradient_is_valid:
 			_disconnect_light_gradient_changed()
 			_lighting_gradient = null
 		_update_light_color()
@@ -120,7 +123,7 @@ var lighting_energy_curve: Curve = null:
 		if is_instance_valid(value):
 			_lighting_energy_curve = value
 			_connect_light_curve_changed()
-		elif is_instance_valid(_lighting_gradient):
+		elif lighting_gradient_is_valid:
 			_disconnect_light_curve_changed()
 			_lighting_energy_curve = null
 		_update_light_energy()
@@ -201,7 +204,7 @@ func _update_params() -> void:
 
 #region Lighting
 func _update_light_color() -> void:
-	if is_instance_valid(lighting_gradient):
+	if lighting_gradient_is_valid:
 		light_color = lighting_gradient.sample(
 			UnivSkyUtil.interpolate_by_above(direction.y)
 		)
@@ -216,7 +219,7 @@ func _update_light_energy() -> void:
 		shadow_enabled = false
 
 func _get_light_energy() -> float:
-	if not is_instance_valid(lighting_energy_curve):
+	if not lighting_energy_curve_is_valid:
 		var uMuS = (atan(max(direction.y, -0.1975) * tan(1.386)) / 1.1 + (1.0 - 0.26));
 		uMuS = clamp(uMuS-0.3, 0.0, 1.0)
 		return lerp(0.0, lighting_energy, uMuS)

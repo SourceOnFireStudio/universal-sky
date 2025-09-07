@@ -12,6 +12,9 @@ class_name Sun3D
 var _moon: Moon3D:
 	get: return _moon
 
+var moon_is_valid: bool:
+	get: return is_instance_valid(_moon)
+
 var eclipse_multiplier: float = 1.0:
 	get: return eclipse_multiplier
 
@@ -84,7 +87,7 @@ func _get_light_energy() -> float:
 	return super() * eclipse_multiplier
 
 func _update_eclipse() -> void:
-	if not is_instance_valid(_moon):
+	if not moon_is_valid:
 		return
 	
 	if enable_solar_eclipse:

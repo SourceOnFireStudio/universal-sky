@@ -44,12 +44,24 @@ var min_eclipse_intensity: float = 0.01:
 		min_eclipse_intensity = value
 		_update_params()
 
+# Godot Node Overrides
 func _on_init() -> void:
 	super()
 	body_color = Color(1, 0.7058, 0.4470)
 	body_intensity = 10.0
 	body_size = 1.0
 
+#region Connections
+func _connect_moon_signals() -> void:
+	if not _moon.direction_changed.is_connected(_on_moon_direction_changed):
+		_moon.direction_changed.connect(_on_moon_direction_changed)
+
+func _disconnect_moon_signals() -> void:
+	if _moon.direction_changed.is_connected(_on_moon_direction_changed):
+		_moon.direction_changed.disconnect(_on_moon_direction_changed)
+#endregion
+
+# References
 func set_moon(p_moon: Moon3D) -> void:
 	if is_instance_valid(p_moon):
 		_moon = p_moon
@@ -58,21 +70,16 @@ func set_moon(p_moon: Moon3D) -> void:
 		_disconnect_moon_signals()
 		_moon = null
 
-func _connect_moon_signals() -> void:
-	if not _moon.direction_changed.is_connected(_on_moon_direction_changed):
-		_moon.direction_changed.connect(_on_moon_direction_changed)
-
-func _disconnect_moon_signals() -> void:
-	if _moon.direction_changed.is_connected(_on_moon_direction_changed):
-		_moon.direction_changed.disconnect(_on_moon_direction_changed)
-
+# Signal Events
 func _on_moon_direction_changed() -> void:
 	_update_eclipse()
 
+# Update
 func _update_params() -> void:
 	_update_eclipse()
 	super()
 
+# Lighting
 func _get_light_energy() -> float:
 	return super() * eclipse_multiplier
 

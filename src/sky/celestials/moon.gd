@@ -93,6 +93,7 @@ var light_transition_curve: Curve:
 			_light_transition_curve = null
 		_update_light_energy()
 
+#region Godot Node Overrides
 func _on_init() -> void:
 	super()
 	body_size =  1.0
@@ -113,15 +114,9 @@ func _on_init() -> void:
 func _validate_property(property: Dictionary) -> void:
 	if not use_custom_texture and property.name == "texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
+#endregion
 
-func set_sun(p_sun: Sun3D) -> void:
-	if is_instance_valid(p_sun):
-		_sun = p_sun
-		_connect_sun_signals()
-	else:
-		_disconnect_sun_signals()
-		_sun = null
-
+#region Connections
 func _connect_sun_signals() -> void:
 	if not _sun.direction_changed.is_connected(_on_sun_direction_changed):
 		_sun.direction_changed.connect(_on_sun_direction_changed)
@@ -137,7 +132,26 @@ func _connect_light_transition_curve_changed() -> void:
 func _disconnect_light_transition_curve_changed() -> void:
 	if _light_transition_curve.changed.is_connected(_on_light_transition_curve_changed):
 		_light_transition_curve.changed.disconnect(_on_light_transition_curve_changed)
+#endregion
 
+# References
+func set_sun(p_sun: Sun3D) -> void:
+	if is_instance_valid(p_sun):
+		_sun = p_sun
+		_connect_sun_signals()
+	else:
+		_disconnect_sun_signals()
+		_sun = null
+
+#region Signal Events
+func _on_sun_direction_changed() -> void:
+	_update_light_energy()
+
+func _on_light_transition_curve_changed() -> void: 
+	_update_light_energy()
+#endregion
+
+# Lighting
 func _get_light_energy() -> float:
 	var energy: float = super()
 	if enable_light_moon_phases:
@@ -154,12 +168,6 @@ func _get_light_energy() -> float:
 			return energy * lerp(0.0, 1.0, fade);
 	
 	return energy
-
-func _on_sun_direction_changed() -> void:
-	_update_light_energy()
-
-func _on_light_transition_curve_changed() -> void: 
-	_update_light_energy()
 
 func get_final_moon_mie_intensity() -> float:
 	if enable_mie_phases:

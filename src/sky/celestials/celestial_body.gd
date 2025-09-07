@@ -7,6 +7,9 @@
 extends DirectionalLight3D
 class_name CelestialBody3D
 
+const DIRECTION_CHANGED:= &"direction_changed"
+const PARAM_CHANGED:= &"param_changed"
+
 enum CelestialParam{
 	COLOR = 0, 
 	INTENSITY = 1, 
@@ -17,9 +20,6 @@ enum CelestialParam{
 	MIE_ANISOTROPY = 6, 
 	INTENSITY_MULTIPLIER = 7,
 }
-
-const DIRECTION_CHANGED:= &"direction_changed"
-const PARAM_CHANGED:= &"param_changed"
 
 signal direction_changed()
 signal param_changed(type)
@@ -133,10 +133,12 @@ var lighting_enable_shadows: bool = true:
 		_update_light_energy()
 #endregion
 
+#region Godot Node Overrides
 func _init() -> void:
 	_on_init()
 
 func _notification(what: int) -> void:
+	_on_notification(what)
 	if what == NOTIFICATION_TRANSFORM_CHANGED:
 		_update_params()
 	if what == NOTIFICATION_ENTER_TREE:
@@ -144,6 +146,24 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_EXIT_TREE:
 		_on_exit_tree()
 
+func _on_init() -> void:
+	lighting_color = lighting_color
+	lighting_gradient = lighting_gradient
+	lighting_energy = lighting_energy
+	lighting_energy_curve = lighting_energy_curve
+	intensity_multiplier = intensity_multiplier
+
+func _on_enter_tree() -> void:
+	intensity_multiplier = intensity_multiplier
+
+func _on_exit_tree() -> void:
+	pass
+
+func _on_notification(what: int) -> void:
+	pass
+#endregion
+
+#region Connections
 func _connect_light_gradient_changed() -> void:
 	if !lighting_gradient.changed.is_connected(_on_light_gradient_changed):
 		lighting_gradient.changed.connect(_on_light_gradient_changed)
@@ -159,20 +179,9 @@ func _connect_light_curve_changed() -> void:
 func _disconnect_light_curve_changed() -> void:
 	if lighting_energy_curve.changed.is_connected(_on_light_curve_changed):
 		lighting_energy_curve.changed.disconnect(_on_light_curve_changed)
+#endregion
 
-func _on_init() -> void:
-	lighting_color = lighting_color
-	lighting_gradient = lighting_gradient
-	lighting_energy = lighting_energy
-	lighting_energy_curve = lighting_energy_curve
-	intensity_multiplier = intensity_multiplier
-
-func _on_enter_tree() -> void:
-	intensity_multiplier = intensity_multiplier
-
-func _on_exit_tree() -> void:
-	pass
-
+#region Signal Events
 func _on_intensity_multiplier() -> void:
 	_update_light_energy()
 	emit_signal(PARAM_CHANGED, CelestialParam.INTENSITY_MULTIPLIER)
@@ -182,12 +191,15 @@ func _on_light_gradient_changed() -> void:
 
 func _on_light_curve_changed() -> void:
 	_update_light_energy()
+#endregion
 
+# Update
 func _update_params() -> void:
 	emit_signal(DIRECTION_CHANGED)
 	_update_light_color()
 	_update_light_energy()
 
+#region Lighting
 func _update_light_color() -> void:
 	if is_instance_valid(lighting_gradient):
 		light_color = lighting_gradient.sample(
@@ -198,7 +210,6 @@ func _update_light_color() -> void:
 
 func _update_light_energy() -> void:
 	light_energy = _get_light_energy() * intensity_multiplier
-	
 	if lighting_enable_shadows:
 		shadow_enabled = true if light_energy > 0.0 else false
 	else:
@@ -210,3 +221,4 @@ func _get_light_energy() -> float:
 		uMuS = clamp(uMuS-0.3, 0.0, 1.0)
 		return lerp(0.0, lighting_energy, uMuS)
 	return lighting_energy_curve.sample(UnivSkyUtil.interpolate_full(direction.y))
+#endregion

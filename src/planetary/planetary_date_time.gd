@@ -97,7 +97,7 @@ var year: int = 2025:
 		year = value
 		time_param_changed.emit(DateTimeParam.YEAR)
 
-#region Godot node overrides
+#region Godot Node Overrides
 func _enter_tree() -> void:
 	system_sync = system_sync
 	total_cycle_in_minutes = total_cycle_in_minutes
@@ -114,7 +114,7 @@ func _process(delta: float) -> void:
 			_get_date_time_os()
 #endregion
 
-#region Process time
+#region Process Time
 func _can_process() -> bool:
 	match(process_time_mode):
 		ProcessTimeMode.Editor:
@@ -137,7 +137,7 @@ func _get_date_time_os():
 	year = _date_time_os.year
 #endregion
 
-#region Set values
+#region Set Time Values
 func set_oclock(p_hour: int) -> void:
 	timeline = float(p_hour)
 

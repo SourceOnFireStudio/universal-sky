@@ -84,6 +84,7 @@ var sky_radiance_size: int = 1:
 			_enviro.sky.radiance_size = sky_radiance_size
 #endregion
 
+#region Godot Node Overrides
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_ENTER_TREE:
@@ -103,12 +104,33 @@ func _notification(what: int) -> void:
 				_enviro.sky.sky_material = null
 				_disconnect_enviro_changed()
 
+func _get_configuration_warnings() -> PackedStringArray:
+	if not is_instance_valid(sun):
+		return ["Sun unassigned"]
+	if not is_instance_valid(moon):
+		return ["Moon unassigned"]
+	if not is_instance_valid(material):
+		return ["Material unassigned"]
+	return []
+#endregion
+
+#region Setup
 func _check_material_ready() -> bool: 
 	if not is_instance_valid(material):
 		return false
 	if not material.material_is_valid:
 		return false
 	return true
+
+func _initialize_material() -> void:
+	material.initialize_params()
+	if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
+		material.set_compatibility(true)
+	else:
+		material.set_compatibility(false)
+
+func _get_rendering_method() -> String:
+	return str(ProjectSettings.get_setting_with_override(RENDERING_METHOD_PATH))
 
 func _set_sky_material_to_enviro() -> void:
 	if not is_instance_valid(_enviro):
@@ -126,25 +148,7 @@ func _set_sky_material_to_enviro() -> void:
 		_on_enviro_changed()
 	else:
 		_enviro.sky.sky_material = null
-
-func _initialize_material() -> void:
-	material.initialize_params()
-	if _get_rendering_method() == COMPATIBILITY_RENDER_METHOD_NAME:
-		material.set_compatibility(true)
-	else:
-		material.set_compatibility(false)
-
-func _get_rendering_method() -> String:
-	return str(ProjectSettings.get_setting_with_override(RENDERING_METHOD_PATH))
-
-func _get_configuration_warnings() -> PackedStringArray:
-	if not is_instance_valid(sun):
-		return ["Sun unassigned"]
-	if not is_instance_valid(moon):
-		return ["Moon unassigned"]
-	if not is_instance_valid(material):
-		return ["Material unassigned"]
-	return []
+#endregion
 
 #region Connections
 func _connect_child_tree_signals() -> void:
@@ -210,7 +214,8 @@ func _disconnect_moon_signals() -> void:
 		moon.yaw_offset_changed.disconnect(_on_moon_yaw_offset_changed)
 #endregion
 
-#region Setup
+#region Signal Events
+# Child
 func _on_child_entered_tree(p_node: Node) -> void:
 	if p_node is Sun3D and not is_instance_valid(sun):
 		sun = p_node
@@ -256,26 +261,11 @@ func _on_child_exiting_tree(p_node: Node) -> void:
 		
 	_update_celestials_data()
 
+# Enviro
 func _on_enviro_changed() -> void:
 	pass
 
-func _update_celestials_data() -> void:
-	_update_sun_data()
-	_update_moon_data()
-
-func _update_sun_data() -> void:
-	_on_sun_direction_changed()
-	for i in range(0, 7):
-		_on_sun_value_changed(i)
-
-func _update_moon_data() -> void:
-	_on_moon_direction_changed()
-	_on_moon_yaw_offset_changed()
-	for i in range(0, 8):
-		_on_moon_value_changed(i)
-#endregion
-
-#region Sun Direction
+# Sun
 func _on_sun_direction_changed() -> void:
 	if not _check_material_ready() or not is_instance_valid(sun):
 		return
@@ -287,11 +277,6 @@ func _on_sun_direction_changed() -> void:
 	material.sun_direction = sun.direction
 	_update_sun_eclipse()
 
-func _update_sun_eclipse() -> void:
-	material.sun_eclipse_intensity = sun.eclipse_multiplier
-#endregion
-
-#region Sun Values
 func _on_sun_value_changed(p_type: int) -> void:
 	if not _check_material_ready() or not is_instance_valid(sun):
 		return
@@ -311,9 +296,8 @@ func _on_sun_value_changed(p_type: int) -> void:
 			material.sun_mie_intensity = sun.mie_intensity
 		CelestialBody3D.CelestialParam.MIE_ANISOTROPY:
 			material.sun_mie_anisotropy = sun.mie_anisotropy
-#endregion
 
-#region Moon Direction
+# Moon
 func _on_moon_direction_changed() -> void:
 	if not _check_material_ready() or not is_instance_valid(moon):
 		return
@@ -323,9 +307,7 @@ func _on_moon_direction_changed() -> void:
 	_update_moon_mie_intensity()
 	if is_instance_valid(sun):
 		_update_sun_eclipse()
-#endregion
 
-#region Moon Values
 func _on_moon_value_changed(p_type: int) -> void:
 	if not _check_material_ready() or not is_instance_valid(moon):
 		return
@@ -351,6 +333,26 @@ func _on_moon_yaw_offset_changed() -> void:
 	if not _check_material_ready() or not is_instance_valid(moon):
 		return
 	material.moon_texture_yaw_offset = moon.yaw_offset
+#endregion
+
+#region Update
+func _update_celestials_data() -> void:
+	_update_sun_data()
+	_update_moon_data()
+
+func _update_sun_data() -> void:
+	_on_sun_direction_changed()
+	for i in range(0, 7):
+		_on_sun_value_changed(i)
+
+func _update_moon_data() -> void:
+	_on_moon_direction_changed()
+	_on_moon_yaw_offset_changed()
+	for i in range(0, 8):
+		_on_moon_value_changed(i)
+
+func _update_sun_eclipse() -> void:
+	material.sun_eclipse_intensity = sun.eclipse_multiplier
 
 func _update_moon_mie_intensity() -> void:
 	material.moon_mie_intensity = moon.get_final_moon_mie_intensity()

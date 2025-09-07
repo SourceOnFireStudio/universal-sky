@@ -73,24 +73,24 @@ var moon_coords_offset: Vector2:
 		moon_coords_offset = value
 		_update_celestial_coords()
 
-#region godot node overrides
+#region Godot Node Overrides
 func _enter_tree() -> void:
-	_connect_child_entered_signals()
+	_connect_child_tree_signals()
 
 func _exit_tree() -> void:
-	_disconnect_child_entered_signals()
+	_disconnect_child_tree_signals()
 #endregion
 
 #region Connections
 # This node child enter and exit tree signals
-func _connect_child_entered_signals() -> void:
+func _connect_child_tree_signals() -> void:
 	if not child_entered_tree.is_connected(_on_child_entered_tree):
 		child_entered_tree.connect(_on_child_entered_tree)
 	
 	if not child_exiting_tree.is_connected(_on_child_exiting_tree):
 		child_exiting_tree.connect(_on_child_exiting_tree)
 
-func _disconnect_child_entered_signals() -> void:
+func _disconnect_child_tree_signals() -> void:
 	if child_entered_tree.is_connected(_on_child_entered_tree):
 		child_entered_tree.disconnect(_on_child_entered_tree)
 	
@@ -98,14 +98,14 @@ func _disconnect_child_entered_signals() -> void:
 		child_exiting_tree.disconnect(_on_child_exiting_tree)
 
 # Sky handler child node  enter and exit signals.
-func _connect_sky_handler_child_entered_signals() -> void:
+func _connect_sky_handler_child_tree_signals() -> void:
 	if not _sky_handler.child_entered_tree.is_connected(_on_sky_handler_child_entered_tree):
 		_sky_handler.child_entered_tree.connect(_on_sky_handler_child_entered_tree)
 	
 	if not _sky_handler.child_exiting_tree.is_connected(_on_sky_handler_child_exiting_tree):
 		_sky_handler.child_exiting_tree.connect(_on_sky_handler_child_exiting_tree)
 
-func _disconnect_sky_handler_child_entered_signals() -> void:
+func _disconnect_sky_handler_child_tree_signals() -> void:
 	if _sky_handler.child_entered_tree.is_connected(_on_sky_handler_child_entered_tree):
 		_sky_handler.child_entered_tree.disconnect(_on_sky_handler_child_entered_tree)
 	
@@ -128,7 +128,7 @@ func _on_child_entered_tree(p_node: Node) -> void:
 	if p_node is SkyHandler:
 		_sky_handler = p_node as SkyHandler
 		if is_instance_valid(_sky_handler):
-			_connect_sky_handler_child_entered_signals()
+			_connect_sky_handler_child_tree_signals()
 	
 	# Date Time
 	if p_node is PlanetaryDateTime:
@@ -139,7 +139,7 @@ func _on_child_entered_tree(p_node: Node) -> void:
 func _on_child_exiting_tree(p_node: Node) -> void:
 	if is_instance_valid(_sky_handler):
 		if p_node is SkyHandler and p_node.get_instance_id() == _sky_handler.get_instance_id():
-			_disconnect_sky_handler_child_entered_signals()
+			_disconnect_sky_handler_child_tree_signals()
 			_sky_handler = null
 	
 	if is_instance_valid(_date_time):

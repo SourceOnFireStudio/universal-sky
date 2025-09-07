@@ -68,6 +68,7 @@ const CLOUDS_PANORAMA_INTENSITY_PARAM:= &"clouds_panorama_intensity"
 const CLOUDS_PANORAMA_SPEED_PARAM:= &"clouds_panorama_speed"
 #endregion
 
+#region Atmospheric Scaterring Const
 # Index of the air refraction.
 const n: float = 1.0003
 
@@ -79,11 +80,9 @@ const N: float = 2.545e25
 
 # Depolatization factor for standard air.
 const pn: float = 0.035
+#endregion
 
 var _atm_day_gradient: Gradient = null
-
-func _material_is_valid() -> bool:
-	return true
 
 #region General Settings
 @export_group("General Settings")
@@ -528,10 +527,14 @@ var clouds_panorama_speed: float = 0.005:
 		emit_changed()
 #endregion
 
+#region Setup
 func _on_init() -> void:
 	super()
 	material.shader = SHADER
 	initialize_params()
+
+func _material_is_valid() -> bool:
+	return true
 
 func _initialize_params() -> void:
 	super()
@@ -595,14 +598,6 @@ func _validate_property(property: Dictionary) -> void:
 	if not use_custom_stars_field_texture && property.name == "stars_field_texture":
 		property.usage &= ~PROPERTY_USAGE_EDITOR
 
-func _connect_atm_day_gradient_changed() -> void:
-	if !atm_day_gradient.changed.is_connected(_set_atm_day_tint):
-		atm_day_gradient.changed.connect(_set_atm_day_tint)
-
-func _disconnect_atm_day_gradient_changed() -> void:
-	if atm_day_gradient.changed.is_connected(_set_atm_day_tint):
-		atm_day_gradient.changed.disconnect(_set_atm_day_tint)
-
 func _compatibility_changed() -> void:
 	super()
 	_set_atm_day_tint()
@@ -610,6 +605,22 @@ func _compatibility_changed() -> void:
 	atm_ground_color = atm_ground_color
 	background_color = background_color
 	stars_field_color = stars_field_color
+#endregion
+
+
+#region Connections
+func _connect_atm_day_gradient_changed() -> void:
+	if !atm_day_gradient.changed.is_connected(_set_atm_day_tint):
+		atm_day_gradient.changed.connect(_set_atm_day_tint)
+
+func _disconnect_atm_day_gradient_changed() -> void:
+	if atm_day_gradient.changed.is_connected(_set_atm_day_tint):
+		atm_day_gradient.changed.disconnect(_set_atm_day_tint)
+#endregion
+
+#region Direction
+func _get_celestial_uMuS(dir: Vector3) -> float:
+	return (atan(max(dir.y, -0.1975) * tan(1.386)) / 1.1 + (1.0 - 0.26));
 
 func _update_sun_direction(p_direction: Vector3) -> void:
 	super(p_direction)
@@ -622,6 +633,14 @@ func _update_moon_direction(p_direction: Vector3) -> void:
 	_set_sun_uMuS()
 	_set_atm_night_tint()
 
+func _set_sun_uMuS() -> void:
+	RenderingServer.material_set_param(
+		material.get_rid(), SUN_UMUS_PARAM, _get_celestial_uMuS(sun_direction)
+	)
+	emit_changed()
+#endregion
+
+#region Intensity
 func _update_sun_intensity_multiplier(p_multiplier: float) -> void:
 	super(p_multiplier)
 	atm_day_intensity = atm_day_intensity
@@ -633,10 +652,9 @@ func _update_sun_eclipse_intensity(p_intensity: float) -> void:
 func _update_moon_intensity_multiplier(p_multiplier: float) -> void:
 	super(p_multiplier)
 	atm_night_intensity = atm_night_intensity
+#endregion
 
-func _get_celestial_uMuS(dir: Vector3) -> float:
-	return (atan(max(dir.y, -0.1975) * tan(1.386)) / 1.1 + (1.0 - 0.26));
-
+#region Atmospheric Scattering
 func _compute_wavelenghts_lambda(value: Vector3) -> Vector3:
 	return value * 1e-9
 
@@ -662,12 +680,6 @@ func _compute_beta_ray(wavelenghts: Vector3) -> Vector3:
 func _compute_beta_mie(mie: float, turbidity: float) -> Vector3:
 	var k: float = 434e-6
 	return Vector3.ONE * mie * turbidity * k
-
-func _set_sun_uMuS() -> void:
-	RenderingServer.material_set_param(
-		material.get_rid(), SUN_UMUS_PARAM, _get_celestial_uMuS(sun_direction)
-	)
-	emit_changed()
 
 func _set_beta_ray() -> void:
 	var wls:= _compute_wavelenghts(atm_wavelenghts, true)
@@ -714,3 +726,4 @@ func _set_atm_night_tint() -> void:
 	)
 	_update_moon_mie_intensity(moon_mie_intensity)
 	emit_changed()
+#endregion

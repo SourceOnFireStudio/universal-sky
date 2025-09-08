@@ -164,14 +164,18 @@ pixel_size = 0.0485
 
 [node name="Planetary" type="Node" parent="."]
 script = ExtResource("10_hmx4h")
-latitude = 39.91300000000001
+latitude = 60.0
+longitude = 15.0
 metadata/_custom_type_script = "uid://gok381plcuqb"
 
 [node name="PlanetaryDateTime" type="Node" parent="Planetary"]
 script = ExtResource("10_frjel")
 total_cycle_in_minutes = 1.0
-timeline = 16.389745599999596
-day = 26
+process_time_mode = 3
+timeline = 0.0
+day = 19
+month = 4
+year = 1990
 metadata/_custom_type_script = "uid://bldir3yls8ej6"
 
 [node name="SkyHandler" type="Node" parent="Planetary"]
@@ -181,8 +185,8 @@ enviro_container = NodePath("../../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
-transform = Transform3D(0.6416236, -0.31385493, -0.69986725, -1.4901161e-08, -0.9124503, 0.40918761, -0.7670196, -0.26254445, -0.5854497, 0, 0, 0)
-light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
+light_color = Color(1, 0.5239258, 0.23828125, 1)
+light_energy = 0.0049203993
 shadow_enabled = true
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
@@ -193,9 +197,10 @@ lighting_energy_curve = SubResource("Curve_gv6sx")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
 [node name="Moon3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
-transform = Transform3D(-0.641624, -0.31385493, 0.6998673, 0, -0.91245055, -0.40918764, 0.7670197, -0.26254448, 0.5854497, -2.1338947, 6.599295, 0.94167733)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1338947, 6.599295, 0.94167733)
 light_color = Color(0.54, 0.7, 0.9, 1)
-light_energy = 0.0
+light_energy = 0.028599998
+shadow_enabled = true
 script = ExtResource("6_yu7y7")
 texture = ExtResource("7_cvb06")
 light_transition_curve = SubResource("Curve_2t0jo")

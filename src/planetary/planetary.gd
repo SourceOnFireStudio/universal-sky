@@ -80,6 +80,7 @@ var test_sun_cordinates = _test_sun_coords
 
 func _test_sun_coords():
 	_compute_realistic_sun_coords()
+	_compute_realistic_moon_coords()
 
 @export
 var calculations_mode:= CalculationsMode.REALISTIC:
@@ -119,15 +120,23 @@ var moon_coords_offset: Vector2:
 #region Godot Node Overrides
 func _enter_tree() -> void:
 	_connect_child_tree_signals()
+	_initialize()
+	
+
+func _exit_tree() -> void:
+	_disconnect_child_tree_signals()
+
+func _initialize() -> void:
 	calculations_mode = calculations_mode
 	utc = utc
 	latitude = latitude
 	longitude = longitude
 	moon_coords_offset = moon_coords_offset
 	
+	if date_time_is_valid:
+		for i in range(4):
+			_on_date_time_param_changed(i)
 
-func _exit_tree() -> void:
-	_disconnect_child_tree_signals()
 #endregion
 
 #region Connections
@@ -178,12 +187,14 @@ func _on_child_entered_tree(p_node: Node) -> void:
 		_sky_handler = p_node as SkyHandler
 		if sky_handler_is_valid:
 			_connect_sky_handler_child_tree_signals()
+			_initialize()
 	
 	# Date Time
 	if p_node is PlanetaryDateTime:
 		_date_time = p_node as PlanetaryDateTime
 		if date_time_is_valid:
 			_connect_date_time_signals()
+			_initialize()
 
 func _on_child_exiting_tree(p_node: Node) -> void:
 	if sky_handler_is_valid:
@@ -200,9 +211,13 @@ func _on_sky_handler_child_entered_tree(p_node: Node) -> void:
 	if p_node is Sun3D:
 		if _sky_handler.sun_is_valid:
 			_sun = _sky_handler.sun
+			await get_tree().create_timer(0.0001).timeout
+			_initialize()
 	if p_node is Moon3D:
 		if _sky_handler.moon_is_valid:
 			_moon = _sky_handler.moon
+			await get_tree().create_timer(0.0001).timeout
+			_initialize()
 
 func _on_sky_handler_child_exiting_tree(p_node: Node) -> void:
 	if not sky_handler_is_valid:
@@ -214,7 +229,7 @@ func _on_sky_handler_child_exiting_tree(p_node: Node) -> void:
 		if not _sky_handler.moon_is_valid:
 			_moon = null
 
-func _on_date_time_param_changed(p_param) -> void:
+func _on_date_time_param_changed(p_param: int) -> void:
 	match p_param:
 		PlanetaryDateTime.DateTimeParam.TIMELINE:
 			_timeline = _date_time.timeline
@@ -245,13 +260,17 @@ func _update_celestial_coords() -> void:
 				Vector3(moon_altitude_rad - deg_to_rad(90.0), moon_azimuth_rad, 0.0)
 			)
 		
-		# Need more testing(Azimuth)
 		CalculationsMode.REALISTIC:
 			_compute_realistic_sun_coords()
 			sunQuat = Quaternion.from_euler(
 				Vector3(-sun_altitude_rad, -sun_azimuth_rad-PI, 0.0)
 			)
-		
+			
+			_compute_realistic_moon_coords()
+			moonQuat = Quaternion.from_euler(
+				Vector3(-moon_altitude_rad, -moon_azimuth_rad-PI, 0.0)
+			)
+	
 	if sun_is_valid:
 		_sun.basis = sunQuat
 	if moon_is_valid:
@@ -305,12 +324,12 @@ func _compute_realistic_sun_coords() -> void:
 	#region Orbital Elements
 	var N: float = 0.0
 	var i: float = 0.0
-	var w: float = 282.9404 + 4.70935e-5 * timeScale
-	var a: float = 0.0
-	var e: float = 0.016709 - 1.151e-9 * timeScale
-	var M: float = 356.0470 + 0.9856002585 * timeScale
+	var w: float = 282.9404 + 4.70935e-5 * timeScale # Longitude of perihelion
+	var a: float = 1.0 # mean distance, a.u.
+	var e: float = 0.016709 - 1.151e-9 * timeScale # Eccentricity
+	var M: float = 356.0470 + 0.9856002585 * timeScale # Mean anomaly.
 	M = rev(M) # Solve M.
-	var MRad: float = deg_to_rad(M) # Mean anomaly in radians.
+	var MRad: float = deg_to_rad(M) # Mean anomaly in radians
 	#endregion
 	
 	#region Eccentric Anomaly
@@ -363,8 +382,9 @@ func _compute_realistic_sun_coords() -> void:
 	# Output: 1.00432295542164 = r
 	var re: float = sqrt(xequat * xequat + yequat * yequat + zequat * zequat)
 	
-	# Output: 26.6580776793343 deg/15
-	var RA: float = rad_to_deg(atan2(yequat, xequat)) / 15
+	# Output: 26.6580776793343 deg/15 = 1.77720 h
+	#var RA: float = rad_to_deg(atan2(yequat, xequat)) / 15
+	var RA: float = rad_to_deg(atan2(yequat, xequat))
 
 	# Output: 11.0083747350256 deg
 	var Decl: float = rad_to_deg(atan2(zequat, sqrt(xequat * xequat + yequat * yequat)))
@@ -386,9 +406,11 @@ func _compute_realistic_sun_coords() -> void:
 	
 	# Hour Angle
 	# Output: 13.01205 hours * 15 = 195.18075 degrees
-	var HA: float = (_sideral_time - RA) * 15
+	var HA: float = (_sideral_time * 15) - RA
 	var HARad: float = deg_to_rad(HA) 
-
+	#endregion
+	
+	#region Azimuth and Altitude
 	# Hour Angle to rectangular
 	# Output: -0.94734589519279
 	var x: float = cos(HARad) * cos(DeclRad)
@@ -416,6 +438,148 @@ func _compute_realistic_sun_coords() -> void:
 	
 	_sun_altitude = altitude
 	_sun_azimuth = azimuth
+	#endregion
+
+func _compute_realistic_moon_coords() -> void:
+	var timeScale: float = _get_time_scale()
+	var oblectRad: float = deg_to_rad(_get_oblecl())
+	#region Orbital Elements
+	var N = 125.1228 - 0.0529538083 * timeScale #Long asc. node
+	var i = 5.1454 #Inclination
+	var w = 318.0634 + 0.1643573223 * timeScale #Arg. of perigee
+	var a = 60.2666 #Mean distance
+	var e = 0.054900 #Eccentricity
+	var M = 115.3654 + 13.0649929509 * timeScale #Mean anomaly
+	M = rev(M) # Solve M.
+	var NRad: float = deg_to_rad(N)
+	var wRad: float = deg_to_rad(w)
+	var iRad: float = deg_to_rad(i)
+	var MRad: float = deg_to_rad(M) # Mean anomaly in radians
+	var L: float = _mean_sun_longitude
+	#endregion
+	
+	#region Excentrici Anomaly
+	var E0: float = M + rad_to_deg(e) * sin(MRad) * (1 + e * cos(MRad))
+	var E1: float = E0;
+	while true:
+		var E0Rad: float = deg_to_rad(E0)
+		E1 = E0 - (E0 - rad_to_deg(e) * sin(E0Rad) - M) / (1 - e * cos(E0Rad))
+		if abs(E1 - E0) < 0.005:
+			break
+		E0 = E1
+	
+	var E: float = E1
+	var ERad: float = deg_to_rad(E)
+	#endregion
+	
+	#region Moon's distance and true anomaly
+	var xv: float = a * (cos(ERad) - e)
+	var yv: float = a * sqrt(1 - e*e) * sin(ERad)
+	
+	var r: float = sqrt(xv * xv + yv * yv)
+	var v: float =(atan2(yv, xv))
+	#endregion
+	
+	#region Ecliptic
+	var xeclip: float = r * ( cos(NRad) * cos(v+wRad) - sin(NRad) * sin(v+wRad) * cos(iRad) )
+	var yeclip: float = r * ( sin(NRad) * cos(v+wRad) + cos(NRad) * sin(v+wRad) * cos(iRad) )
+	var zeclip: float = r * sin(v+wRad) * sin(iRad)
+	
+	var long: float = atan2(yeclip, xeclip)
+	var lat: float = atan2(zeclip, sqrt(xeclip * xeclip + yeclip * yeclip))
+	var rs: float = sqrt(xeclip * xeclip + yeclip * yeclip + zeclip * zeclip)
+	#endregion
+   
+	#region Perturbations
+	var Ls: float = _mean_sun_longitude #Sun's  mean longitude
+	var Lm: float = rev(N + w + M) #Moon's mean longitude
+	var Ms: float = 356.0470 + 0.9856002585 * timeScale #Sun's  mean anomaly
+	var Mm: float = M #Moon's mean anomaly
+	var D: float = rev(Lm - Ls) #Moon's mean elongation
+	var F: float = rev(Lm - N) #Moon's argument of latitude
+	
+	var sin_deg: Callable = func(deg: float):
+		return sin(deg_to_rad(deg))
+
+	var cos_deg: Callable = func(deg: float):
+		return cos(deg_to_rad(deg))
+	
+	var lonPerp: float = (
+		-1.274 *  sin_deg.call(Mm - 2 * D) #-0.9847
+		+ 0.658 * sin_deg.call(2 * D) #-0.3819
+		- 0.186 * sin_deg.call(Ms) # 0.1804
+		- 0.059 * sin_deg.call(2 * Mm - 2 * D)
+		- 0.057 * sin_deg.call(Mm - 2 * D + Ms)
+		+ 0.053 * sin_deg.call(Mm + 2 * D)
+		+ 0.046 * sin_deg.call(2 * D - Ms)
+		+ 0.041 * sin_deg.call(Mm - Ms)
+		- 0.035 * sin_deg.call(D)
+		- 0.031 * sin_deg.call(Mm + Ms)
+		- 0.015 * sin_deg.call(2 * F - 2 * D)
+		+ 0.011 * sin_deg.call(Mm - 4 * D)
+	)
+	
+	var latPerp: float = (
+		- 0.173 * sin_deg.call(F - 2 * D)
+		- 0.055 * sin_deg.call(Mm - F - 2 * D)
+		- 0.046 * sin_deg.call(Mm + F - 2 * D)
+		+ 0.033 * sin_deg.call(F + 2 * D)
+		+ 0.017 * sin_deg.call(2 * Mm + F)
+	)
+	
+	var lunarDistPerp: float = -0.58 * cos_deg.call(Mm - 2 * D) - 0.46 * cos_deg.call( 2 * D)
+	
+	long += deg_to_rad(lonPerp)
+	lat += deg_to_rad(latPerp)
+	rs += deg_to_rad(lunarDistPerp)
+	#endregion
+	
+	#region Ascencion and declination
+	xeclip = cos(long) * cos(lat)
+	yeclip = sin(long) * cos(lat)
+	zeclip = sin(lat)
+	
+	var xequat: float = xeclip
+	var yequat: float = yeclip * cos(oblectRad) - zeclip * sin(oblectRad)
+	var zequat: float = yeclip * sin(oblectRad) + zeclip * cos(oblectRad)
+	
+	var RA: float = rad_to_deg(atan2(yequat, xequat))
+	var Decl: float = atan2(zequat, sqrt(xequat * xequat + yequat * yequat))
+	var DeclRad: float = deg_to_rad(Decl)
+	#endregion
+	
+	#region Sideral time and hour angle.
+	var HA: float = (_sideral_time*15) - RA
+	var HARad: float = deg_to_rad(HA) 
+	#endregion
+	
+	#region Topocentric
+	#TODO: Apply topocentric.
+	#var gclat: float = latitude - 0.1924 * sin(2.0 * latitude_rad)
+	#var gclatRad: float = deg_to_rad(gclat)
+#
+	#var mpar: float = (asin(1.0 / 60.6779))
+	#var rho: float = (0.99833 + 0.00167 * cos(2.0 * latitude_rad))
+	#var topRA = RA - mpar * rho * cos(gclatRad) * sin(HARad) / cos(DeclRad)
+	#
+	#var g: float = rad_to_deg(atan(tan(gclatRad) / cos(HARad) ))
+	#var alt_topoc: float = 45.0 - mpar * cos(45.0)
+	#endregion
+	
+	#region Azimuth and Altitude
+	var x: float = cos(HARad) * cos(DeclRad)
+	var y: float = sin(HARad) * cos(DeclRad)
+	var z: float = sin(DeclRad)
+
+	var xhor = x * sin(latitude_rad) - z * cos(latitude_rad)
+	var yhor = y
+	var zhor = x * cos(latitude_rad) + z * sin(latitude_rad)
+	
+	var azimuth = rad_to_deg(atan2(yhor, xhor)) + 180
+	var altitude = rad_to_deg(asin(zhor)) # atan2(zhor, sqrt(xhor * xhor + yhor * yhor))
+	
+	_moon_altitude = altitude
+	_moon_azimuth = azimuth
 	#endregion
 
 #endregion

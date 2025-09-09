@@ -119,6 +119,12 @@ var moon_coords_offset: Vector2:
 #region Godot Node Overrides
 func _enter_tree() -> void:
 	_connect_child_tree_signals()
+	calculations_mode = calculations_mode
+	utc = utc
+	latitude = latitude
+	longitude = longitude
+	moon_coords_offset = moon_coords_offset
+	
 
 func _exit_tree() -> void:
 	_disconnect_child_tree_signals()
@@ -215,10 +221,13 @@ func _on_date_time_param_changed(p_param) -> void:
 			_update_celestial_coords()
 		PlanetaryDateTime.DateTimeParam.DAY:
 			_day = _date_time.day
+			_update_celestial_coords()
 		PlanetaryDateTime.DateTimeParam.MONTH:
 			_month = _date_time.month
+			_update_celestial_coords()
 		PlanetaryDateTime.DateTimeParam.YEAR:
 			_year = _date_time.year
+			_update_celestial_coords()
 #endregion
 
 #region Celestial Coords
@@ -240,7 +249,7 @@ func _update_celestial_coords() -> void:
 		CalculationsMode.REALISTIC:
 			_compute_realistic_sun_coords()
 			sunQuat = Quaternion.from_euler(
-				Vector3(-sun_altitude_rad, sun_azimuth_rad, 0.0)
+				Vector3(-sun_altitude_rad, -sun_azimuth_rad-PI, 0.0)
 			)
 		
 	if sun_is_valid:
@@ -400,7 +409,7 @@ func _compute_realistic_sun_coords() -> void:
 	var zhor = x * cos(latitude_rad) + z * sin(latitude_rad) 
 	
 	# Output: 15.676697321318
-	var azimuth = rad_to_deg(atan2(yhor, xhor)) + 180.0
+	var azimuth = rad_to_deg(atan2(yhor, xhor)) + 180
 	
 	# Output: -0.31340888543438
 	var altitude = rad_to_deg(asin(zhor)) # atan2(zhor, sqrt(xhor * xhor + yhor * yhor))

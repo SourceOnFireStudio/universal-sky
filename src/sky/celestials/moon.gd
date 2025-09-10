@@ -33,11 +33,12 @@ var phases_mul: float:
 		return 1.0
 
 var clamped_matrix: Basis:
-	get: return Basis(
-		-(basis * Vector3.FORWARD),
-		-(basis * Vector3.UP),
-		-(basis * Vector3.RIGHT)
-	).transposed()
+	get: return basis.inverse()
+	#get: return Basis(
+		#-(basis * Vector3.FORWARD),
+		#-(basis * Vector3.UP),
+		#-(basis * Vector3.RIGHT)
+	#).transposed()
 
 @export_group("Texture")
 @export

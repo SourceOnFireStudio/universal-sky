@@ -75,13 +75,6 @@ var latitude_rad: float:
 var longitude_rad: float:
 	get: return deg_to_rad(longitude)
 
-@export_tool_button("Test Sun Coordinates", "Callable")
-var test_sun_cordinates = _test_sun_coords
-
-func _test_sun_coords():
-	_compute_realistic_sun_coords()
-	_compute_realistic_moon_coords()
-
 @export
 var calculations_mode:= CalculationsMode.REALISTIC:
 	get: return calculations_mode
@@ -121,7 +114,6 @@ var moon_coords_offset: Vector2:
 func _enter_tree() -> void:
 	_connect_child_tree_signals()
 	_initialize()
-	
 
 func _exit_tree() -> void:
 	_disconnect_child_tree_signals()

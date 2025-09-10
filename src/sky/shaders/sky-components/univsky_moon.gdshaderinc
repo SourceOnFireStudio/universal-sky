@@ -38,7 +38,7 @@ vec4 computeMoon(vec3 pos){
 	vec3 normal = normalize(moon_direction - pos * isphere);
 	ndotL += saturate(dot(normal, -sun_direction));
 
-	vec3 texCoords = (moon_matrix * normal).xyz;
+	vec3 texCoords = ((moon_matrix) * normal).xyz;
 	texCoords.xy = equirectUV(texCoords);
 	texCoords.x += moon_texture_yaw_offset;
 

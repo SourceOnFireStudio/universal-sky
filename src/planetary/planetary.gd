@@ -288,14 +288,22 @@ func _compute_simple_moon_coords() -> void:
 
 
 # Realistic Coords
+# Math Formulas by Paul Schlyter, Stockholm, Sweden
 # See:
 # http://www.stjarnhimlen.se/comp/ppcomp.html
 # http://stjarnhimlen.se/comp/tutorial.html
 ## Input Test: Latitude: 60.0, Longitude: 15.0, Utc: 0.0, 19-Abr-1990
+## NOTE: To check in stelarium you need to enter your utc
 
 ## Reduce value to between 0 and 360 degrees.
 func rev(p_value: float) -> float:
 	return p_value - floori(p_value / 360.0) * 360.0
+	
+func sin_deg(deg: float) -> float:
+	return sin(deg_to_rad(deg))
+
+func cos_deg(deg: float) -> float:
+	return cos(deg_to_rad(deg))
 
 ## See: 
 ## https://www.stjarnhimlen.se/comp/tutorial.html#4
@@ -312,7 +320,6 @@ func _get_time_scale() -> float:
 	return d + (_timeline / 24.0)
 
 ## See: https://www.stjarnhimlen.se/comp/tutorial.html#5
-## Input Test: Latitude: 60.0, Longitude: 15.0, Utc: 0.0, 19-Abr-1990
 ## Output Test = 23.4406 deg
 func _get_oblecl() -> float:
 	return 23.4393 - 3.563e-7 * _get_time_scale()
@@ -333,60 +340,40 @@ func _compute_realistic_sun_coords() -> void:
 	#endregion
 	
 	#region Eccentric Anomaly
-	# Output = 104.9904 deg
 	var E: float = M + rad_to_deg(e) * sin(MRad) * (1 + e * cos(MRad))
 	var ERad: float = deg_to_rad(E)
-	#endregion
-	
-	#region  Rectangular Coordinates.
-	# Output = -0.27537012629078
 	var xv: float = cos(ERad) - e
-	# Output = 0.96583429859032
 	var yv: float = sin(ERad) * sqrt(1 - e * e)
 	#endregion
 	
 	#region Distance and True Anomaly
-	# Output = 1.00432295542164 rad
 	var r: float = sqrt(xv * xv + yv * yv)
-	# Output = 105.913441697029 deg
 	var v: float = rad_to_deg(atan2(yv, xv))
 	_sun_distance = r
 	#endregion
 	
 	#region Sun Longitude
-	# Output: 28.6869 deg
 	var lon: float = rev(v + w)
 	var lonRad: float = deg_to_rad(lon)
 	_true_sun_longitude = lonRad
 	#endregion
 	
 	#region Ecliptic and ecuatorial coords.
-	# Output: 0.881048
 	var xs: float = r * cos(lonRad)
-	# Output: 0.482098
 	var ys: float = r * sin(lonRad) 
 	var zs: float = 0.0
 	
 	var obleclCos: float = cos(oblectRad)
 	var oblectSin: float = sin(oblectRad)
 	
-	# Output: 0.881048
 	var xequat: float = xs
-	# Output: 0.442312
 	var yequat: float = ys * obleclCos - 0.0 * oblectSin
-	# Output: 0.191778
 	var zequat: float = ys * oblectSin + 0.0 * obleclCos
 	#endregion
 
 	#region  Ascencion and declination.
-	# Output: 1.00432295542164 = r
 	var re: float = sqrt(xequat * xequat + yequat * yequat + zequat * zequat)
-	
-	# Output: 26.6580776793343 deg/15 = 1.77720 h
-	#var RA: float = rad_to_deg(atan2(yequat, xequat)) / 15
 	var RA: float = rad_to_deg(atan2(yequat, xequat))
-
-	# Output: 11.0083747350256 deg
 	var Decl: float = rad_to_deg(atan2(zequat, sqrt(xequat * xequat + yequat * yequat)))
 	var DeclRad: float = deg_to_rad(Decl)
 	#endregion
@@ -396,44 +383,23 @@ func _compute_realistic_sun_coords() -> void:
 	var L: float = rev(w + M)
 	_mean_sun_longitude = L
 	
-	# GMST0
-	# Output: 13.7892554576 hours
-	var GMST0: float = L/15 + 12 #(L + 180) / 15
-	
 	# Sideral Time
-	# Output: 14.7892554576 hours
+	var GMST0: float = L/15 + 12 #(L + 180) / 15
 	_sideral_time = GMST0 + timeline_utc + (longitude/15)
 	
 	# Hour Angle
-	# Output: 13.01205 hours * 15 = 195.18075 degrees
 	var HA: float = (_sideral_time * 15) - RA
 	var HARad: float = deg_to_rad(HA) 
 	#endregion
 	
 	#region Azimuth and Altitude
-	# Hour Angle to rectangular
-	# Output: -0.94734589519279
 	var x: float = cos(HARad) * cos(DeclRad)
-	
-	# Output: -0.25704650810098
 	var y: float = sin(HARad) * cos(DeclRad)
-	
-	# Output: 0.19095247454395
 	var z: float = sin(DeclRad)
-	
-	# Output: -0.91590184867985
 	var xhor = x * sin(latitude_rad) - z * cos(latitude_rad)
-	
-	# Output: -0.25704650810098
 	var yhor = y
-	
-	# Output: -0.30830325372583
-	var zhor = x * cos(latitude_rad) + z * sin(latitude_rad) 
-	
-	# Output: 15.676697321318
+	var zhor = x * cos(latitude_rad) + z * sin(latitude_rad)
 	var azimuth = rad_to_deg(atan2(yhor, xhor)) + 180
-	
-	# Output: -0.31340888543438
 	var altitude = rad_to_deg(asin(zhor)) # atan2(zhor, sqrt(xhor * xhor + yhor * yhor))
 	
 	_sun_altitude = altitude
@@ -444,17 +410,17 @@ func _compute_realistic_moon_coords() -> void:
 	var timeScale: float = _get_time_scale()
 	var oblectRad: float = deg_to_rad(_get_oblecl())
 	#region Orbital Elements
-	var N = 125.1228 - 0.0529538083 * timeScale #Long asc. node
-	var i = 5.1454 #Inclination
-	var w = 318.0634 + 0.1643573223 * timeScale #Arg. of perigee
-	var a = 60.2666 #Mean distance
-	var e = 0.054900 #Eccentricity
-	var M = 115.3654 + 13.0649929509 * timeScale #Mean anomaly
+	var N = 125.1228 - 0.0529538083 * timeScale # Long asc. node
+	var i = 5.1454 # Inclination
+	var w = 318.0634 + 0.1643573223 * timeScale # Arg. of perigee
+	var a = 60.2666 # Mean distance
+	var e = 0.054900 # Eccentricity
+	var M = 115.3654 + 13.0649929509 * timeScale # Mean anomaly
 	M = rev(M) # Solve M.
 	var NRad: float = deg_to_rad(N)
 	var wRad: float = deg_to_rad(w)
 	var iRad: float = deg_to_rad(i)
-	var MRad: float = deg_to_rad(M) # Mean anomaly in radians
+	var MRad: float = deg_to_rad(M)
 	var L: float = _mean_sun_longitude
 	#endregion
 	
@@ -470,12 +436,12 @@ func _compute_realistic_moon_coords() -> void:
 	
 	var E: float = E1
 	var ERad: float = deg_to_rad(E)
+	
+	var xv: float = a * (cos(ERad) - e)
+	var yv: float = a * sqrt(1 - e*e) * sin(ERad)
 	#endregion
 	
 	#region Moon's distance and true anomaly
-	var xv: float = a * (cos(ERad) - e)
-	var yv: float = a * sqrt(1 - e*e) * sin(ERad)
-	
 	var r: float = sqrt(xv * xv + yv * yv)
 	var v: float =(atan2(yv, xv))
 	#endregion
@@ -491,43 +457,37 @@ func _compute_realistic_moon_coords() -> void:
 	#endregion
    
 	#region Perturbations
-	var Ls: float = _mean_sun_longitude #Sun's  mean longitude
-	var Lm: float = rev(N + w + M) #Moon's mean longitude
+	var Ls: float = _mean_sun_longitude # Sun's  mean longitude
+	var Lm: float = rev(N + w + M) # Moon's mean longitude
 	var Ms: float = 356.0470 + 0.9856002585 * timeScale #Sun's  mean anomaly
-	var Mm: float = M #Moon's mean anomaly
-	var D: float = rev(Lm - Ls) #Moon's mean elongation
-	var F: float = rev(Lm - N) #Moon's argument of latitude
-	
-	var sin_deg: Callable = func(deg: float):
-		return sin(deg_to_rad(deg))
-
-	var cos_deg: Callable = func(deg: float):
-		return cos(deg_to_rad(deg))
+	var Mm: float = M # Moon's mean anomaly
+	var D: float = rev(Lm - Ls) # Moon's mean elongation
+	var F: float = rev(Lm - N) # Moon's argument of latitude
 	
 	var lonPerp: float = (
-		-1.274 *  sin_deg.call(Mm - 2 * D) #-0.9847
-		+ 0.658 * sin_deg.call(2 * D) #-0.3819
-		- 0.186 * sin_deg.call(Ms) # 0.1804
-		- 0.059 * sin_deg.call(2 * Mm - 2 * D)
-		- 0.057 * sin_deg.call(Mm - 2 * D + Ms)
-		+ 0.053 * sin_deg.call(Mm + 2 * D)
-		+ 0.046 * sin_deg.call(2 * D - Ms)
-		+ 0.041 * sin_deg.call(Mm - Ms)
-		- 0.035 * sin_deg.call(D)
-		- 0.031 * sin_deg.call(Mm + Ms)
-		- 0.015 * sin_deg.call(2 * F - 2 * D)
-		+ 0.011 * sin_deg.call(Mm - 4 * D)
+		-1.274 *  sin_deg(Mm - 2 * D)
+		+ 0.658 * sin_deg(2 * D)
+		- 0.186 * sin_deg(Ms)
+		- 0.059 * sin_deg(2 * Mm - 2 * D)
+		- 0.057 * sin_deg(Mm - 2 * D + Ms)
+		+ 0.053 * sin_deg(Mm + 2 * D)
+		+ 0.046 * sin_deg(2 * D - Ms)
+		+ 0.041 * sin_deg(Mm - Ms)
+		- 0.035 * sin_deg(D)
+		- 0.031 * sin_deg(Mm + Ms)
+		- 0.015 * sin_deg(2 * F - 2 * D)
+		+ 0.011 * sin_deg(Mm - 4 * D)
 	)
 	
 	var latPerp: float = (
-		- 0.173 * sin_deg.call(F - 2 * D)
-		- 0.055 * sin_deg.call(Mm - F - 2 * D)
-		- 0.046 * sin_deg.call(Mm + F - 2 * D)
-		+ 0.033 * sin_deg.call(F + 2 * D)
-		+ 0.017 * sin_deg.call(2 * Mm + F)
+		- 0.173 * sin_deg(F - 2 * D)
+		- 0.055 * sin_deg(Mm - F - 2 * D)
+		- 0.046 * sin_deg(Mm + F - 2 * D)
+		+ 0.033 * sin_deg(F + 2 * D)
+		+ 0.017 * sin_deg(2 * Mm + F)
 	)
 	
-	var lunarDistPerp: float = -0.58 * cos_deg.call(Mm - 2 * D) - 0.46 * cos_deg.call( 2 * D)
+	var lunarDistPerp: float = -0.58 * cos_deg(Mm - 2 * D) - 0.46 * cos_deg( 2 * D)
 	
 	long += deg_to_rad(lonPerp)
 	lat += deg_to_rad(latPerp)
@@ -535,17 +495,16 @@ func _compute_realistic_moon_coords() -> void:
 	#endregion
 	
 	#region Ascencion and declination
-	xeclip = cos(long) * cos(lat)
-	yeclip = sin(long) * cos(lat)
-	zeclip = sin(lat)
+	xeclip = rs * cos(long) * cos(lat)
+	yeclip = rs * sin(long) * cos(lat)
+	zeclip = rs* sin(lat)
 	
 	var xequat: float = xeclip
 	var yequat: float = yeclip * cos(oblectRad) - zeclip * sin(oblectRad)
 	var zequat: float = yeclip * sin(oblectRad) + zeclip * cos(oblectRad)
 	
-	var RA: float = rad_to_deg(atan2(yequat, xequat))
+	var RA: float = rad_to_deg(atan2(yequat, xequat));
 	var Decl: float = atan2(zequat, sqrt(xequat * xequat + yequat * yequat))
-	var DeclRad: float = deg_to_rad(Decl)
 	#endregion
 	
 	#region Sideral time and hour angle.
@@ -554,31 +513,41 @@ func _compute_realistic_moon_coords() -> void:
 	#endregion
 	
 	#region Topocentric
-	#TODO: Apply topocentric.
-	#var gclat: float = latitude - 0.1924 * sin(2.0 * latitude_rad)
-	#var gclatRad: float = deg_to_rad(gclat)
-#
-	#var mpar: float = (asin(1.0 / 60.6779))
-	#var rho: float = (0.99833 + 0.00167 * cos(2.0 * latitude_rad))
-	#var topRA = RA - mpar * rho * cos(gclatRad) * sin(HARad) / cos(DeclRad)
-	#
-	#var g: float = rad_to_deg(atan(tan(gclatRad) / cos(HARad) ))
-	#var alt_topoc: float = 45.0 - mpar * cos(45.0)
+	var gclat: float = latitude - 0.1924 * sin(2.0 * latitude_rad)
+	var gclatRad: float = deg_to_rad(gclat)
+	var rho: float = 0.99833 + 0.00167 * cos(2.0 * latitude_rad)
+
+	var mpar: float = rad_to_deg(asin(1.0 / 60.6779))
+	var topRA: float = (RA - mpar * cos(gclatRad) * sin(HARad) / cos(Decl));
+	
+	var g: float = rad_to_deg(atan(tan(gclatRad) / cos(HARad) ))
+	var gRad: float = deg_to_rad(g)
+	
+	var topDecl = rad_to_deg(Decl) - mpar * rho * sin(gclatRad) * sin(gRad - Decl) / sin(gRad)
+	var topDeclRad = deg_to_rad(topDecl)
+	
+	var topHA: float = (_sideral_time*15) - topRA
+	var topHARad: float = deg_to_rad(topHA)
 	#endregion
 	
 	#region Azimuth and Altitude
-	var x: float = cos(HARad) * cos(DeclRad)
-	var y: float = sin(HARad) * cos(DeclRad)
-	var z: float = sin(DeclRad)
+	var x: float = cos(topHARad) * cos(topDeclRad)
+	var y: float = sin(topHARad) * cos(topDeclRad)
+	var z: float = sin(topDeclRad)
 
 	var xhor = x * sin(latitude_rad) - z * cos(latitude_rad)
 	var yhor = y
 	var zhor = x * cos(latitude_rad) + z * sin(latitude_rad)
 	
 	var azimuth = rad_to_deg(atan2(yhor, xhor)) + 180
-	var altitude = rad_to_deg(asin(zhor)) # atan2(zhor, sqrt(xhor * xhor + yhor * yhor))
+	var altitude = rad_to_deg(asin(zhor))
 	
-	_moon_altitude = altitude
+	# Output =  -17.1320296390843
+	# Stellarium = -16
+	_moon_altitude = altitude - mpar * cos(deg_to_rad(altitude))
+	
+	# Output =  101.785328899489
+	# Stellarium = 101 
 	_moon_azimuth = azimuth
 	#endregion
 

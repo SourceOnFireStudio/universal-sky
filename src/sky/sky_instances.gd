@@ -17,7 +17,10 @@ var instances: Array[SkyHandler]:
 	get: return instances
 
 var current_instance: SkyHandler:
-	get: return instances[0]
+	get: 
+		if instances.size() > 0:
+			return instances[0]
+		return null
 
 func set_instance(p_instance: SkyHandler) -> void:
 	pre_instance_removed.emit()

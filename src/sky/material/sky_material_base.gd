@@ -27,6 +27,9 @@ const MOON_TEXTURE_YAW_OFFSET_PARAM:= &"moon_texture_yaw_offset"
 const MOON_MIE_COLOR_PARAM:= &"atm_moon_mie_color"
 const MOON_MIE_INTENSITY_PARAM:= &"atm_moon_mie_intensity"
 const MOON_MIE_ANISOTROPY_PARAM:= &"atm_moon_mie_anisotropy"
+
+const DEEP_SPACE_ALIGMENT_MATRIX_PARAM:= &"deep_space_aligment_matrix"
+const DEEP_SPACE_ROTATION_MATRIX_PARAM:= &"deep_space_rotation_matrix"
 #endregion
 
 var _material:= ShaderMaterial.new()
@@ -168,6 +171,20 @@ var moon_phases_mul: float = 1.0:
 		emit_changed()
 #endregion
 
+#region Deep Sapace
+var deep_space_aligment_matrix: Basis = Basis.from_euler(Vector3(13.045, -1.51, -2.07)):
+	get: return deep_space_aligment_matrix
+	set(value):
+		deep_space_aligment_matrix = value
+		_update_deep_space_aligment_matrix(deep_space_aligment_matrix)
+
+var deep_space_rotation_matrix: Basis = Basis.from_euler(Vector3.ONE):
+	get: return deep_space_rotation_matrix
+	set(value):
+		deep_space_rotation_matrix = value
+		_update_deep_space_rotation_matrix(deep_space_rotation_matrix)
+#endregion
+
 #region Setup
 func _init() -> void: # Tree
 	_on_init()
@@ -194,6 +211,8 @@ func _compatibility_changed() -> void:
 func _initialize_default_celestial_values() -> void:
 	_set_default_sun_values()
 	_set_default_moon_values()
+	_update_deep_space_aligment_matrix(deep_space_aligment_matrix)
+	_update_deep_space_rotation_matrix(deep_space_rotation_matrix)
 
 func _set_default_sun_values() -> void:
 	sun_intensity_multiplier = 1.0
@@ -337,4 +356,18 @@ func _update_moon_mie_anisotropy(p_anisotropy: float) -> void:
 		material.get_rid(), MOON_MIE_ANISOTROPY_PARAM, p_anisotropy
 	)
 	emit_changed()
+#endregion
+
+#region DeepSpace
+func _update_deep_space_aligment_matrix(p_value: Basis) -> void:
+		RenderingServer.material_set_param(
+			material.get_rid(), DEEP_SPACE_ALIGMENT_MATRIX_PARAM, p_value
+		)
+		emit_changed()
+
+func _update_deep_space_rotation_matrix(p_value: Basis) -> void:
+		RenderingServer.material_set_param(
+			material.get_rid(), DEEP_SPACE_ROTATION_MATRIX_PARAM, p_value
+		)
+		emit_changed()
 #endregion

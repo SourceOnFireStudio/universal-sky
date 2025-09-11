@@ -17,10 +17,11 @@ uniform vec4 stars_field_color: source_color;
 uniform float stars_field_intensity;
 uniform float stars_scintillation;
 uniform float stars_scintillation_speed;
-uniform mat3 deep_space_matrix;
+uniform mat3 deep_space_aligment_matrix;
+uniform mat3 deep_space_rotation_matrix;
 
 vec3 getDeepSpaceCoords(vec3 pos){
-	return inverse(deep_space_matrix) * pos.xyz;
+	return normalize(inverse(deep_space_aligment_matrix) * inverse(deep_space_rotation_matrix) * pos.xyz);
 }
 
 vec3 getBackground(vec2 uv){

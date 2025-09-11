@@ -40,7 +40,7 @@ const SUN_UMUS_PARAM:= &"sun_uMuS"
 const DAY_TINT_PARAM:= &"atm_day_tint"
 const NIGHT_TINT_PARAM:= &"atm_night_tint"
 
-const DEEP_SPACE_MATRIX_PARAM:= &"deep_space_matrix"
+
 const DEEP_SPACE_BACKGROUND_COLOR_PARAM:= &"background_color"
 const DEEP_SPACE_BACKGROUND_TEXTURE_PARAM:= &"background_texture"
 const DEEP_SPACE_BACKGROUND_INTENSITY_PARAM:= &"background_intensity"
@@ -251,31 +251,6 @@ var atm_ground_color:= Color(0.543, 0.543, 0.543): # Color(0.204, 0.345, 0.467):
 
 #region Deep Space
 @export_group("Deep Space")
-@export 
-var deep_space_euler:= Vector3(0.0, 0.0, 0.0):
-	get: 
-		return deep_space_euler
-	set(value):
-		deep_space_euler = value
-		deep_space_quat = Basis.from_euler(
-			deep_space_euler
-		).get_rotation_quaternion()
-		
-		emit_changed()
-
-var deep_space_quat:= Quaternion.IDENTITY:
-	get: return deep_space_quat
-	set(value):
-		deep_space_quat = value
-		_deep_space_basis = Basis(value)
-		#__deep_space_euler = _deep_space_basis.get_euler()
-		RenderingServer.material_set_param(
-			material.get_rid(), DEEP_SPACE_MATRIX_PARAM, _deep_space_basis
-		)
-		emit_changed()
-
-var _deep_space_basis:= Basis()
-
 @export_subgroup('Background')
 @export
 var background_color:= Color(1.0, 1.0, 1.0, 1.0):
@@ -557,9 +532,9 @@ func _initialize_params() -> void:
 	
 	atm_ground_color = atm_ground_color
 	
-	deep_space_euler = deep_space_euler
-	deep_space_quat = deep_space_quat
-	
+	deep_space_aligment_matrix = deep_space_aligment_matrix
+	deep_space_rotation_matrix = deep_space_rotation_matrix
+
 	background_color = background_color
 	use_custom_bg_texture = use_custom_bg_texture
 	background_texture = background_texture

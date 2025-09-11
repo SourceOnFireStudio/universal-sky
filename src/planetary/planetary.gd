@@ -110,6 +110,13 @@ var moon_coords_offset: Vector2:
 		moon_coords_offset = value
 		_update_celestial_coords()
 
+@export
+var outer_space_aligment:= Vector3(13.045, -1.51, -2.07):
+	get: return outer_space_aligment
+	set(value):
+		outer_space_aligment = value
+		_update_celestial_coords()
+
 #region Godot Node Overrides
 func _enter_tree() -> void:
 	_connect_child_tree_signals()
@@ -124,6 +131,7 @@ func _initialize() -> void:
 	latitude = latitude
 	longitude = longitude
 	moon_coords_offset = moon_coords_offset
+	outer_space_aligment = outer_space_aligment
 	
 	if date_time_is_valid:
 		for i in range(4):
@@ -241,6 +249,10 @@ func _on_date_time_param_changed(p_param: int) -> void:
 func _update_celestial_coords() -> void:
 	var sunQuat: Quaternion
 	var moonQuat: Quaternion
+	var outerSpaceAligment: Basis = Basis.from_euler(outer_space_aligment)
+	var outerSpaceTiltl: Basis
+	var outerSpaceRot: Basis
+	
 	match calculations_mode:
 		CalculationsMode.SIMPLE:
 			_compute_simple_sun_coords()
@@ -258,17 +270,28 @@ func _update_celestial_coords() -> void:
 				Vector3(-sun_altitude_rad, -sun_azimuth_rad-PI, 0.0)
 			)
 			
-			
-			
 			_compute_realistic_moon_coords()
 			moonQuat = Quaternion.from_euler(
 				Vector3(-moon_altitude_rad, -moon_azimuth_rad-PI, 0.0)
 			)
-	
+			
+			outerSpaceTiltl = Basis.from_euler(
+				Vector3(deg_to_rad(latitude - 90), 0.0, 0.0)
+			)
+			
+			outerSpaceRot = Basis.from_euler(
+				Vector3(0.0, deg_to_rad(-_local_sideral_time), 0.0)
+			)
+
 	if sun_is_valid:
 		_sun.quaternion = sunQuat
 	if moon_is_valid:
 		_moon.quaternion = moonQuat
+	
+	if sky_handler_is_valid:
+		_sky_handler.deep_space_aligment_matrix = outerSpaceAligment
+		_sky_handler.deep_space_rotation_matrix = outerSpaceTiltl * outerSpaceRot
+	
 
 # Simple coords
 func _compute_simple_sun_coords() -> void:

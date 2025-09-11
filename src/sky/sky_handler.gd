@@ -39,6 +39,20 @@ var sun_is_valid: bool:
 var moon_is_valid: bool:
 	get: return is_instance_valid(moon)
 
+var deep_space_aligment_matrix:= Basis.from_euler(Vector3(13.045, -1.51, -2.07)):
+	get: return deep_space_aligment_matrix
+	set(value):
+		deep_space_aligment_matrix = value
+		if material_is_valid:
+			material.deep_space_aligment_matrix = deep_space_aligment_matrix
+
+var deep_space_rotation_matrix: Basis = Basis.from_euler(Vector3.ONE):
+	get: return deep_space_rotation_matrix
+	set(value):
+		deep_space_rotation_matrix = value
+		if material_is_valid:
+			material.deep_space_rotation_matrix = deep_space_rotation_matrix
+
 @export_group("Resources")
 @export
 var material: SkyMaterialBase:

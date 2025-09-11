@@ -258,15 +258,17 @@ func _update_celestial_coords() -> void:
 				Vector3(-sun_altitude_rad, -sun_azimuth_rad-PI, 0.0)
 			)
 			
+			
+			
 			_compute_realistic_moon_coords()
 			moonQuat = Quaternion.from_euler(
 				Vector3(-moon_altitude_rad, -moon_azimuth_rad-PI, 0.0)
 			)
 	
 	if sun_is_valid:
-		_sun.basis = sunQuat
+		_sun.quaternion = sunQuat
 	if moon_is_valid:
-		_moon.basis = moonQuat
+		_moon.quaternion = moonQuat
 
 # Simple coords
 func _compute_simple_sun_coords() -> void:
@@ -277,7 +279,6 @@ func _compute_simple_sun_coords() -> void:
 func _compute_simple_moon_coords() -> void:
 	_moon_altitude = (180.0 - _sun_altitude) + moon_coords_offset.y
 	_moon_azimuth = (180.0 + _sun_azimuth) + moon_coords_offset.x
-
 
 # Realistic Coords
 # Math Formulas by Paul Schlyter, Stockholm, Sweden
@@ -380,7 +381,8 @@ func _compute_realistic_sun_coords() -> void:
 	_sideral_time = GMST0 + timeline_utc + (longitude/15)
 	
 	# Hour Angle
-	var HA: float = (_sideral_time * 15) - RA
+	_local_sideral_time = _sideral_time * 15
+	var HA: float = _local_sideral_time - RA
 	var HARad: float = deg_to_rad(HA) 
 	#endregion
 	
@@ -500,43 +502,50 @@ func _compute_realistic_moon_coords() -> void:
 	#endregion
 	
 	#region Sideral time and hour angle.
-	var HA: float = (_sideral_time*15) - RA
+	var HA: float = _local_sideral_time - RA
 	var HARad: float = deg_to_rad(HA) 
 	#endregion
 	
 	#region Topocentric
-	var gclat: float = latitude - 0.1924 * sin(2.0 * latitude_rad)
-	var gclatRad: float = deg_to_rad(gclat)
-	var rho: float = 0.99833 + 0.00167 * cos(2.0 * latitude_rad)
-
-	var mpar: float = rad_to_deg(asin(1.0 / 60.6779))
-	var topRA: float = (RA - mpar * cos(gclatRad) * sin(HARad) / cos(Decl));
-	
-	var g: float = rad_to_deg(atan(tan(gclatRad) / cos(HARad) ))
-	var gRad: float = deg_to_rad(g)
-	
-	var topDecl = rad_to_deg(Decl) - mpar * rho * sin(gclatRad) * sin(gRad - Decl) / sin(gRad)
-	var topDeclRad = deg_to_rad(topDecl)
-	
-	var topHA: float = (_sideral_time*15) - topRA
-	var topHARad: float = deg_to_rad(topHA)
+	## TODO: Adding this causes a NAN error. 
+	## Apparently this is not necessary, the correction in altitude is sufficient.
+	## Altitude output =  -17.1320296390843
+	#var gclat: float = latitude - 0.1924 * sin(2.0 * latitude_rad)
+	#var gclatRad: float = deg_to_rad(gclat)
+	#var rho: float = 0.99833 + 0.00167 * cos(2.0 * latitude_rad)
+#
+	#var mpar: float = rad_to_deg(asin(1.0 / 60.6779))
+	#var topRA: float = (RA - mpar * cos(gclatRad) * sin(HARad) / cos(Decl));
+	#
+	#var g: float = rad_to_deg(atan(tan(gclatRad) / cos(HARad)))
+	#var gRad: float = deg_to_rad(g)
+	#
+	#var topDecl = rad_to_deg(Decl) - mpar * rho * sin(gclatRad) * sin(gRad - Decl) / sin(gRad)
+	#var topDeclRad = deg_to_rad(topDecl)
+	#
+	#var topHA: float = (_sideral_time*15) - topRA
+	#var topHARad: float = deg_to_rad(topHA)
 	#endregion
 	
 	#region Azimuth and Altitude
-	var x: float = cos(topHARad) * cos(topDeclRad)
-	var y: float = sin(topHARad) * cos(topDeclRad)
-	var z: float = sin(topDeclRad)
+	var x: float = cos(HARad) * cos(Decl)
+	var y: float = sin(HARad) * cos(Decl)
+	var z: float = sin(Decl)
 
 	var xhor = x * sin(latitude_rad) - z * cos(latitude_rad)
 	var yhor = y
 	var zhor = x * cos(latitude_rad) + z * sin(latitude_rad)
 	
-	var azimuth = rad_to_deg(atan2(yhor, xhor)) + 180
+	var azimuth = rad_to_deg(atan2(yhor, xhor) + PI)
 	var altitude = rad_to_deg(asin(zhor))
 	
-	# Output =  -17.1320296390843
+	# Added topocentric correction
+	var mpar: float = rad_to_deg(asin(1.0 / 60.6779))
+	var altTopoc: float = altitude - mpar * cos(deg_to_rad(altitude))
+	
+	# Without topocentric adjustment of RA and Decl: -16.2274406891687
 	# Stellarium = -16
-	_moon_altitude = altitude - mpar * cos(deg_to_rad(altitude))
+	_moon_altitude = altTopoc
 	
 	# Output =  101.785328899489
 	# Stellarium = 101 

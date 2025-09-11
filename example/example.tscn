@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://bw15xc6jb81e6"]
+[gd_scene load_steps=34 format=3 uid="uid://bw15xc6jb81e6"]
 
 [ext_resource type="Script" uid="uid://cyj8uwon5dmh1" path="res://addons/universal-sky/src/sky/sky_handler.gd" id="1_5pvsd"]
 [ext_resource type="Texture2D" uid="uid://cvqafkrcfb246" path="res://addons/universal-sky/assets/textures/milky-way/Milkyway.jpg" id="2_gv6sx"]
@@ -56,6 +56,15 @@ colors = PackedColorArray(0.9843137, 0.84313726, 0.7882353, 1, 1, 0.5239258, 0.2
 [sub_resource type="Curve" id="Curve_gv6sx"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.44061303, 1), 0.0, 0.0, 0, 0, Vector2(0.55813956, 0), 0.0, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yu7y7"]
+shading_mode = 0
+specular_mode = 2
+albedo_color = Color(0.640625, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_hmx4h"]
+radius = 50.0
+height = 100.0
 
 [sub_resource type="Curve" id="Curve_2t0jo"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.44854876, 0), 0.0, 0.0, 0, 0, Vector2(0.49868068, 1), 0.0, 0.0, 0, 0, Vector2(0.7546174, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -170,7 +179,7 @@ metadata/_custom_type_script = "uid://gok381plcuqb"
 
 [node name="PlanetaryDateTime" type="Node" parent="Planetary"]
 script = ExtResource("10_frjel")
-total_cycle_in_minutes = 1.0
+total_cycle_in_minutes = 0.42
 process_time_mode = 3
 timeline = 0.0
 day = 19
@@ -185,9 +194,9 @@ enviro_container = NodePath("../../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
+transform = Transform3D(-0.9628018, 0.08330627, 0.25704646, 3.7252903e-09, 0.9512881, -0.30830327, -0.27020884, -0.29683492, -0.9159019, -2.2995942, 6.9725223, -5.6658106)
 light_color = Color(1, 0.5239258, 0.23828125, 1)
-light_energy = 0.0049203993
-shadow_enabled = true
+light_energy = 0.0
 script = ExtResource("5_frjel")
 enable_solar_eclipse = true
 body_color = Color(1, 0.7058, 0.447, 1)
@@ -196,16 +205,23 @@ lighting_gradient = SubResource("Gradient_gv6sx")
 lighting_energy_curve = SubResource("Curve_gv6sx")
 metadata/_custom_type_script = "uid://cu18k8ov4dxkq"
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Planetary/SkyHandler/Sun3D"]
+transform = Transform3D(0.99969345, -0.012712661, -0.021251034, 0.021409962, 0.012486177, 0.9996928, -0.012443379, -0.999841, 0.012754642, -4.76851, 5.2660217, -376.89432)
+visible = false
+material_override = SubResource("StandardMaterial3D_yu7y7")
+mesh = SubResource("SphereMesh_hmx4h")
+
 [node name="Moon3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1338947, 6.599295, 0.94167733)
+transform = Transform3D(0.038238227, -0.015343569, 0.9991509, 4.656613e-10, 0.9998821, 0.015354798, -0.99926865, -0.0005871402, 0.038233697, -2.1338947, 6.599295, 0.004273653)
 light_color = Color(0.54, 0.7, 0.9, 1)
-light_energy = 0.028599998
+light_energy = 0.033442993
 shadow_enabled = true
 script = ExtResource("6_yu7y7")
 texture = ExtResource("7_cvb06")
+yaw_offset = 0.0
 light_transition_curve = SubResource("Curve_2t0jo")
 body_color = Color(1, 1, 1, 1)
-body_size = 2.815
+body_size = 2.205
 mie_color = Color(0.623, 0.786, 1, 1)
 lighting_color = Color(0.54, 0.7, 0.9, 1)
 lighting_energy = 0.065

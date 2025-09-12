@@ -250,7 +250,7 @@ func _update_celestial_coords() -> void:
 	var sunQuat: Quaternion
 	var moonQuat: Quaternion
 	var outerSpaceAligment: Basis = Basis.from_euler(outer_space_aligment)
-	var outerSpaceTiltl: Basis
+	var outerSpaceTilt: Basis
 	var outerSpaceRot: Basis
 	
 	match calculations_mode:
@@ -265,33 +265,35 @@ func _update_celestial_coords() -> void:
 			)
 		
 		CalculationsMode.REALISTIC:
+			# Sun
 			_compute_realistic_sun_coords()
 			sunQuat = Quaternion.from_euler(
 				Vector3(-sun_altitude_rad, -sun_azimuth_rad-PI, 0.0)
 			)
 			
-			_compute_realistic_moon_coords()
-			moonQuat = Quaternion.from_euler(
-				Vector3(-moon_altitude_rad, -moon_azimuth_rad-PI, 0.0)
-			)
-			
-			outerSpaceTiltl = Basis.from_euler(
+			# Deep Space
+			outerSpaceTilt = Basis.from_euler(
 				Vector3(deg_to_rad(latitude - 90), 0.0, 0.0)
 			)
 			
 			outerSpaceRot = Basis.from_euler(
 				Vector3(0.0, deg_to_rad(-_local_sideral_time), 0.0)
 			)
+			
+			# Moon
+			_compute_realistic_moon_coords()
+			var moonDir: Vector3 = UnivSkyMath.celestials_coords_to_dir(-moon_altitude_rad, - moon_azimuth_rad)
+			var worldDir:= outerSpaceTilt * outerSpaceRot * Vector3.RIGHT
+			moonQuat = Basis.looking_at(moonDir, worldDir).get_rotation_quaternion()
 
 	if sun_is_valid:
 		_sun.quaternion = sunQuat
 	if moon_is_valid:
-		_moon.quaternion = moonQuat
+		_moon.basis = moonQuat
 	
 	if sky_handler_is_valid:
 		_sky_handler.deep_space_aligment_matrix = outerSpaceAligment
-		_sky_handler.deep_space_rotation_matrix = outerSpaceTiltl * outerSpaceRot
-	
+		_sky_handler.deep_space_rotation_matrix = outerSpaceTilt * outerSpaceRot
 
 # Simple coords
 func _compute_simple_sun_coords() -> void:

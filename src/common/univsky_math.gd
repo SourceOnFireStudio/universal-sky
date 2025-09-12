@@ -61,6 +61,12 @@ static func to_orbit(p_theta: float, p_pi: float, p_radius: float = 1.0) -> Vect
 	return Vector3((sinTheta * sinPI) * p_radius,
 		cosTheta  * p_radius, (sinTheta * cosPI) * p_radius)
 
+static func celestials_coords_to_dir(p_altitude: float, p_azimuth: float) -> Vector3:
+	var x: float = cos(p_altitude) * sin(p_azimuth)
+	var y: float = sin(p_altitude)
+	var z: float = cos(p_altitude) * cos(p_azimuth)
+	return Vector3(x, y, z)
+
 static func angular_intensity_sig(a: Vector3, b: Vector3, threshold: float = 0.03, slope: float = 100.0) -> float:
 	var separation: float = acos(a.dot(b))
 	# sigmoide curve

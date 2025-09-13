@@ -29,7 +29,7 @@ var light_transition_curve_is_valid:
 var phases_mul: float:
 	get:
 		if sun_is_valid:
-			return clamp(-_sun.direction.dot(_sun.direction) + 0.50, 0.0, 1.0)
+			return clamp(-direction.dot(_sun.direction) + 0.50, 0.0, 1.0)
 		return 1.0
 
 var clamped_matrix: Basis:

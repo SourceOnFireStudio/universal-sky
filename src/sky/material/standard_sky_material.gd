@@ -680,9 +680,9 @@ func _set_atm_day_tint() -> void:
 func _get_atm_night_intensity() -> float:
 	var ret = 0.0
 	if not atm_enable_night_scattering:
-		ret = clamp(-sun_direction.y + 0.80, 0.0, 1.0)
+		ret =  clamp(_get_celestial_uMuS(-sun_direction), 0.0, 1.0)
 	else:
-		ret = _get_celestial_uMuS(moon_direction)
+		ret = clamp(_get_celestial_uMuS(moon_direction), 0.0, 1.0)
 	
 	return ret * atm_night_intensity * _get_atm_moon_phases_mul() * moon_intensity_multiplier
 

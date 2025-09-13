@@ -75,6 +75,9 @@ var latitude_rad: float:
 var longitude_rad: float:
 	get: return deg_to_rad(longitude)
 
+var world_orientation_rad: float:
+	get: return deg_to_rad(world_orientation)
+
 @export
 var calculations_mode:= CalculationsMode.REALISTIC:
 	get: return calculations_mode
@@ -103,7 +106,6 @@ var longitude: float = 0.0:
 	set(value):
 		longitude = value
 		_update_celestial_coords()
-
 
 @export_range(-180.0, 180.0)
 var world_orientation: float = -80.0:
@@ -258,6 +260,18 @@ func _on_date_time_param_changed(p_param: int) -> void:
 #endregion
 
 #region Celestial Coords
+# Simple coords
+func _compute_simple_sun_coords() -> void:
+	var lonRad: float = deg_to_rad(longitude)
+	_local_sideral_time = (timeline_utc + lonRad) * 15
+	_sun_altitude = _local_sideral_time
+	_sun_azimuth = 90.0 - latitude
+
+func _compute_simple_moon_coords() -> void:
+	var lonRad: float = deg_to_rad(longitude)
+	_moon_altitude = _local_sideral_time + moon_coords_offset.x
+	_moon_azimuth = 90.0 - latitude + moon_coords_offset.y
+
 func _update_celestial_coords() -> void:
 	var sunQuat: Quaternion
 	var moonQuat: Quaternion
@@ -266,24 +280,34 @@ func _update_celestial_coords() -> void:
 	var outerSpaceAligment: Basis = Basis.from_euler(outer_space_aligment)
 	match calculations_mode:
 		CalculationsMode.SIMPLE:
-			_compute_simple_sun_coords()
-			sunQuat = Quaternion.from_euler(Vector3(0.0, deg_to_rad(world_orientation), sun_azimuth_rad - deg_to_rad(90))) * \
-			Quaternion.from_euler(Vector3(sun_altitude_rad + deg_to_rad(90), 0.0, 0.0))
+			var lonRad: float = deg_to_rad(longitude)
+			var halfPI: float = PI * 0.5
+			_local_sideral_time = (timeline_utc + lonRad) * 15
+			
+			# Sun
+			_sun_altitude = _local_sideral_time
+			_sun_azimuth = 90.0 - latitude
+			
+			sunQuat = Quaternion.from_euler(Vector3(0.0, world_orientation_rad, sun_azimuth_rad - halfPI)) \
+			* Quaternion.from_euler(Vector3(sun_altitude_rad + halfPI, 0.0, 0.0))
 			
 			# Deep Space
 			outerSpaceTilt = Basis.from_euler(
-				Vector3(deg_to_rad(latitude - 90), deg_to_rad(world_orientation + 80.0),  0.0)
+				Vector3(latitude_rad - halfPI, deg_to_rad(world_orientation + 80.0),  0.0)
 			)
 			
 			outerSpaceRot = Basis.from_euler(
 				Vector3(0.0, deg_to_rad(-_local_sideral_time), 0.0)
 			)
 			
-			_compute_simple_moon_coords()
-			var moonDir: Vector3 = Quaternion.from_euler(Vector3(0.0, deg_to_rad(world_orientation), moon_azimuth_rad - deg_to_rad(90))) * \
-			Quaternion.from_euler(Vector3(moon_altitude_rad + deg_to_rad(90), 0.0, 0.0)) * Vector3.FORWARD
+			# Moon
+			_moon_altitude = _local_sideral_time + moon_coords_offset.x
+			_moon_azimuth = 90.0 - latitude + moon_coords_offset.y
 			
-			var worldDir:= outerSpaceTilt * outerSpaceRot * Vector3.RIGHT
+			var moonDir: Vector3 = Quaternion.from_euler(Vector3(0.0, world_orientation_rad, moon_azimuth_rad - halfPI)) \
+			* Quaternion.from_euler(Vector3(moon_altitude_rad + halfPI, 0.0, 0.0)) * Vector3.FORWARD
+			
+			var worldDir: Vector3 = outerSpaceTilt * outerSpaceRot * Vector3.RIGHT
 			moonQuat = Basis.looking_at(moonDir, worldDir).get_rotation_quaternion()
 		CalculationsMode.REALISTIC:
 			# Sun
@@ -296,7 +320,7 @@ func _update_celestial_coords() -> void:
 			outerSpaceTilt = Basis.from_euler(
 				Vector3(deg_to_rad(latitude - 90), 0.0, 0.0)
 			)
-					
+			
 			outerSpaceRot = Basis.from_euler(
 				Vector3(0.0, deg_to_rad(-_local_sideral_time), 0.0)
 			)
@@ -316,22 +340,6 @@ func _update_celestial_coords() -> void:
 	if sky_handler_is_valid:
 		_sky_handler.deep_space_aligment_matrix = outerSpaceAligment
 		_sky_handler.deep_space_rotation_matrix = outerSpaceTilt * outerSpaceRot
-
-# Simple coords
-func _compute_simple_sun_coords() -> void:
-	var lonRad: float = deg_to_rad(longitude)
-	_local_sideral_time = (timeline_utc + lonRad) * 15
-	
-	_sun_altitude = _local_sideral_time
-	_sun_azimuth = 90.0 - latitude
-	
-
-func _compute_simple_moon_coords() -> void:
-	var lonRad: float = deg_to_rad(longitude)
-	_local_sideral_time = (timeline_utc + lonRad) * 15
-	
-	_moon_altitude = _local_sideral_time + moon_coords_offset.x
-	_moon_azimuth = 90.0 - latitude + moon_coords_offset.y
 
 # Realistic Coords
 # Math Formulas by Paul Schlyter, Stockholm, Sweden
@@ -364,7 +372,6 @@ func _get_time_scale() -> float:
 	
 	return d + (_timeline / 24.0)
 
-## See: https://www.stjarnhimlen.se/comp/tutorial.html#5
 func _get_oblecl() -> float:
 	return 23.4393 - 3.563e-7 * _get_time_scale()
 
@@ -372,8 +379,6 @@ func _compute_realistic_sun_coords() -> void:
 	var timeScale: float = _get_time_scale()
 	var oblectRad: float = deg_to_rad(_get_oblecl())
 	#region Orbital Elements
-	var N: float = 0.0
-	var i: float = 0.0
 	var w: float = 282.9404 + 4.70935e-5 * timeScale # Longitude of perihelion
 	var a: float = 1.0 # mean distance, a.u.
 	var e: float = 0.016709 - 1.151e-9 * timeScale # Eccentricity
@@ -415,7 +420,7 @@ func _compute_realistic_sun_coords() -> void:
 	#endregion
 
 	#region  Ascencion and declination.
-	var re: float = sqrt(xequat * xequat + yequat * yequat + zequat * zequat)
+	#var re: float = sqrt(xequat * xequat + yequat * yequat + zequat * zequat)
 	var RA: float = rad_to_deg(atan2(yequat, xequat))
 	var Decl: float = rad_to_deg(atan2(zequat, sqrt(xequat * xequat + yequat * yequat)))
 	var DeclRad: float = deg_to_rad(Decl)
@@ -524,7 +529,7 @@ func _compute_realistic_moon_coords() -> void:
 		+ 0.033 * sin_deg(F + 2 * D)
 		+ 0.017 * sin_deg(2 * Mm + F)
 	)
-	var lunarDistPerp: float = -0.58 * cos_deg(Mm - 2 * D) - 0.46 * cos_deg( 2 * D)
+	var lunarDistPerp: float = -0.58 * cos_deg(Mm - 2 * D) - 0.46 * cos_deg(2 * D)
 	
 	long += deg_to_rad(lonPerp)
 	lat += deg_to_rad(latPerp)

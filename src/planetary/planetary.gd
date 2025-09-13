@@ -260,18 +260,6 @@ func _on_date_time_param_changed(p_param: int) -> void:
 #endregion
 
 #region Celestial Coords
-# Simple coords
-func _compute_simple_sun_coords() -> void:
-	var lonRad: float = deg_to_rad(longitude)
-	_local_sideral_time = (timeline_utc + lonRad) * 15
-	_sun_altitude = _local_sideral_time
-	_sun_azimuth = 90.0 - latitude
-
-func _compute_simple_moon_coords() -> void:
-	var lonRad: float = deg_to_rad(longitude)
-	_moon_altitude = _local_sideral_time + moon_coords_offset.x
-	_moon_azimuth = 90.0 - latitude + moon_coords_offset.y
-
 func _update_celestial_coords() -> void:
 	var sunQuat: Quaternion
 	var moonQuat: Quaternion

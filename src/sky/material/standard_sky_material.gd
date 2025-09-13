@@ -186,7 +186,7 @@ var atm_turbidity: float = 0.001:
 
 @export_subgroup("Day", "atm_")
 @export
-var atm_day_intensity: float = 15.0:
+var atm_day_intensity: float = 10.0:
 	get: return atm_day_intensity
 	set(value):
 		atm_day_intensity = value

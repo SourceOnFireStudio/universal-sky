@@ -81,6 +81,7 @@ var calculations_mode:= CalculationsMode.REALISTIC:
 	set(value):
 		calculations_mode = value
 		_update_celestial_coords()
+		notify_property_list_changed()
 
 @export_range(-12.0, 12.0)
 var utc: float = 0.0:
@@ -103,8 +104,16 @@ var longitude: float = 0.0:
 		longitude = value
 		_update_celestial_coords()
 
+
+@export_range(-180.0, 180.0)
+var world_orientation: float = -80.0:
+	get: return world_orientation
+	set(value):
+		world_orientation = value
+		_update_celestial_coords()
+
 @export
-var moon_coords_offset: Vector2:
+var moon_coords_offset:= Vector2(180.0, 0.0):
 	get: return moon_coords_offset
 	set(value):
 		moon_coords_offset = value
@@ -136,6 +145,10 @@ func _initialize() -> void:
 		for i in range(4):
 			_on_date_time_param_changed(i)
 
+func _validate_property(property: Dictionary) -> void:
+	if calculations_mode == CalculationsMode.REALISTIC:
+		if property.name == "sun_orientation" || property.name == "moon_coords_offset":
+			property.usage &= ~PROPERTY_USAGE_EDITOR
 #endregion
 
 #region Connections
@@ -252,16 +265,26 @@ func _update_celestial_coords() -> void:
 	var outerSpaceRot: Basis
 	var outerSpaceAligment: Basis = Basis.from_euler(outer_space_aligment)
 	match calculations_mode:
-		#TODO: Improve
 		CalculationsMode.SIMPLE:
 			_compute_simple_sun_coords()
-			sunQuat = Quaternion.from_euler(
-				Vector3(sun_altitude_rad + deg_to_rad(90), -sun_azimuth_rad, 0.0)
+			sunQuat = Quaternion.from_euler(Vector3(0.0, deg_to_rad(world_orientation), sun_azimuth_rad - deg_to_rad(90))) * \
+			Quaternion.from_euler(Vector3(sun_altitude_rad + deg_to_rad(90), 0.0, 0.0))
+			
+			# Deep Space
+			outerSpaceTilt = Basis.from_euler(
+				Vector3(deg_to_rad(latitude - 90), deg_to_rad(world_orientation + 80.0),  0.0)
 			)
+			
+			outerSpaceRot = Basis.from_euler(
+				Vector3(0.0, deg_to_rad(-_local_sideral_time), 0.0)
+			)
+			
 			_compute_simple_moon_coords()
-			moonQuat = Quaternion.from_euler(
-				Vector3(moon_altitude_rad + deg_to_rad(90), moon_azimuth_rad, 0.0)
-			)
+			var moonDir: Vector3 = Quaternion.from_euler(Vector3(0.0, deg_to_rad(world_orientation), moon_azimuth_rad - deg_to_rad(90))) * \
+			Quaternion.from_euler(Vector3(moon_altitude_rad + deg_to_rad(90), 0.0, 0.0)) * Vector3.FORWARD
+			
+			var worldDir:= outerSpaceTilt * outerSpaceRot * Vector3.RIGHT
+			moonQuat = Basis.looking_at(moonDir, worldDir).get_rotation_quaternion()
 		CalculationsMode.REALISTIC:
 			# Sun
 			_compute_realistic_sun_coords()
@@ -298,12 +321,17 @@ func _update_celestial_coords() -> void:
 func _compute_simple_sun_coords() -> void:
 	var lonRad: float = deg_to_rad(longitude)
 	_local_sideral_time = (timeline_utc + lonRad) * 15
+	
 	_sun_altitude = _local_sideral_time
 	_sun_azimuth = 90.0 - latitude
+	
 
 func _compute_simple_moon_coords() -> void:
-	_moon_altitude = (180+_sun_altitude) + moon_coords_offset.y
-	_moon_azimuth = (-sun_azimuth) + moon_coords_offset.x
+	var lonRad: float = deg_to_rad(longitude)
+	_local_sideral_time = (timeline_utc + lonRad) * 15
+	
+	_moon_altitude = _local_sideral_time + moon_coords_offset.x
+	_moon_azimuth = 90.0 - latitude + moon_coords_offset.y
 
 # Realistic Coords
 # Math Formulas by Paul Schlyter, Stockholm, Sweden

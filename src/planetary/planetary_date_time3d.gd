@@ -1,6 +1,6 @@
 @tool
 extends Node
-class_name PlanetaryDateTime
+class_name PlanetaryDateTime3D
 
 const _MAX_TIMELINE_VALUE: int = 24.0
 const _MIN_TIMELINE_VALUE: int = 0.0000

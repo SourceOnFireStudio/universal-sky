@@ -7,7 +7,7 @@
 @tool 
 @icon("res://addons/universal-sky/assets/icons/Sky.svg")
 extends Node
-class_name SkyHandler 
+class_name SkyHandler3D
 
 const RENDERING_METHOD_PATH:= &"rendering/renderer/rendering_method"
 const COMPATIBILITY_RENDER_METHOD_NAME:= &"gl_compatibility"

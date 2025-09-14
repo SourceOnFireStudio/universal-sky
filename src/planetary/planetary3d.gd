@@ -1,6 +1,6 @@
 @tool
 extends Node
-class_name Planetary
+class_name Planetary3D
 
 enum CalculationsMode{
 	SIMPLE = 0,
@@ -57,7 +57,7 @@ var outer_space_aligment:= Vector3(13.045, -1.51, -2.07):
 		outer_space_aligment = value
 		_update_celestial_coords()
 
-var _sky_handler: SkyHandler = null
+var _sky_handler: SkyHandler3D = null
 var _sun: Sun3D = null
 var _moon: Moon3D = null
 
@@ -67,7 +67,7 @@ var _sun_azimuth: float
 var _moon_altitude: float
 var _moon_azimuth: float
 
-var _date_time: PlanetaryDateTime
+var _date_time: PlanetaryDateTime3D
 var _timeline: float = 7.0
 var _day: int = 1
 var _month: int = 9
@@ -197,27 +197,27 @@ func _disconnect_date_time_signals() -> void:
 #region Signal Events
 func _on_child_entered_tree(p_node: Node) -> void:
 	# Sky Handler
-	if p_node is SkyHandler:
-		_sky_handler = p_node as SkyHandler
+	if p_node is SkyHandler3D:
+		_sky_handler = p_node as SkyHandler3D
 		if sky_handler_is_valid:
 			_connect_sky_handler_child_tree_signals()
 			_initialize()
 	
 	# Date Time
-	if p_node is PlanetaryDateTime:
-		_date_time = p_node as PlanetaryDateTime
+	if p_node is PlanetaryDateTime3D:
+		_date_time = p_node as PlanetaryDateTime3D
 		if date_time_is_valid:
 			_connect_date_time_signals()
 			_initialize()
 
 func _on_child_exiting_tree(p_node: Node) -> void:
 	if sky_handler_is_valid:
-		if p_node is SkyHandler and p_node.get_instance_id() == _sky_handler.get_instance_id():
+		if p_node is SkyHandler3D and p_node.get_instance_id() == _sky_handler.get_instance_id():
 			_disconnect_sky_handler_child_tree_signals()
 			_sky_handler = null
 	
 	if date_time_is_valid:
-		if p_node is PlanetaryDateTime and p_node.get_instance_id() == _date_time.get_instance_id():
+		if p_node is PlanetaryDateTime3D and p_node.get_instance_id() == _date_time.get_instance_id():
 			_disconnect_date_time_signals()
 			_date_time = null
 
@@ -245,16 +245,16 @@ func _on_sky_handler_child_exiting_tree(p_node: Node) -> void:
 
 func _on_date_time_param_changed(p_param: int) -> void:
 	match p_param:
-		PlanetaryDateTime.DateTimeParam.TIMELINE:
+		PlanetaryDateTime3D.DateTimeParam.TIMELINE:
 			_timeline = _date_time.timeline
 			_update_celestial_coords()
-		PlanetaryDateTime.DateTimeParam.DAY:
+		PlanetaryDateTime3D.DateTimeParam.DAY:
 			_day = _date_time.day
 			_update_celestial_coords()
-		PlanetaryDateTime.DateTimeParam.MONTH:
+		PlanetaryDateTime3D.DateTimeParam.MONTH:
 			_month = _date_time.month
 			_update_celestial_coords()
-		PlanetaryDateTime.DateTimeParam.YEAR:
+		PlanetaryDateTime3D.DateTimeParam.YEAR:
 			_year = _date_time.year
 			_update_celestial_coords()
 #endregion

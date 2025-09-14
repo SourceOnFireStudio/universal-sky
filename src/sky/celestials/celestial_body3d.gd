@@ -116,6 +116,13 @@ var lighting_enable_shadows: bool = true:
 	set(value):
 		lighting_enable_shadows = value
 		_update_light_energy()
+
+@export
+var auto_disbale_shadows: bool = true:
+	get: return auto_disbale_shadows
+	set(value):
+		auto_disbale_shadows = value
+		_update_light_energy()
 #endregion
 
 var _lighting_gradient: Gradient = null
@@ -208,7 +215,10 @@ func _update_light_color() -> void:
 func _update_light_energy() -> void:
 	light_energy = _get_light_energy() * intensity_multiplier
 	if lighting_enable_shadows:
-		shadow_enabled = true if light_energy > 0.0 else false
+		if auto_disbale_shadows:
+			shadow_enabled = true if light_energy > 0.0 else false
+		else:
+			shadow_enabled = true
 	else:
 		shadow_enabled = false
 

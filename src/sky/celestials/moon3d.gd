@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Moon.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 @tool 
 @icon("res://addons/universal-sky/assets/icons/moon.svg")
 extends CelestialBody3D

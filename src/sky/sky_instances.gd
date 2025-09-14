@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Sky instances in current scene.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 @tool
 extends Node
 

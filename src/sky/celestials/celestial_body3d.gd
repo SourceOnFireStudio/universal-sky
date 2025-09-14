@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Celestial body base.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 extends DirectionalLight3D
 class_name CelestialBody3D
 

@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Math library.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 class_name UnivSkyMath
 
 #TODO: Remove unnecessary constants and functions.

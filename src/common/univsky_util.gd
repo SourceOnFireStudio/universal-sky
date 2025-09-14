@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Utility.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 class_name UnivSkyUtil
 
 static func interpolate_full(p_dir: float) -> float:

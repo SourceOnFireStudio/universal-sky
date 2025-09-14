@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Base for sky material.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 @tool @abstract
 extends Resource
 class_name SkyMaterialBase

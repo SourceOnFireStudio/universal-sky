@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Standar sky.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 @tool
 extends SkyMaterialBase
 class_name StandardSkyMaterial

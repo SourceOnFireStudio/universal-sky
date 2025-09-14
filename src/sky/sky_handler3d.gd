@@ -1,9 +1,3 @@
-# Universal Sky
-# Description:
-# - Sky Manager.
-# License:
-# - J. Cuéllar 2025 MIT License
-# - See: LICENSE File.
 @tool 
 @icon("res://addons/universal-sky/assets/icons/Sky.svg")
 extends Node

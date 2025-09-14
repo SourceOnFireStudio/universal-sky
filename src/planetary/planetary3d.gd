@@ -149,7 +149,7 @@ func _initialize() -> void:
 
 func _validate_property(property: Dictionary) -> void:
 	if calculations_mode == CalculationsMode.REALISTIC:
-		if property.name == "sun_orientation" || property.name == "moon_coords_offset":
+		if property.name == "world_orientation" || property.name == "moon_coords_offset":
 			property.usage &= ~PROPERTY_USAGE_EDITOR
 #endregion
 

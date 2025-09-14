@@ -12,47 +12,6 @@ class_name SkyHandler
 const RENDERING_METHOD_PATH:= &"rendering/renderer/rendering_method"
 const COMPATIBILITY_RENDER_METHOD_NAME:= &"gl_compatibility"
 
-var _tree: SceneTree
-var _enviro: Environment = null
-
-var sun: Sun3D:
-	get: return sun
-
-var moon: Moon3D:
-	get: return moon
-
-var enviro: Environment:
-	get: return _enviro
-
-var enviro_is_valid: bool:
-	get: return is_instance_valid(_enviro)
-
-var enviro_sky_is_valid: bool:
-	get: return is_instance_valid(_enviro.sky)
-
-var material_is_valid: bool:
-	get: return is_instance_valid(material)
-
-var sun_is_valid: bool:
-	get: return is_instance_valid(sun)
-
-var moon_is_valid: bool:
-	get: return is_instance_valid(moon)
-
-var deep_space_aligment_matrix:= Basis.from_euler(Vector3(13.045, -1.51, -2.07)):
-	get: return deep_space_aligment_matrix
-	set(value):
-		deep_space_aligment_matrix = value
-		if material_is_valid:
-			material.deep_space_aligment_matrix = deep_space_aligment_matrix
-
-var deep_space_rotation_matrix: Basis = Basis.from_euler(Vector3.ONE):
-	get: return deep_space_rotation_matrix
-	set(value):
-		deep_space_rotation_matrix = value
-		if material_is_valid:
-			material.deep_space_rotation_matrix = deep_space_rotation_matrix
-
 @export_group("Resources")
 @export
 var material: SkyMaterialBase:
@@ -105,6 +64,47 @@ var sky_radiance_size: int = 1:
 		if enviro_is_valid and enviro_sky_is_valid:
 			_enviro.sky.radiance_size = sky_radiance_size
 #endregion
+
+var _tree: SceneTree
+var _enviro: Environment = null
+
+var sun: Sun3D:
+	get: return sun
+
+var moon: Moon3D:
+	get: return moon
+
+var enviro: Environment:
+	get: return _enviro
+
+var enviro_is_valid: bool:
+	get: return is_instance_valid(_enviro)
+
+var enviro_sky_is_valid: bool:
+	get: return is_instance_valid(_enviro.sky)
+
+var material_is_valid: bool:
+	get: return is_instance_valid(material)
+
+var sun_is_valid: bool:
+	get: return is_instance_valid(sun)
+
+var moon_is_valid: bool:
+	get: return is_instance_valid(moon)
+
+var deep_space_aligment_matrix:= Basis.from_euler(Vector3(13.045, -1.51, -2.07)):
+	get: return deep_space_aligment_matrix
+	set(value):
+		deep_space_aligment_matrix = value
+		if material_is_valid:
+			material.deep_space_aligment_matrix = deep_space_aligment_matrix
+
+var deep_space_rotation_matrix: Basis = Basis.from_euler(Vector3.ONE):
+	get: return deep_space_rotation_matrix
+	set(value):
+		deep_space_rotation_matrix = value
+		if material_is_valid:
+			material.deep_space_rotation_matrix = deep_space_rotation_matrix
 
 #region Godot Node Overrides
 func _notification(what: int) -> void:

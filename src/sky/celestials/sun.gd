@@ -9,15 +9,6 @@
 extends CelestialBody3D
 class_name Sun3D
 
-var _moon: Moon3D:
-	get: return _moon
-
-var moon_is_valid: bool:
-	get: return is_instance_valid(_moon)
-
-var eclipse_multiplier: float = 1.0:
-	get: return eclipse_multiplier
-
 @export_group("Eclipse")
 @export
 var enable_solar_eclipse: bool = false:
@@ -46,6 +37,15 @@ var min_eclipse_intensity: float = 0.01:
 	set(value):
 		min_eclipse_intensity = value
 		_update_params()
+
+var _moon: Moon3D:
+	get: return _moon
+
+var moon_is_valid: bool:
+	get: return is_instance_valid(_moon)
+
+var eclipse_multiplier: float = 1.0:
+	get: return eclipse_multiplier
 
 # Godot Node Overrides
 func _on_init() -> void:

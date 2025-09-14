@@ -1,36 +1,14 @@
-
 @tool
 extends Node
 class_name PlanetaryDateTime
 
-## Timeline wrapf values
 const _MAX_TIMELINE_VALUE: int = 24.0
 const _MIN_TIMELINE_VALUE: int = 0.0000
 
-enum DateTimeParam{ TIMELINE=0, DAY, MONTH, YEAR }
-enum ProcessTimeMode{ Editor=0, Runtime, Both, Off }
+enum DateTimeParam{ TIMELINE = 0, DAY, MONTH, YEAR }
+enum ProcessTimeMode{ Editor = 0, Runtime, Both, Off }
 
 signal time_param_changed(param_name)
-
-var _date_time_os: Dictionary
-
-var is_editor: bool: 
-	get: return Engine.is_editor_hint()
-
-var is_leap_year: bool:
-	get: return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)
-
-var time_cycle_duration: float:
-	get: return total_cycle_in_minutes * 60.0
-
-var max_days_per_month: int:
-	get:
-		match month:
-			1, 3, 5, 7, 8, 10, 12:
-				return 31
-			2:
-				return 29 if is_leap_year else 28
-		return 30
 
 @export 
 var system_sync: bool = false:
@@ -64,7 +42,7 @@ var timeline: float = 7.0:
 		time_param_changed.emit(DateTimeParam.TIMELINE)
 
 @export
-var day: int  = 12:
+var day: int = 12:
 	get: return day
 	set(value):
 		while value > max_days_per_month:
@@ -96,6 +74,26 @@ var year: int = 2025:
 		#year = max(0, value)
 		year = value
 		time_param_changed.emit(DateTimeParam.YEAR)
+
+var _date_time_os: Dictionary
+
+var is_editor: bool: 
+	get: return Engine.is_editor_hint()
+
+var is_leap_year: bool:
+	get: return (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)
+
+var time_cycle_duration: float:
+	get: return total_cycle_in_minutes * 60.0
+
+var max_days_per_month: int:
+	get:
+		match month:
+			1, 3, 5, 7, 8, 10, 12:
+				return 31
+			2:
+				return 29 if is_leap_year else 28
+		return 30
 
 #region Godot Node Overrides
 func _enter_tree() -> void:
@@ -129,7 +127,7 @@ func _time_process(p_delta: float) -> void:
 	if not is_zero_approx(time_cycle_duration):
 		timeline = timeline + p_delta / time_cycle_duration * 24.0
 
-func _get_date_time_os():
+func _get_date_time_os() -> void:
 	_date_time_os = Time.get_datetime_dict_from_system()
 	set_time(_date_time_os.hour, _date_time_os.minute, _date_time_os.second)
 	day = _date_time_os.day

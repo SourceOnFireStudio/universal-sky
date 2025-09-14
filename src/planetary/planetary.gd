@@ -7,6 +7,56 @@ enum CalculationsMode{
 	REALISTIC
 }
 
+@export
+var calculations_mode:= CalculationsMode.REALISTIC:
+	get: return calculations_mode
+	set(value):
+		calculations_mode = value
+		_update_celestial_coords()
+		notify_property_list_changed()
+
+@export_range(-12.0, 12.0)
+var utc: float = 0.0:
+	get: return utc
+	set(value):
+		utc = value
+		_update_celestial_coords()
+
+@export_range(-90.0, 90.0)
+var latitude: float = 0.0:
+	get: return latitude
+	set(value):
+		latitude = value
+		_update_celestial_coords()
+
+@export_range(-180.0, 180.0)
+var longitude: float = 0.0:
+	get: return longitude
+	set(value):
+		longitude = value
+		_update_celestial_coords()
+
+@export_range(-180.0, 180.0)
+var world_orientation: float = -80.0:
+	get: return world_orientation
+	set(value):
+		world_orientation = value
+		_update_celestial_coords()
+
+@export
+var moon_coords_offset:= Vector2(180.0, 0.0):
+	get: return moon_coords_offset
+	set(value):
+		moon_coords_offset = value
+		_update_celestial_coords()
+
+@export
+var outer_space_aligment:= Vector3(13.045, -1.51, -2.07):
+	get: return outer_space_aligment
+	set(value):
+		outer_space_aligment = value
+		_update_celestial_coords()
+
 var _sky_handler: SkyHandler = null
 var _sun: Sun3D = null
 var _moon: Moon3D = null
@@ -77,56 +127,6 @@ var longitude_rad: float:
 
 var world_orientation_rad: float:
 	get: return deg_to_rad(world_orientation)
-
-@export
-var calculations_mode:= CalculationsMode.REALISTIC:
-	get: return calculations_mode
-	set(value):
-		calculations_mode = value
-		_update_celestial_coords()
-		notify_property_list_changed()
-
-@export_range(-12.0, 12.0)
-var utc: float = 0.0:
-	get: return utc
-	set(value):
-		utc = value
-		_update_celestial_coords()
-
-@export_range(-90.0, 90.0)
-var latitude: float = 0.0:
-	get: return latitude
-	set(value):
-		latitude = value
-		_update_celestial_coords()
-
-@export_range(-180.0, 180.0)
-var longitude: float = 0.0:
-	get: return longitude
-	set(value):
-		longitude = value
-		_update_celestial_coords()
-
-@export_range(-180.0, 180.0)
-var world_orientation: float = -80.0:
-	get: return world_orientation
-	set(value):
-		world_orientation = value
-		_update_celestial_coords()
-
-@export
-var moon_coords_offset:= Vector2(180.0, 0.0):
-	get: return moon_coords_offset
-	set(value):
-		moon_coords_offset = value
-		_update_celestial_coords()
-
-@export
-var outer_space_aligment:= Vector3(13.045, -1.51, -2.07):
-	get: return outer_space_aligment
-	set(value):
-		outer_space_aligment = value
-		_update_celestial_coords()
 
 #region Godot Node Overrides
 func _enter_tree() -> void:

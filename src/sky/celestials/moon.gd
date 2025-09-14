@@ -15,31 +15,6 @@ const _DEFAULT_MOON_MAP_TEXTURE:= preload(
 
 signal yaw_offset_changed
 
-var _light_transition_curve: Curve
-
-var _sun: Sun3D:
-	get: return _sun
-
-var sun_is_valid: bool:
-	get: return is_instance_valid(_sun)
-
-var light_transition_curve_is_valid:
-	get: return is_instance_valid(_light_transition_curve)
-
-var phases_mul: float:
-	get:
-		if sun_is_valid:
-			return clamp(-direction.dot(_sun.direction) + 0.50, 0.0, 1.0)
-		return 1.0
-
-var clamped_matrix: Basis:
-	#get: return basis.inverse()
-	get: return Basis(
-		-(basis * Vector3.FORWARD),
-		-(basis * Vector3.UP),
-		-(basis * Vector3.RIGHT),
-	).transposed()
-
 @export_group("Texture")
 @export
 var use_custom_texture: bool = false:
@@ -99,6 +74,31 @@ var light_transition_curve: Curve:
 			_disconnect_light_transition_curve_changed()
 			_light_transition_curve = null
 		_update_light_energy()
+
+var _light_transition_curve: Curve
+
+var _sun: Sun3D:
+	get: return _sun
+
+var sun_is_valid: bool:
+	get: return is_instance_valid(_sun)
+
+var light_transition_curve_is_valid:
+	get: return is_instance_valid(_light_transition_curve)
+
+var phases_mul: float:
+	get:
+		if sun_is_valid:
+			return clamp(-direction.dot(_sun.direction) + 0.50, 0.0, 1.0)
+		return 1.0
+
+var clamped_matrix: Basis:
+	#get: return basis.inverse()
+	get: return Basis(
+		-(basis * Vector3.FORWARD),
+		-(basis * Vector3.UP),
+		-(basis * Vector3.RIGHT),
+	).transposed()
 
 #region Godot Node Overrides
 func _on_init() -> void:

@@ -40,7 +40,6 @@ const SUN_UMUS_PARAM:= &"sun_uMuS"
 const DAY_TINT_PARAM:= &"atm_day_tint"
 const NIGHT_TINT_PARAM:= &"atm_night_tint"
 
-
 const DEEP_SPACE_BACKGROUND_COLOR_PARAM:= &"background_color"
 const DEEP_SPACE_BACKGROUND_TEXTURE_PARAM:= &"background_texture"
 const DEEP_SPACE_BACKGROUND_INTENSITY_PARAM:= &"background_intensity"
@@ -81,8 +80,6 @@ const N: float = 2.545e25
 # Depolatization factor for standard air.
 const pn: float = 0.035
 #endregion
-
-var _atm_day_gradient: Gradient = null
 
 #region General Settings
 @export_group("General Settings")
@@ -205,7 +202,6 @@ var atm_day_gradient: Gradient:
 		elif is_instance_valid(_atm_day_gradient):
 			_disconnect_atm_day_gradient_changed()
 			_atm_day_gradient = null
-		
 		_set_atm_day_tint()
 		emit_changed()
 
@@ -283,7 +279,8 @@ var background_contrast: float = 0.561:
 		)
 		emit_changed()
 
-@export var use_custom_bg_texture: bool = false:
+@export 
+var use_custom_bg_texture: bool = false:
 	get: return use_custom_bg_texture
 	set(value):
 		use_custom_bg_texture = value
@@ -291,7 +288,6 @@ var background_contrast: float = 0.561:
 			background_texture = background_texture
 		else:
 			background_texture = _DEFAULT_BACKGROUND_TEXTURE
-		
 		notify_property_list_changed()
 
 @export
@@ -333,7 +329,6 @@ var use_custom_stars_field_texture: bool = false:
 			stars_field_texture = stars_field_texture
 		else:
 			stars_field_texture = _DEFAULT_STARS_FIELD_TEXTURE
-		
 		notify_property_list_changed()
 
 @export
@@ -502,6 +497,8 @@ var clouds_panorama_speed: float = 0.005:
 		emit_changed()
 #endregion
 
+var _atm_day_gradient: Gradient = null
+
 #region Setup
 func _on_init() -> void:
 	super()
@@ -519,17 +516,13 @@ func _initialize_params() -> void:
 	atm_wavelenghts = atm_wavelenghts
 	atm_rayleigh_level = atm_rayleigh_level
 	atm_thickness = atm_thickness
-	
 	atm_mie = atm_mie
 	atm_turbidity = atm_turbidity
-	
 	atm_day_intensity = atm_day_intensity
 	atm_day_gradient = atm_day_gradient
-	
 	atm_night_intensity = atm_night_intensity
 	atm_enable_night_scattering = atm_enable_night_scattering
 	atm_night_tint = atm_night_tint
-	
 	atm_ground_color = atm_ground_color
 	
 	deep_space_aligment_matrix = deep_space_aligment_matrix
@@ -578,7 +571,6 @@ func _compatibility_changed() -> void:
 	background_color = background_color
 	stars_field_color = stars_field_color
 #endregion
-
 
 #region Connections
 func _connect_atm_day_gradient_changed() -> void:

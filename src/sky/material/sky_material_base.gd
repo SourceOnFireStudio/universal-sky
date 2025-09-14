@@ -32,15 +32,6 @@ const DEEP_SPACE_ALIGMENT_MATRIX_PARAM:= &"deep_space_aligment_matrix"
 const DEEP_SPACE_ROTATION_MATRIX_PARAM:= &"deep_space_rotation_matrix"
 #endregion
 
-var _material:= ShaderMaterial.new()
-var _compatibility: bool = false
-
-var material: ShaderMaterial:
-	get: return _material
-
-var is_compatibility: bool:
-	get: return _compatibility
-
 #region Sun
 var sun_direction:= Vector3.ZERO:
 	get: return sun_direction
@@ -184,6 +175,15 @@ var deep_space_rotation_matrix: Basis = Basis.from_euler(Vector3.ONE):
 		deep_space_rotation_matrix = value
 		_update_deep_space_rotation_matrix(deep_space_rotation_matrix)
 #endregion
+
+var _material:= ShaderMaterial.new()
+var _compatibility: bool = false
+
+var material: ShaderMaterial:
+	get: return _material
+
+var is_compatibility: bool:
+	get: return _compatibility
 
 #region Setup
 func _init() -> void: # Tree

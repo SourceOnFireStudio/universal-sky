@@ -21,18 +21,6 @@ enum CelestialParam{
 signal direction_changed()
 signal param_changed(type)
 
-var _lighting_gradient: Gradient = null
-var _lighting_energy_curve: Curve = null
-
-var direction: Vector3:
-	get: return -(basis * Vector3.FORWARD)
-
-var lighting_gradient_is_valid: bool:
-	get: return is_instance_valid(_lighting_gradient)
-
-var lighting_energy_curve_is_valid: bool:
-	get: return is_instance_valid(_lighting_energy_curve)
-
 @export
 var intensity_multiplier: float = 1.0:
 	get: return intensity_multiplier
@@ -135,6 +123,18 @@ var lighting_enable_shadows: bool = true:
 		lighting_enable_shadows = value
 		_update_light_energy()
 #endregion
+
+var _lighting_gradient: Gradient = null
+var _lighting_energy_curve: Curve = null
+
+var direction: Vector3:
+	get: return -(basis * Vector3.FORWARD)
+
+var lighting_gradient_is_valid: bool:
+	get: return is_instance_valid(_lighting_gradient)
+
+var lighting_energy_curve_is_valid: bool:
+	get: return is_instance_valid(_lighting_energy_curve)
 
 #region Godot Node Overrides
 func _init() -> void:

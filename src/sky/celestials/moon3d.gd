@@ -160,14 +160,12 @@ func _get_light_energy() -> float:
 
 	if _sun_is_valid:
 		var invLE = 1.0 - clamp(_sun.light_energy, 0.0, 1.0)
+		var fade: float = (invLE - light_transition_threshold) / (1.0 - light_transition_threshold)
+		fade = clamp(fade, 0.0, 1.0)
 		if _light_transition_curve_is_valid:
-			var fade: float = clamp(invLE - (1.0-light_transition_threshold), 0.0, 1.0);
 			return energy * light_transition_curve.sample_baked(fade)
-			
 		else:
-			var fade: float = clamp(invLE - light_transition_threshold, 0.0, 1.0)
-			return energy * lerp(0.0, 1.0, fade);
-	
+			return lerp(0.0, energy, fade)
 	return energy
 
 func get_final_moon_mie_intensity() -> float:

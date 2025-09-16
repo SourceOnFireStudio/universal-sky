@@ -64,7 +64,7 @@ var light_transition_curve: Curve:
 		if is_instance_valid(value):
 			_light_transition_curve = value
 			_connect_light_transition_curve_changed()
-		elif light_transition_curve_is_valid:
+		elif _light_transition_curve_is_valid:
 			_disconnect_light_transition_curve_changed()
 			_light_transition_curve = null
 		_update_light_energy()
@@ -74,15 +74,15 @@ var _light_transition_curve: Curve
 var _sun: Sun3D:
 	get: return _sun
 
-var sun_is_valid: bool:
+var _sun_is_valid: bool:
 	get: return is_instance_valid(_sun)
 
-var light_transition_curve_is_valid:
+var _light_transition_curve_is_valid:
 	get: return is_instance_valid(_light_transition_curve)
 
 var phases_mul: float:
 	get:
-		if sun_is_valid:
+		if _sun_is_valid:
 			return clamp(-direction.dot(_sun.direction) + 0.50, 0.0, 1.0)
 		return 1.0
 
@@ -158,9 +158,9 @@ func _get_light_energy() -> float:
 	if enable_light_moon_phases:
 		energy *= phases_mul
 
-	if sun_is_valid:
+	if _sun_is_valid:
 		var invLE = 1.0 - clamp(_sun.light_energy, 0.0, 1.0)
-		if light_transition_curve_is_valid:
+		if _light_transition_curve_is_valid:
 			var fade: float = clamp(invLE - (1.0-light_transition_threshold), 0.0, 1.0);
 			return energy * light_transition_curve.sample_baked(fade)
 			

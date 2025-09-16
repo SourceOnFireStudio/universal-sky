@@ -1,5 +1,5 @@
 @tool 
-@icon("res://addons/universal-sky/assets/icons/Sky.svg")
+@icon("res://addons/universal-sky/assets/icons/sky.svg")
 extends Node
 class_name SkyHandler3D
 
@@ -59,7 +59,6 @@ var sky_radiance_size: int = 1:
 			_enviro.sky.radiance_size = sky_radiance_size
 #endregion
 
-var _tree: SceneTree
 var _enviro: Environment = null
 
 var sun: Sun3D:
@@ -105,7 +104,6 @@ func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_ENTER_TREE:
 			SkyInstances.set_instance(self)
-			_tree = get_tree()
 			_connect_child_tree_signals()
 			material = material
 			enviro_container = enviro_container
@@ -114,7 +112,6 @@ func _notification(what: int) -> void:
 		NOTIFICATION_EXIT_TREE:
 			_disconnect_child_tree_signals()
 			SkyInstances.remove_instance(self)
-			_tree = null
 			if enviro_is_valid:
 				_enviro.sky.sky_material = null
 				_disconnect_enviro_changed()

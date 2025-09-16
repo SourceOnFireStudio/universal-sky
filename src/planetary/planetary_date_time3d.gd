@@ -1,4 +1,4 @@
-@tool
+@tool @icon("res://addons/universal-sky/assets/icons/godot/datetime.svg")
 extends Node
 class_name PlanetaryDateTime3D
 

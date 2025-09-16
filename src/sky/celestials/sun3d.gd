@@ -1,5 +1,5 @@
 @tool 
-@icon("res://addons/universal-sky/assets/icons/sun.svg")
+@icon("res://addons/universal-sky/assets/icons/godot/sun.svg")
 extends CelestialBody3D
 class_name Sun3D
 
@@ -35,7 +35,7 @@ var min_eclipse_intensity: float = 0.01:
 var _moon: Moon3D:
 	get: return _moon
 
-var moon_is_valid: bool:
+var _moon_is_valid: bool:
 	get: return is_instance_valid(_moon)
 
 var eclipse_multiplier: float = 1.0:
@@ -81,7 +81,7 @@ func _get_light_energy() -> float:
 	return super() * eclipse_multiplier
 
 func _update_eclipse() -> void:
-	if not moon_is_valid:
+	if not _moon_is_valid:
 		return
 	
 	if enable_solar_eclipse:

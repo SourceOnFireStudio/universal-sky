@@ -1,4 +1,4 @@
-@tool
+@tool @icon("res://addons/universal-sky/assets/icons/planetary.svg")
 extends Node
 class_name Planetary3D
 

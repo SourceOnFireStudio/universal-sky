@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7kiwm5g7glth"
-path="res://.godot/imported/sun.svg-d9c66417bae3b3956cea395d38733921.ctex"
+uid="uid://ne03g40i583m"
+path="res://.godot/imported/planetary.svg-3f5b82b18999f9948054552512358b30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/universal-sky/assets/icons/sun.svg"
-dest_files=["res://.godot/imported/sun.svg-d9c66417bae3b3956cea395d38733921.ctex"]
+source_file="res://addons/universal-sky/assets/icons/planetary.svg"
+dest_files=["res://.godot/imported/planetary.svg-3f5b82b18999f9948054552512358b30.ctex"]
 
 [params]
 

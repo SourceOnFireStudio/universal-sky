@@ -1,15 +1,15 @@
 [gd_scene load_steps=34 format=3 uid="uid://bw15xc6jb81e6"]
 
-[ext_resource type="Script" uid="uid://cyj8uwon5dmh1" path="res://addons/universal-sky/src/sky/sky_handler.gd" id="1_5pvsd"]
+[ext_resource type="Script" uid="uid://cyj8uwon5dmh1" path="res://addons/universal-sky/src/sky/sky_handler3d.gd" id="1_5pvsd"]
 [ext_resource type="Texture2D" uid="uid://cvqafkrcfb246" path="res://addons/universal-sky/assets/textures/milky-way/Milkyway.jpg" id="2_gv6sx"]
 [ext_resource type="Script" uid="uid://hrqegiwf7gbo" path="res://addons/universal-sky/src/sky/material/standard_sky_material.gd" id="3_2t0jo"]
 [ext_resource type="Texture2D" uid="uid://c05osp1sjpmxh" path="res://addons/universal-sky/example/textures/clouds_panorama.png" id="3_gv6sx"]
 [ext_resource type="Texture2D" uid="uid://bvyqf03kl2e61" path="res://addons/universal-sky/assets/textures/milky-way/StarField.jpg" id="4_hmx4h"]
-[ext_resource type="Script" uid="uid://cu18k8ov4dxkq" path="res://addons/universal-sky/src/sky/celestials/sun.gd" id="5_frjel"]
-[ext_resource type="Script" uid="uid://dg8d3ajenewmk" path="res://addons/universal-sky/src/sky/celestials/moon.gd" id="6_yu7y7"]
+[ext_resource type="Script" uid="uid://cu18k8ov4dxkq" path="res://addons/universal-sky/src/sky/celestials/sun3d.gd" id="5_frjel"]
+[ext_resource type="Script" uid="uid://dg8d3ajenewmk" path="res://addons/universal-sky/src/sky/celestials/moon3d.gd" id="6_yu7y7"]
 [ext_resource type="Texture2D" uid="uid://bg0ltx4f5n1qx" path="res://addons/universal-sky/assets/textures/moon/MoonMap.png" id="7_cvb06"]
-[ext_resource type="Script" uid="uid://bldir3yls8ej6" path="res://addons/universal-sky/src/planetary/planetary_date_time.gd" id="10_frjel"]
-[ext_resource type="Script" uid="uid://gok381plcuqb" path="res://addons/universal-sky/src/planetary/planetary.gd" id="10_hmx4h"]
+[ext_resource type="Script" uid="uid://bldir3yls8ej6" path="res://addons/universal-sky/src/planetary/planetary_date_time3d.gd" id="10_frjel"]
+[ext_resource type="Script" uid="uid://gok381plcuqb" path="res://addons/universal-sky/src/planetary/planetary3d.gd" id="10_hmx4h"]
 [ext_resource type="Shader" uid="uid://eeupldpiba2s" path="res://addons/universal-sky/src/sky/shaders/standard-sky/univsky_standard_sky.gdshader" id="11_hmx4h"]
 
 [sub_resource type="Gradient" id="Gradient_5pvsd"]
@@ -173,17 +173,16 @@ pixel_size = 0.0485
 
 [node name="Planetary" type="Node" parent="."]
 script = ExtResource("10_hmx4h")
-calculations_mode = 0
 latitude = 30.870000000000005
 world_orientation = -28.476
 metadata/_custom_type_script = "uid://gok381plcuqb"
 
 [node name="PlanetaryDateTime" type="Node" parent="Planetary"]
 script = ExtResource("10_frjel")
-total_cycle_in_minutes = 5.0
+total_cycle_in_minutes = 2.0
 process_time_mode = 3
-timeline = 8.532
-day = 15
+timeline = 10.705
+day = 20
 month = 10
 year = 3053
 metadata/_custom_type_script = "uid://bldir3yls8ej6"
@@ -195,7 +194,7 @@ enviro_container = NodePath("../../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
-transform = Transform3D(0.7544899, -0.06209235, 0.65336794, -0.513092, -0.6765608, 0.52820677, 0.4092455, -0.73376465, -0.5423173, 0.08873164, 0.9503837, -1.1224185)
+transform = Transform3D(0.9243612, -0.27459073, 0.26487064, 0, 0.69425327, 0.7197307, -0.3815188, -0.665291, 0.6417407, 0.08873164, 0.9503837, -1.1224185)
 light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
@@ -213,7 +212,7 @@ material_override = SubResource("StandardMaterial3D_yu7y7")
 mesh = SubResource("SphereMesh_hmx4h")
 
 [node name="Moon3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
-transform = Transform3D(0.756951, -0.011642352, -0.653368, -0.44480097, 0.723291, -0.52820665, 0.47872472, 0.69044524, 0.5423173, -1.5601343, -0.00061772263, -0.42799088)
+transform = Transform3D(0.054899156, -0.9298759, -0.36375374, -0.7595255, 0.19759166, -0.6197407, 0.6481567, 0.31030348, -0.6954169, -1.5601343, -0.00061772263, -0.42799088)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
 script = ExtResource("6_yu7y7")
@@ -252,7 +251,7 @@ material_override = SubResource("StandardMaterial3D_frjel")
 mesh = SubResource("SphereMesh_2t0jo")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.6602245, 0.0114696035, -0.75098073, 1.998471e-09, 0.9998834, 0.015271054, 0.75106835, -0.010082325, 0.6601475, -5.487791, 1.0326862, 3.5734463)
+transform = Transform3D(-0.81552577, 0.011469605, -0.5786072, 0.015188372, 0.9998835, -0.0015869814, 0.5785216, -0.010082329, -0.8156048, -2.0586114, 0.92921406, -2.7870672)
 
 [node name="Nort" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -4.371139e-08, -3.9275248)

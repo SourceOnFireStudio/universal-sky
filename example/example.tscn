@@ -14,7 +14,7 @@
 
 [sub_resource type="Gradient" id="Gradient_5pvsd"]
 offsets = PackedFloat32Array(0.80497926, 0.88381743)
-colors = PackedColorArray(1, 1, 1, 1, 0.79296875, 0.43984985, 0.43984985, 1)
+colors = PackedColorArray(0.953125, 0.9824219, 1, 1, 0.79296875, 0.43984985, 0.43984985, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_2t0jo"]
 noise_type = 3
@@ -179,12 +179,7 @@ metadata/_custom_type_script = "uid://gok381plcuqb"
 
 [node name="PlanetaryDateTime" type="Node" parent="Planetary"]
 script = ExtResource("10_frjel")
-total_cycle_in_minutes = 2.0
-process_time_mode = 3
-timeline = 10.705
-day = 20
-month = 10
-year = 3053
+timeline = 11.744360287404797
 metadata/_custom_type_script = "uid://bldir3yls8ej6"
 
 [node name="SkyHandler" type="Node" parent="Planetary"]
@@ -194,7 +189,7 @@ enviro_container = NodePath("../../WorldEnvironment")
 metadata/_custom_type_script = "uid://cyj8uwon5dmh1"
 
 [node name="Sun3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
-transform = Transform3D(0.9243612, -0.27459073, 0.26487064, 0, 0.69425327, 0.7197307, -0.3815188, -0.665291, 0.6417407, 0.08873164, 0.9503837, -1.1224185)
+transform = Transform3D(0.98424476, -0.12514105, 0.124909595, 0, 0.7064519, 0.70776093, -0.17681266, -0.6966099, 0.6953213, 0.08873164, 0.9503837, -1.1224185)
 light_color = Color(0.9843137, 0.84313726, 0.7882353, 1)
 shadow_enabled = true
 script = ExtResource("5_frjel")
@@ -212,7 +207,7 @@ material_override = SubResource("StandardMaterial3D_yu7y7")
 mesh = SubResource("SphereMesh_hmx4h")
 
 [node name="Moon3D" type="DirectionalLight3D" parent="Planetary/SkyHandler"]
-transform = Transform3D(0.054899156, -0.9298759, -0.36375374, -0.7595255, 0.19759166, -0.6197407, 0.6481567, 0.31030348, -0.6954169, -1.5601343, -0.00061772263, -0.42799088)
+transform = Transform3D(0.21368957, 0.9693215, -0.121460915, 0.69579244, -0.23829138, -0.677562, -0.6857184, 0.06027636, -0.72536695, -1.5601343, -0.00061772263, -0.42799088)
 light_color = Color(0.54, 0.7, 0.9, 1)
 light_energy = 0.0
 script = ExtResource("6_yu7y7")

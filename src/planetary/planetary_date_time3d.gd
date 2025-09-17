@@ -28,6 +28,12 @@ var process_time_mode:= ProcessTimeMode.Both:
 	set(value):
 		process_time_mode = value
 
+@export
+var update_interval: float = 0.0:
+	get: return update_interval
+	set(value):
+		update_interval = value
+
 @export_range(0.0, 24.0)
 var timeline: float = 7.0:
 	get: return timeline
@@ -77,6 +83,8 @@ var year: int = 2025:
 
 var _date_time_os: Dictionary
 
+var _update_timer: float = 0.0
+
 var _is_editor: bool: 
 	get: return Engine.is_editor_hint()
 
@@ -106,10 +114,14 @@ func _enter_tree() -> void:
 
 func _process(delta: float) -> void:
 	if _can_process():
-		if not system_sync:
-			_time_process(delta)
-		else:
-			_get_date_time_os()
+		if update_interval > 0.000000:
+			_update_timer += delta
+		if _update_timer > update_interval or is_zero_approx(update_interval):
+			if not system_sync:
+				_time_process(delta)
+			else:
+				_get_date_time_os()
+			_update_timer = 0.0
 #endregion
 
 #region Process Time

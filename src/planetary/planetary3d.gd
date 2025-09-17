@@ -247,16 +247,13 @@ func _on_date_time_param_changed(p_param: int) -> void:
 	match p_param:
 		PlanetaryDateTime3D.DateTimeParam.TIMELINE:
 			_timeline = _date_time.timeline
-			_update_celestial_coords()
 		PlanetaryDateTime3D.DateTimeParam.DAY:
 			_day = _date_time.day
-			_update_celestial_coords()
 		PlanetaryDateTime3D.DateTimeParam.MONTH:
 			_month = _date_time.month
-			_update_celestial_coords()
 		PlanetaryDateTime3D.DateTimeParam.YEAR:
 			_year = _date_time.year
-			_update_celestial_coords()
+	_update_celestial_coords()
 #endregion
 
 #region Celestial Coords

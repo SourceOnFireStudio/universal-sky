@@ -19,7 +19,7 @@ var material: SkyMaterialBase:
 			_connect_enviro_changed()
 
 #region Enviro
-@export_group("Enviroment")
+@export_group("Environment")
 @export
 var enviro_container: NodePath:
 	get: return enviro_container

@@ -77,7 +77,7 @@ var year: int = 2025:
 
 var _date_time_os: Dictionary
 
-var is_editor: bool: 
+var _is_editor: bool: 
 	get: return Engine.is_editor_hint()
 
 var is_leap_year: bool:
@@ -116,9 +116,9 @@ func _process(delta: float) -> void:
 func _can_process() -> bool:
 	match(process_time_mode):
 		ProcessTimeMode.Editor:
-			return true if is_editor else false
+			return true if _is_editor else false
 		ProcessTimeMode.Runtime:
-			return  true if not is_editor else false
+			return  true if not _is_editor else false
 		ProcessTimeMode.Both:
 			return true
 	return false

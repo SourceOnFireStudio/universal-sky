@@ -12,11 +12,16 @@ Dynamic Sky for Godot Engine 4.5
 
 ## Features:
 ---------------------------------------------
-### Sky:
-- Rayleih and mie scattering.
+### Rendering:
+- Forward.
+- Mobile.
+- Compatibility.
+
+### Standard Sky:
+- Rayleigh and mie scattering.
 - Night scattering.
 - Artistic control.
-- Moon 3D and moon phases.
+- Moon and moon phases.
 - Deep space.
 - Stars field scintillation.
 - Simple dynamic clouds.
@@ -24,7 +29,8 @@ Dynamic Sky for Godot Engine 4.5
 - Sun eclipses
 
 ### Planetary:
+- Day and night cycle.
 - Simple sun and moon position.
 - Realistic sun and moon positions.
-- Basic gregorian calendar.
+- Datetime with basic gregorian calendar.
 - Realistic deep space rotation.
